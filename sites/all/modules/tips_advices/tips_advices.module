@@ -1,0 +1,370 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function tips_advices_menu() {    
+    $items = array();    
+    // Tips & Advice form
+    $items['tips_advices/add'] = array( //this creates a URL that will call this form at "add_tips_advices"
+        'title' => 'Create Tips and Advice', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('add_tips_advices',''), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_tips_advices'),
+        'file' => 'add_tips_advices.inc'
+    ); 
+    // Manage Tips & Advice
+    $items['tips_advices'] = array( //this creates a URL that will call this form at "manage_tips_advices"
+        'title' => 'Tips and Advice', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('manage_tips_advices'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_tips_advices'),
+        'file' => 'manage_tips_advices.inc'
+    ); 
+    // Update Tips & Advice
+    $items['tips_advices/edit_tip/%'] = array( //this creates a URL that will call this form at "add_tips_advices"
+        'title' => 'Edit Tips and Advice', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('add_tips_advices',2), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_tips_advices'),
+        'file' => 'add_tips_advices.inc'
+    ); 
+    // View Individual Tips & Advice
+    $items['tips_advices/view_tip/%'] = array( //this creates a URL that will call this form at "view_tips_advices"
+        'title' => 'View Tips and Advice', //page title
+        'page callback' => 'view_tips_advices', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array(2), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_tips_advices'),
+        'file' => 'view_tips_advices.inc'
+    ); 
+    // User profile    
+    $items['tips_advices/account'] = array( //this creates a URL that will call this form at "account"
+        'title' => 'Update profile', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('account'), //put the name of the form here
+        'access callback' => True,
+        'file' => 'update_profile.inc'
+    );     
+    // Manage Tips & Advice from backend
+    $items['admin/config/people/tips_advices'] = array( //this creates a URL that will call this form at "manage_tips_advices"
+        'title' => 'Tips and Advice', //page title
+        'description' => 'Managing Tips and advice information',
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('manage_tips_advices'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_tips_advices'),
+        'file' => 'manage_tips_advices.inc',        
+    );
+    // View Individual Tips & Advice from backend
+    $items['admin/config/people/tips_advices/view_tip/%'] = array( //this creates a URL that will call this form at "view_tips_advices"
+        'title' => 'View Tips and Advice', //page title
+        'page callback' => 'view_tips_advices', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array(5), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_tips_advices'),
+        'file' => 'view_tips_advices.inc'
+    );
+    // Add Tips & Advice 
+    $items['admin/config/people/tips_advices/add'] = array( //this creates a URL that will call this form at "add_tips_advices"
+        'title' => 'Create Tips and Advice', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('add_tips_advices',''), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_tips_advices'),
+        'file' => 'add_tips_advices.inc',
+        'type' => MENU_LOCAL_TASK,
+    ); 
+    // Update Tips & Advice
+    $items['admin/config/people/tips_advices/edit_tip/%'] = array( //this creates a URL that will call this form at "add_tips_advices"
+        'title' => 'Edit Tips and Advice', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('add_tips_advices',5), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_tips_advices'),
+        'file' => 'add_tips_advices.inc'
+    ); 
+    // Download attached file
+    $items['tips_advices/download/%'] = array( //this creates a URL that will call this page at "download attachment"      
+        'page callback' => array('tips_advice_download'), //put the name of the form here        
+        'page arguments' => array(2),
+        'access arguments' => array('add_tips_advices'),
+        'file' => 'tips_advice_download.inc',
+        'access callback' => TRUE,
+    ); 
+    // Tips & Advice front end view
+    $items['tipsandadvice'] = array( //this creates a URL that will call this page at "tips_advice_list"     
+        'title' => 'Tips and Advice', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('tips_advice_list'),        
+        'access callback' => TRUE,
+        'file' => 'tips_advice_list.inc'
+    ); 
+    // View Individual Tips & Advice
+    $items['tipsandadvice/view_tip/%'] = array( //this creates a URL that will call this form at "view_tips_advices"
+        'title' => 'View Tips and Advice', //page title
+        'page callback' => 'view_tips_advices', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array(2), //put the name of the form here
+        'access callback' => TRUE,
+        'file' => 'view_tips_advices.inc'
+    ); 
+    return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function tips_advices_permission() {
+  return array(
+    'add_tips_advices' => array(        
+        'title' => t('Add Tips and Advice'),
+    ),
+    'view_tips_advices' => array(        
+        'title' => t('View Tips and Advice'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function tips_advices_block_info() {
+    return array(
+        'right_sidebar' => array(
+            'info' => t('Tips and Advice')
+        ),
+        'home_page_midbar_second' => array(
+            'info' => t('Most Popular')
+        ),
+    );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function tips_advices_block_view($delta = '') {
+    $block = array();    
+    if ($delta == 'right_sidebar') {
+        $block['subject'] = t('TIPS AND ADVICE');
+        $block['content'] = tips_advices_right_sidebar();
+    }  
+    if ($delta == 'home_page_midbar_second') {
+        $block['subject'] = t('MOST POPULAR');
+        $block['content'] = tips_advices_home_page_midbar_second();
+    }  
+    return $block;
+}
+
+//Tips & Advice list home page block
+function tips_advices_right_sidebar(){
+    $key = variable_get('IIUM_Encryption_Key', NULL); 
+    global $base_url;
+    
+    $listtips = "";
+    
+    $sidebarlist = '<section class="sidebar clearfix" id="sidebar-first">
+                    <div class="listing job-vacncies">
+                    <ul>';  
+    
+    $tips_advices = db_select('tips_advices')
+        ->fields('tips_advices')    
+        ->orderBy('id', 'DESC')
+        ->condition('delete_status', '0', '=')
+        ->range(0,10)
+        ->execute();    
+    $query = $tips_advices; 
+    
+    while($row = $query->fetchAssoc($query)){
+        $listtips .= '<li>'.l($row['title'], 'tipsandadvice/view_tip/'.encrypt($row['id'],$key)).'
+                    <br><span>Tips and Advice</span></li>';        
+    }
+    
+    $sidebarlist .= $listtips.'
+                    </ul>
+                    <div class="view-more"><a href="'.$base_url.'/tipsandadvice">View More</a></div>
+                    </div>
+                    </section>';
+    
+    return $sidebarlist;
+}
+
+//Tips & Advice Most Popular home page block
+function tips_advices_home_page_midbar_second(){
+    $key = variable_get('IIUM_Encryption_Key', NULL); 
+    global $base_url;
+    
+    $listtips = "";
+    
+    $midbarlist = '<ul>';  
+    
+    $tips_advices = db_select('tips_advices')
+        ->fields('tips_advices')    
+        ->orderBy('id', 'DESC')
+        ->condition('delete_status', '0', '=')
+        ->condition('tips_status', 1, '=')
+        ->range(0,2)
+        ->execute();    
+    $query = $tips_advices; 
+    
+    while($row = $query->fetchAssoc($query)){
+        //Image variables
+        $image_path = array(
+            'path' => $row['image_path'], 
+            'alt' => $row['image_path'],
+            'title' => $row['image_path'],  
+            'width' => '150',
+            'height' => '150', 
+        ); 
+        $listtips .= '<li>'.theme('image', $image_path).'
+                        <h2>'.l($row['title'], 'tipsandadvice/view_tip/'.encrypt($row['id'],$key)).'
+                        <span>Tips and Advice</span></h2>
+                        <p>'.limit_words($row['content_desc'],'20').' '.l('Read More', 'tipsandadvice/view_tip/'.encrypt($row['id'],$key)).'</p>
+                    </li>';        
+    }
+    
+    $midbarlist .= $listtips.'
+                    </ul>
+                    <div class="view-more"><a href="'.$base_url.'/tipsandadvice">View More</a></div>';
+    
+    return $midbarlist;
+}
+
+/* Implements menu alter method */
+function tips_advices_menu_alter(&$items) {
+    if (isset($items['add_tips_advices'])) {
+        $items['add_tips_advices']['access callback'] = 'user_access_permissions';
+    }
+    $items['admin/config/people']['title'] = 'Career Portal Setting';  
+}
+
+/**
+ * Check to see if a user has permission to access.
+ *
+ * @param $permission
+ *   The name of the permission you're trying to find.
+ * @param $user
+ *   The user object for the user you're checking; defaults to the current user.
+ * @return
+ *   TRUE if the user object has the permission, FALSE if it does not.
+ */
+function user_access_permissions($permission, $user = NULL) {
+    if ($user == NULL) {
+        global $user;
+    }
+    if (user_access($permission, $user)) {
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/*
+ * Category options list
+ */
+function cat_tips_advice(){
+    return array(
+        '0' => 'General Advice',
+        '1' => 'Job / Career',
+        '2' => 'Course',
+        '3' => 'Advice by Industries'
+    );
+}
+
+/*
+ * Article type list
+ */
+function article_type(){
+    return array(
+        '0' => 'Content',
+        '1' => 'Video',
+    );
+}
+
+/*
+ * Tips status options list
+ */
+function tips_status(){
+    return array(
+        '0' => 'Declined',
+        '1' => 'Approved',
+        '2' => 'Pending',        
+    );
+}
+
+/*
+ * General advice options list
+ */
+function general_advice_list(){
+    return array(        
+        '1' => 'Assessment Centres',
+        '2' => 'Business Gurus',
+        '3' => 'Business Jargon',
+        '4' => 'Career fairs',
+        '5' => 'Curveball interview questions',
+        '6' => 'Gap years',
+        '7' => 'Granular interview technique',
+        '8' => 'Internships',
+        '9' => 'Interview tips',
+        '10' => 'Its not what you know',
+        '11' => 'Job Hunting in Tough Times',
+        '12' => 'MBA Programs',
+        '13' => 'Polish up your CV',
+        '14' => 'Postgraduate Study',
+        '15' => 'Psychometrics explained',
+        '16' => 'Public Speaking and Presentations',
+        '17' => 'Social Media and Job Hunting',
+        '18' => 'Start your career hunt',
+        '19' => 'Staying Motivated',        
+    );
+}
+
+/**
+ * Function for handling ajax request
+ */
+function tips_advice_general_advice_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper'];
+}
+
+/**
+ * Function for handling ajax request
+ */
+function tips_advice_subparrent_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper']['wrapper_parent'];
+}
+
+/**
+ * Function for handling ajax request
+ */
+function tips_advice_child_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper']['wrapper_parent']['wrapper_child'];
+}
+
+/**
+ * Function for handling ajax request
+ */
+function tips_advice_fields_of_study_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper']['wrapper_field_of_study'];
+}
+
+/**
+ * Function for handling ajax request
+ */
+function tips_advice_qualification_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper']['wrapper_field_of_study']['wrapper_qualification'];
+}
+/**
+ * Get Tip ID in tips_advices table
+ */
+function tips_advices_id($id) {
+    $tips_advices_id = db_select('tips_advices')
+                    ->fields('tips_advices', array('tip_id'))
+                    ->condition('id', $id, '=')
+                    ->execute()->fetch();
+    return $tips_advices_id;
+}

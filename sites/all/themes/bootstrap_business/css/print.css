@@ -1,0 +1,36 @@
+#header, 
+footer, 
+#logo, 
+.login-sec, 
+.top-nav, 
+#main-navigation, 
+.inner-title, 
+.print-btn, 
+.download-resume, .resume-apply-preview, .resume-preview-container-content .resume-formSection{ display:none !important;}
+/*------------- Admin css open -------------*/
+.breadcrumb{display:none !important;}
+.job-detail-report, item-list{display:none !important;}
+#detail-reports #edit-print-report{display:none !important;}
+/*------------- Admin css End -------------*/
+.apply-cont{ border:2px solid #ccc;}
+.apply-link input[type="button"]{ display:none !important;}
+.apply-link a{display:none !important;}
+/*------------- Resume Details css open -------------*/
+.resume-detail-title{ font-size:22px !important; line-height:28px !important;}
+.resume-detail-item-left{ font-size:13px !important;}
+.resume-detail-item-middle{ margin-bottom:1em !important;}
+.resume-detail-item-middle h1{ font-size:27px !important;}
+.resume-detail-item-middle h2{ font-size:18px !important;}
+.resume-detail-item-middle{ font-size:15px !important;}
+.resume-detail-item-middle p{ font-size:15px !important;}
+.program_table thead tr th, .program_table thead tr td, .program_table tbody tr th, .program_table tbody tr td{ font-size:14px !important;}
+.resume-detail-item-middle .mailing_address h2, .resume-detail-item-middle .permanent_address h2{font-size: 17px !important;}
+.resume-detail-item-middle .mailing_address ul li .employer-cont, .resume-detail-item-middle .permanent_address ul li .employer-cont{font-size: 16px !important;}
+
+
+/*------------- Resume Details css End -------------*/
+@media print {
+  a[href]:after {
+    content: none !important;
+  }
+}

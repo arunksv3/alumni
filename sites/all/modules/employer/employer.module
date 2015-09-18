@@ -1,0 +1,1813 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+/* Post a job screen */
+function employer_menu() {
+    $items = array();
+    $items['employer/jobpost'] = array(
+        'title' => 'Post a Job',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+    );
+    /* edit a job screen */
+    $items['employer/jobpost/%/edit'] = array(
+        'title' => 'Edit a Job',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_form', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+    );
+    /* Manage jobs screen */
+    $items['employer/managejobs'] = array(
+        'title' => 'Manage Jobs',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_jobs_list'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+    );
+    /* View job screen */
+    $items['employer/viewjob/%'] = array(
+        'title' => 'My Account',
+        'page callback' => array('employer_viewjob'),
+        'page arguments' => array(2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+    );
+    /* View applicants screen */
+    $items['employer/viewapplicants'] = array(
+        'title' => 'View Applicants',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_viewapplicants'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.viewapplicants.inc',
+    );
+    /* View applicants view Resume screen */
+    $items['employer/viewresume/%/%'] = array(
+        'title' => 'Resume',
+        'page callback' => array('employer_viewresume'),
+        'page arguments' => array(2, 3),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.preview_resume_form.inc',
+    );
+    /* Applicants latest Resume screen */
+    $items['employer/latestresume/%'] = array(
+        'title' => 'Resume',
+        'page callback' => array('employer_latestresume'),
+        'page arguments' => array(2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.latestresume.inc',
+    );
+    /* Shortlisted applicants screen */
+    $items['employer/shortlistedapplicants'] = array(
+        'title' => 'Shortlisted Applicants',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_shortlistedapplicants'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.shortlistedapplicants.inc',
+    );
+    /* Interview Request for applicants screen */
+    $items['employer/interviewrequest/%/%'] = array(
+        'title' => 'Interview Request',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_interviewrequest', 2, 3),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.interviewrequest.inc',
+    );
+    /* Search applicants screen */
+    $items['employer/searchapplicants'] = array(
+        'title' => 'Search Applicants',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_searchapplicants'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.searchapplicants.inc',
+    );
+    /* Send resume request screen popup */
+    $items['employer/sendresumerequest/%'] = array(
+        'title' => 'Send Resume Request',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_sendresumerequest', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.sendresumerequest.inc',
+    );
+    /* Send resume request applicants screen */
+    $items['employer/resumerequestapplicants'] = array(
+        'title' => 'Send Resume Request',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_sendresumerequest_applicants'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.sendresumerequestapplicants.inc',
+    );
+    /* Direct shortlist screen popup */
+    $items['employer/directshortlist/%'] = array(
+        'title' => 'Direct Shortlist',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_directshortlist', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),
+        'file' => 'employer.directshortlist.inc',
+    );
+    $items['employer/downloadresume/%/%'] = array(
+        'title' => 'Download Resume',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_download_resume_form', 2, 3),
+        'file' => 'employer_download_resume_form.inc',
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+
+/**
+ * Employer manage jobs search filters after submiting
+ */
+function employer_filterjobs_submit($form, &$form_state) {
+    // $form_state['filters']['job_id'] = $form_state['values']['job_id'];
+    // $form_state['filters']['job_title'] = $form_state['values']['job_title'];
+    // $form_state['filters']['from'] = $form_state['values']['from'];
+    //  $form_state['filters']['to'] = $form_state['values']['to'];
+    // $form_state['filters']['job_specializations'] = $form_state['values']['job_specializations'];
+    //  $form_state['filters']['sub_parent'] = isset($form_state['values']['sub_parent'])?$form_state['values']['sub_parent']:'';
+    // $form_state['filters']['childs'] = isset($form_state['values']['childs'])?$form_state['values']['childs']:'';
+    // $form_state['filters']['job_status'] = $form_state['values']['job_status'];
+    $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Function for handling ajax request
+ */
+function employer_subparrent_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['filter']['wrapper'];
+}
+
+function employer_child_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['filter']['wrapper_child'];
+}
+
+function employer_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['address']['wrapper'];
+}
+
+function employer_contactform_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['contact_person_information']['wrapper'];
+}
+
+/**
+ * Employer view job
+ */
+function employer_viewjob($eid) {
+    global $user;
+    drupal_add_js("function printpage(){
+            window.print();
+         }
+		 function closewindow(){
+		    window.close(); 
+		 }
+		 ", 'inline');
+    if ($user->uid == 0)
+        drupal_goto('user');
+    /* Decrypting the data using configration key */
+    $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+    $eid = (int) decrypt($eid, $decrypting_key);
+    if ($eid == 0) {
+        drupal_not_found();
+        drupal_exit();
+    }
+
+    $view_job = db_select('employer_jobs', 'e');
+    $view_job->innerjoin('employer_jobs_contact_person', 'c', 'e.id = c.employer_jobid');
+    $view_job->fields('e', array());
+    $view_job->fields('c', array());
+    $view_job->condition('e.id', trim($eid), '=');
+
+    $record = $view_job->execute()
+            ->fetchAll();
+
+
+    $positionoffered = positionoffered();
+    $fields_of_study = fields_of_study();
+    $yearofexperience = yearofexperience();
+    $jobtype = jobtype();
+    $jobtypes_all = "";
+    $jobs_types = explode(",", $record[0]->jobs_type);
+    foreach ($jobs_types as $type):
+        $jobtypes_all.=$jobtype[$type] . "<br>";
+    endforeach;
+
+    /* Fetch specialization records */
+    $db_or = db_or();
+    $specializations = explode(',', $record[0]->specializations);
+    $category_childs = db_select('specializations_c');
+    $category_childs->fields('specializations_c', array('name'));
+    foreach ($specializations as $specialization):
+        $db_or->condition('sid', $specialization, '=');
+    endforeach;
+    $category_childs->condition($db_or);
+    $specialization_records = $category_childs->execute()
+            ->fetchAll();
+    $disp_specialization_records = "";
+    foreach ($specialization_records as $specialization_record):
+        $disp_specialization_records.=$specialization_record->name . "<br>";
+    endforeach;
+
+    /* Fetch level of awards records */
+    $db_or_level = db_or();
+    $level_of_awards = explode(',', $record[0]->level_of_awards);
+    $levelof_qualifcation = db_select('levelof_qualifcation');
+    $levelof_qualifcation->fields('levelof_qualifcation', array('name'));
+    foreach ($level_of_awards as $level_of_award):
+        $db_or_level->condition('id', $level_of_award, '=');
+    endforeach;
+    $levelof_qualifcation->condition($db_or_level);
+    $level_of_awards_records = $levelof_qualifcation->execute()
+            ->fetchAll();
+    $disp_level_of_awards_record = "";
+    foreach ($level_of_awards_records as $level_of_awards_record):
+        $disp_level_of_awards_record.=$level_of_awards_record->name . "<br>";
+    endforeach;
+
+
+    /* Fetch company logo and Name */
+    $company_logo = db_select('employer_registration')
+            ->fields('employer_registration', array('company_organization', 'company_logo'))
+            ->condition('uid', $user->uid, '=')
+            ->execute()
+            ->fetchAll();
+
+
+    $uploadflyers_image = $record[0]->attachment_path;
+    $comp_titles = comp_titles();
+    $contact_display = "";
+    if ($record[0]->contact_information_display == 1) {
+        $contact_display = '<li><label>Contact Information</label></li>
+        <li><label>Title:</label><span>' . $comp_titles[$record[0]->federal_title] . ' ' . $record[0]->p_title . '</span></li>
+        <li><label>Firstname:</label><span>' . $record[0]->firstname . '</span></li>
+        <li><label>Lastname:</label><span>' . $record[0]->lastname . '</span></li>
+        <li><label>Designation:</label><span>' . $record[0]->designation . '</span></li>
+        <li><label>Street:</label><span>' . $record[0]->street . '</span></li>
+        <li><label>City:</label><span>' . $record[0]->city . '</span></li>
+        <li><label>Country:</label><span>' . get_country_name($record[0]->country) . '</span></li>
+        <li><label>State:</label><span>' . get_state_name($record[0]->state) . '</span></li>
+        <li><label>Zip code:</label><span>' . $record[0]->zipcode . '</span></li>
+        <li><label>Telephone (Office):</label><span>' . $record[0]->telephone . '</span></li>
+        <li><label>Fax:</label><span>' . $record[0]->fax . '</span></li>
+        <li><label>Email:</label><span>' . $record[0]->email . '</span></li>';
+    }
+
+    if (strtotime($record[0]->deadline_for_application) > strtotime(date('Y-m-d')))
+        $status = 'Open';
+    else
+        $status = 'Closed';
+    $viewjob_display = "";
+    $viewjob_display.='<ul class="view-header">
+                          <li><img src = "' . file_create_url($company_logo[0]->company_logo) . '" ></span></li>
+						  <li class="view-company"><h2>' . $company_logo[0]->company_organization . '</h2></li>
+						  <li><label>Job ID</label> <span>' . $record[0]->jobid . '</span></li>
+					</ul>';
+
+    $viewjob_display.='<ul class="view-list">
+        <li><label>Job Title:</label> <span>' . $record[0]->job_title . '</span></li>
+        <li><label>Position Offered:</label><span>' . $positionoffered[$record[0]->position_offered] . '</span></li>
+        <li><label>Number of Vacancies:</label><span>' . $record[0]->number_of_vacancies . '</span></li>
+        <li><label>Job Type:</label><span>' . $jobtypes_all . '</span></li>
+        <li><label>Specialization:</label><span>' . $disp_specialization_records . '</span></li>
+        <li><label>Job Description:</label><span>' . $record[0]->job_description . '</span></li>
+        <li><label>Requirments:</label><span>' . $record[0]->requirments . '</span></li>
+        <li><label>Country:</label><span>' . get_country_name($record[0]->job_country) . '</span></li>
+        <li><label>State:</label><span>' . get_state_name($record[0]->job_state) . '</span></li>
+        <li><label>Fields of Study Required:</label><span>' . $fields_of_study[$record[0]->fields_of_study_required] . '</span></li>
+        <li><label>Level of Awards (Qualification):</label><span>' . $disp_level_of_awards_record . '</span></li>
+        <li><label>Lanaguage Skills:</label><span>' . $record[0]->lanaguage_skills . '</span></li>
+        <li><label>Other Skills:</label><span>' . $record[0]->other_skills . '</span></li>
+        <li><label>Applicable Method</label></li>
+        <li><label>Call:</label><span>' . $record[0]->applicable_method_call . '</span></li>
+        <li><label>Email:</label><span>' . $record[0]->applicable_method_email . '</span></li>
+        <li><label>Others:</label><span>' . $record[0]->applicable_method_others . '</span></li>
+        <li><label>Deadline for Application:</label><span>' . date("d-m-Y", strtotime($record[0]->deadline_for_application)) . '</span></li>
+        <li><label>Close of this Job Post Date:</label><span>' . date("d-m-Y", strtotime($record[0]->close_of_this_job_post)) . '</span></li>
+        <li><label>Minimum Experience Required:</label><span>' . $yearofexperience[$record[0]->year_of_experience] . '</span></li>
+        <li><label>Salary:</label><span>' . number_format($record[0]->salary) . ' MYR</span></li>
+        <li><label>Job Status:</label><span>' . $status . '</span></li>
+        <li><label>Upload flyer image for this job (if any) </label><span>' . ($uploadflyers_image != "" ? '<img src = "' . file_create_url($uploadflyers_image) . '" >' : '') . '</span></li>
+        <li><label>Date of Posting:</label><span>' . date("d-m-Y", strtotime($record[0]->date_time)) . '</span></li>
+        ' . $contact_display . '
+		<li><button onclick="printpage()">Print</button> <button onclick="closewindow()">Close</button></li>
+        </ul>';
+
+    return $viewjob_display;
+}
+
+/**
+ * Employer manage jobs
+ */
+function employer_jobs_list($form, &$form_state) {
+    global $user;
+    if ($user->uid == 0)
+        drupal_goto('user');
+    if (isset($_GET) && isset($_GET['delid']) && $_GET['delid'] != "") {
+        $fields = array(
+            'delete_status' => 1,
+        );
+        /* Decrypting the data using configration key */
+        $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+        $delid = (int) decrypt($_GET['delid'], $decrypting_key);
+        $delete_jobid = decrypt($_GET['jobid'], $decrypting_key);
+
+        $employer_jobs_delete = db_update('employer_jobs')
+                ->fields($fields)
+                ->condition('id', $delid)
+                ->execute();
+        audit_log('job deleted', $delete_jobid);
+
+        drupal_set_message('Job post has been deleted successfully', 'status');
+        drupal_goto('employer/managejobs');
+    }
+    drupal_add_css(drupal_get_path('theme', 'bootstrap_business') . '/css/jquery-ui.css');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery-ui.js');
+    drupal_add_js('jQuery(document).ready(function($) { 
+        $("#from").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showOn: "both",
+        dateFormat:"dd/mm/yy",
+        buttonImage: "' . file_create_url('public://calendar.gif') . '",
+        buttonImageOnly: true,
+        onSelect: function(selected) {
+          $("#to").datepicker("option","minDate", selected)
+        }
+        });
+        $("#to").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat:"dd/mm/yy",
+        showOn: "both",
+        buttonImage: "' . file_create_url('public://calendar.gif') . '",
+        buttonImageOnly: true,
+        onSelect: function(selected) {
+         $("#from").datepicker("option","maxDate", selected)
+        }
+        });
+        $(".popup").click(function () {                    
+          window.open($(this).attr("href"), "PopupWindow", "width=600,height=600,scrollbars=yes,resizable=no");
+          return false;
+        });
+        });', 'inline');
+    drupal_add_js("function del(){
+        var cnf = confirm('Are you sure you want to delete this job post? Click Ok to delete.');
+        if(cnf)
+            return true;
+        else
+            return false;    
+         }", 'inline');
+    $form = array();
+
+    /* $form['filter'] = array(
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#title' => t('Search')
+      ); */
+    $form['filter'] = array(
+        '#type' => 'fieldset',
+    );
+    $form['filter']['job_id'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Job ID'),
+    );
+    $form['filter']['job_title'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Job Title'),
+    );
+    $form['filter']['daterange'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Date Range'),
+    );
+    $form['filter']['daterange']['from'] = array(
+        '#type' => 'textfield',
+        '#id' => 'from',
+        '#title' => 'From',
+        '#attributes' => array('readonly' => 'readonly'),
+    );
+    $form['filter']['daterange']['to'] = array(
+        '#type' => 'textfield',
+        '#id' => 'to',
+        '#title' => 'To',
+        '#attributes' => array('readonly' => 'readonly'),
+    );
+    $category_parrents = db_select('specializations_p')
+            ->fields('specializations_p')
+            ->execute()
+            ->fetchAll();
+    $display_category_parrents[''] = 'All Specializations';
+    foreach ($category_parrents as $category_parrent_name):
+        $display_category_parrents[$category_parrent_name->sid] = $category_parrent_name->name;
+    endforeach;
+
+    $form['filter']['job_specializations'] = array(
+        '#type' => 'select',
+        '#title' => t('Specialization'),
+        '#options' => $display_category_parrents,
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_subparrent_list_ajax',
+            'wrapper' => 'subparrent-list-wrapper',
+        ),
+    );
+    // Wrapper for sub parent dropdown list
+    $form['filter']['wrapper'] = array(
+        '#prefix' => '<div id="subparrent-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    if (isset($form_state['values']['job_specializations']) && $form_state['values']['job_specializations'] != "") {
+        $category_subparrents = db_select('specializations_sp')
+                ->fields('specializations_sp')
+                ->condition('spid', $form_state['values']['job_specializations'], '=')
+                ->execute()
+                ->fetchAll();
+        $display_category_subparrents[''] = 'All';
+        foreach ($category_subparrents as $category_subparrent_name):
+            $display_category_subparrents[$category_subparrent_name->sid] = $category_subparrent_name->name;
+        endforeach;
+        // Province dropdown list
+        $form['filter']['wrapper']['sub_parent'] = array(
+            '#type' => 'select',
+            '#options' => $display_category_subparrents,
+            '#ajax' => array(
+                'event' => 'change',
+                'callback' => 'employer_child_list_ajax',
+                'wrapper' => 'child-list-wrapper',
+            ),
+        );
+    }
+    // Wrapper for child dropdown list
+    $form['filter']['wrapper_child'] = array(
+        '#prefix' => '<div id="child-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    if (isset($form_state['values']['sub_parent']) && $form_state['values']['sub_parent'] != "") {
+        $category_childs = db_select('specializations_c')
+                ->fields('specializations_c')
+                ->condition('cid', $form_state['values']['sub_parent'], '=')
+                ->execute()
+                ->fetchAll();
+        $display_category_childs[''] = 'All';
+        foreach ($category_childs as $category_child_name):
+            $display_category_childs[$category_child_name->sid] = $category_child_name->name;
+        endforeach;
+        // Province dropdown list
+        $form['filter']['wrapper_child']['childs'] = array(
+            '#type' => 'select',
+            '#options' => $display_category_childs,
+        );
+    }
+    $form['filter']['job_status'] = array(
+        '#type' => 'select',
+        '#title' => t('Job Status'),
+        '#options' => array('' => 'All', 0 => 'Open', 1 => 'Closed'),
+    );
+    $form['filter']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Search'),
+        '#submit' => array('employer_filterjobs_submit'),
+    );
+
+
+    $header = array(
+        array('data' => t('Job ID'), 'width' => '7%'),
+        array('data' => t('Job Title'), 'width' => '24%'),
+        array('data' => t('Position Offered'), 'width' => '13%'),
+        array('data' => t('Deadline for Application'), 'width' => '12%'),
+        array('data' => t('Job Close Date'), 'width' => '9%'),
+        array('data' => t('Job Status'), 'width' => '8%'),
+        array('data' => t('Applicants Applied'), 'width' => '14%'),
+        array('data' => t('Options'), 'width' => '13%'),
+    );
+    $query = db_select('employer_jobs', 'e');
+    $query->fields('e', array('id', 'jobid', 'job_title', 'position_offered', 'deadline_for_application', 'close_of_this_job_post'));
+
+    if (isset($form_state['values']['job_id'])) {
+        $query->condition('jobid', '%' . db_like($form_state['values']['job_id']) . '%', 'LIKE');
+    }
+    if (isset($form_state['values']['job_title'])) {
+        $query->condition('job_title', '%' . db_like($form_state['values']['job_title']) . '%', 'LIKE');
+    }
+    if (isset($form_state['values']['from']) && $form_state['values']['from'] != "") {
+        $from_input = explode('/', $form_state['values']['from']);
+        $fromdate = $from_input[2] . '-' . $from_input[1] . '-' . $from_input[0];
+        $query->condition('deadline_for_application', $fromdate, '>=');
+    }
+    if (isset($form_state['values']['to']) && $form_state['values']['to'] != "") {
+        $to_input = explode('/', $form_state['values']['to']);
+        $todate = $to_input[2] . '-' . $to_input[1] . '-' . $to_input[0];
+        $query->condition('deadline_for_application', $todate, '<=');
+    }
+    if (isset($form_state['values']['job_specializations']) && $form_state['values']['job_specializations'] != "") {
+        $sub_parent_db_or = db_or();
+        $sub_parent_db_or->condition('specializations_parrent', db_like($form_state['values']['job_specializations']) . ',%', 'LIKE');
+        $sub_parent_db_or->condition('specializations_parrent', $form_state['values']['job_specializations'], '=');
+        $sub_parent_db_or->condition('specializations_parrent', '%,' . db_like($form_state['values']['job_specializations']) . ',%', 'LIKE');
+        $sub_parent_db_or->condition('specializations_parrent', '%,' . db_like($form_state['values']['job_specializations']), 'LIKE');
+        $query->condition($sub_parent_db_or);
+    }
+    if (isset($form_state['values']['sub_parent']) && $form_state['values']['sub_parent'] != "") {
+        $child_db_or = db_or();
+        $child_db_or->condition('specializations_subparrent', db_like($form_state['values']['sub_parent']) . ',%', 'LIKE');
+        $child_db_or->condition('specializations_subparrent', $form_state['values']['sub_parent'], '=');
+        $child_db_or->condition('specializations_subparrent', '%,' . db_like($form_state['values']['sub_parent']) . ',%', 'LIKE');
+        $child_db_or->condition('specializations_subparrent', '%,' . db_like($form_state['values']['sub_parent']), 'LIKE');
+        $query->condition($child_db_or);
+    }
+    if (isset($form_state['values']['childs']) && $form_state['values']['childs'] != "") {
+        $db_or = db_or();
+        $db_or->condition('specializations', db_like($form_state['values']['childs']) . ',%', 'LIKE');
+        $db_or->condition('specializations', $form_state['values']['childs'], '=');
+        $db_or->condition('specializations', '%,' . db_like($form_state['values']['childs']) . ',%', 'LIKE');
+        $db_or->condition('specializations', '%,' . db_like($form_state['values']['childs']), 'LIKE');
+        $query->condition($db_or);
+    }
+    if (isset($form_state['input']['job_status']) && $form_state['input']['job_status'] != "") { 
+        //$query->condition('job_status', '%' . db_like($form_state['filters']['job_status']) . '%', 'LIKE');
+        if ($form_state['input']['job_status'] == 1)
+            $query->condition('deadline_for_application', date('Y-m-d'), '<');
+        else
+            $query->condition('deadline_for_application', date('Y-m-d'), '>');
+    }
+
+    $query->condition('uid', $user->uid, '=');
+    $query->condition('delete_status', 0, '=');
+
+    $table_sort = $query->extend('TableSort') // Add table sort extender.
+            ->orderByHeader($header); // Add order by headers.
+
+    $pager = $table_sort->extend('PagerDefault')
+            ->orderBy('id', 'DESC')
+            ->limit(10); // 10 rows per page.
+
+    $result = $pager->execute();
+    $rows = array();
+//print strtr((string) $query, $query->arguments());
+    $positionoffered = positionoffered();
+
+    foreach ($result as $res) {
+        $deadline_for_application = date("d-m-Y", strtotime($res->deadline_for_application));
+        $close_of_this_job_post = date("d-m-Y", strtotime($res->close_of_this_job_post));
+        if (strtotime($res->deadline_for_application) > strtotime(date('Y-m-d')))
+            $status = 'Open';
+        else
+            $status = 'Closed';
+
+        $results = db_select('student_job_details')->fields(NULL, array('field'))->condition('sjid', $res->id, '=')->countQuery()->execute()->fetchField();
+
+
+        $rows[] = array($res->jobid, $res->job_title, $positionoffered[$res->position_offered], $deadline_for_application, $close_of_this_job_post, $status, $results, '<div class="options"> <a href="viewjob/' . encrypt($res->id, variable_get('IIUM_Encryption_Key', NULL)) . '" class="popup" alt="VIEW" title="VIEW">View</a><a href="jobpost/' . encrypt($res->id, variable_get('IIUM_Encryption_Key', NULL)) . '/edit" alt="EDIT" title="EDIT">Edit</a><a href="?delid=' . encrypt($res->id, variable_get('IIUM_Encryption_Key', NULL)) . '&jobid=' . encrypt($res->jobid, variable_get('IIUM_Encryption_Key', NULL)) . '" onclick="return del();" title="DELETE" alt="DELETE">Delete</a></div>');
+    }
+//$output .= theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'sort-table')));
+
+    $form['table'] = array(
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $rows,
+        '#empty' => t('No Records Found!')
+    );
+    $form['pager'] = array('#markup' => theme('pager'));
+
+    return $form;
+}
+
+/**
+ * Employer job post update code
+ */
+function employer_form_submit_edit($form, &$form_state) {
+    global $user;
+
+    extract($_POST);
+    /* Decrypting the data using configration key */
+    $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+    $eid = (int) decrypt($form_state['values']['eid'], $decrypting_key);
+    $edit_jobid = $form_state['values']['edit_jobid'];
+    if ($eid == 0) {
+        drupal_not_found();
+        drupal_exit();
+    }
+    $Jobsfor_checkboxes = implode(",", $_POST['Jobsfor_checkboxes']);
+    $specializations = implode(",", $_POST['categories_checkboxes']);
+    $level_of_awards = implode(",", $_POST['level_of_awards']);
+
+    $query = db_select('specializations_c');
+    $records = $query->fields('specializations_c', array('pid', 'cid'))
+            ->condition('sid', $_POST['categories_checkboxes'], 'IN')
+            ->execute()
+            ->fetchAll();
+
+    foreach ($records as $record):
+        $array_parrent_values[] = $record->pid;
+        $array_subparrent_values[] = $record->cid;
+    endforeach;
+
+    $specializations_parrents = implode(",", array_unique($array_parrent_values));
+    $specializations_subparrents = implode(",", array_unique($array_subparrent_values));
+
+    /* Image upload code start */
+    $filename = $_FILES["files"]["name"]['upload_flyers'];
+    if ($filename != "") {
+        $image_path = variable_get('IIUM_Jobpost_image_path', NULL);
+        $upload_flyers_temp = $_FILES["files"]["tmp_name"]['upload_flyers'];
+        $dest_upload_flyers = $image_path . time() . '_' . $filename;
+        if (file_exists($form_state['values']['upload_flyers_path']))
+            unlink(trim($form_state['values']['upload_flyers_path']));
+        move_uploaded_file($upload_flyers_temp, $dest_upload_flyers);
+    }
+    /* Image upload code end */
+    if (isset($form_state['values']['job_state']) && $form_state['values']['job_state'] != "")
+        $job_state = $form_state['values']['job_state'];
+    else
+        $job_state = 0;
+
+    $deadline_input = explode('/', $form_state['values']['deadline']);
+    $deadline_date = $deadline_input[1] . '/' . $deadline_input[0] . '/' . $deadline_input[2];
+
+    $close_jobpost_input = explode('/', $form_state['values']['close_jobpost']);
+    $close_jobpost_date = $close_jobpost_input[1] . '/' . $close_jobpost_input[0] . '/' . $close_jobpost_input[2];
+
+    $fields = array(
+        'uid' => $user->uid,
+        'job_title' => trim($form_state['values']['jobtitle']),
+        'position_offered' => trim($form_state['values']['positionoffered']),
+        'number_of_vacancies' => trim($form_state['values']['numberofvacancies']),
+        'jobs_type' => trim($Jobsfor_checkboxes),
+        'job_type_others' => trim($outher_textfield),
+        'specializations_parrent' => trim($specializations_parrents),
+        'specializations_subparrent' => trim($specializations_subparrents),
+        'specializations' => trim($specializations),
+        'job_description' => trim($form_state['values']['Jobdescription']['value']),
+        'requirments' => trim($form_state['values']['requirments']['value']),
+        'job_country' => trim($form_state['values']['job_country']),
+        'job_state' => trim($job_state),
+        'fields_of_study_required' => trim($form_state['values']['fieldsofstudy']),
+        'level_of_awards' => trim($level_of_awards),
+        'lanaguage_skills' => trim($form_state['values']['languageskills']),
+        'other_skills' => trim($form_state['values']['otherskills']),
+        'applicable_method_call' => trim($form_state['values']['applicable_call']),
+        'applicable_method_email' => trim($form_state['values']['applicable_email']),
+        'applicable_method_others' => trim($form_state['values']['applicable_others']),
+        'deadline_for_application' => trim(date("Y-m-d", strtotime($deadline_date))),
+        'close_of_this_job_post' => trim(date("Y-m-d", strtotime($close_jobpost_date))),
+        'year_of_experience' => trim($form_state['values']['year_of_experience']),
+        'salary' => trim(str_replace(',', '', $form_state['values']['salary'])),
+        'contact_information_display' => trim($form_state['values']['information_provided']),
+        'date_time' => trim(date('Y-m-d H:i:s')));
+
+    if ($filename != "")
+        $fields = $fields + array('attachment_name' => trim($filename),
+            'attachment_path' => trim($dest_upload_flyers));
+
+    $employer_job_update = db_update('employer_jobs')
+            ->fields($fields)
+            ->condition('id', $eid)
+            ->execute();
+    if (isset($form_state['values']['state']) && $form_state['values']['state'] != "")
+        $state = $form_state['values']['state'];
+    else
+        $state = 0;
+    $employer_jobs_contact_person = db_update('employer_jobs_contact_person')
+            ->fields(array(
+                'federal_title' => trim($form_state['values']['federal_title']),
+                'p_title' => trim($form_state['values']['title']),
+                'firstname' => trim($form_state['values']['fname']),
+                'lastname' => trim($form_state['values']['lname']),
+                'designation' => trim($form_state['values']['designation']),
+                'street' => trim($form_state['values']['addressline_1']),
+                'city' => trim($form_state['values']['city']),
+                'state' => trim($state),
+                'country' => trim($form_state['values']['country']),
+                'zipcode' => trim($form_state['values']['zip_code']),
+                'telephone' => trim($form_state['values']['telephone']),
+                'fax' => trim($form_state['values']['fax']),
+                'email' => trim($form_state['values']['email_valid']),
+            ))
+            ->condition('employer_jobid', $eid)
+            ->execute();
+
+    audit_log('job updated', $edit_jobid);
+
+    if ($employer_job_update == 1) {
+        drupal_set_message('Job post has been updated successfully', 'status');
+        drupal_goto('employer/managejobs');
+    }
+}
+
+/**
+ * Employer job post insert code
+ */
+function employer_form_submit($form, &$form_state) {
+    global $user;
+    extract($_POST);
+    $Jobsfor_checkboxes = implode(",", $_POST['Jobsfor_checkboxes']);
+    $specializations = implode(",", $_POST['categories_checkboxes']);
+    $level_of_awards = implode(",", $_POST['level_of_awards']);
+
+    $query = db_select('specializations_c');
+    $records = $query->fields('specializations_c', array('pid', 'cid'))
+            ->condition('sid', $_POST['categories_checkboxes'], 'IN')
+            ->execute()
+            ->fetchAll();
+
+    foreach ($records as $record):
+        $array_parrent_values[] = $record->pid;
+        $array_subparrent_values[] = $record->cid;
+    endforeach;
+
+    $specializations_parrents = implode(",", array_unique($array_parrent_values));
+    $specializations_subparrents = implode(",", array_unique($array_subparrent_values));
+
+    /* Image upload code */
+    $image_path = variable_get('IIUM_Jobpost_image_path', NULL);
+    $filename = $_FILES["files"]["name"]['upload_flyers'];
+    $dest_upload_flyers = "";
+    if ($filename != "") {
+        $upload_flyers_temp = $_FILES["files"]["tmp_name"]['upload_flyers'];
+        $dest_upload_flyers = $image_path . time() . '_' . $filename;
+        move_uploaded_file($upload_flyers_temp, $dest_upload_flyers);
+    }
+    /* Image upload code end */
+
+    if (isset($form_state['values']['job_state']) && $form_state['values']['job_state'] != "")
+        $job_state = $form_state['values']['job_state'];
+    else
+        $job_state = 0;
+
+    $deadline_input = explode('/', $form_state['values']['deadline']);
+    $deadline_date = $deadline_input[1] . '/' . $deadline_input[0] . '/' . $deadline_input[2];
+
+    $close_jobpost_input = explode('/', $form_state['values']['close_jobpost']);
+    $close_jobpost_date = $close_jobpost_input[1] . '/' . $close_jobpost_input[0] . '/' . $close_jobpost_input[2];
+
+    $employer_jobs = db_insert('employer_jobs')
+            ->fields(array(
+                'uid' => $user->uid,
+                'job_title' => trim($form_state['values']['jobtitle']),
+                'position_offered' => trim($form_state['values']['positionoffered']),
+                'number_of_vacancies' => trim($form_state['values']['numberofvacancies']),
+                'jobs_type' => trim($Jobsfor_checkboxes),
+                'job_type_others' => trim($outher_textfield),
+                'specializations_parrent' => trim($specializations_parrents),
+                'specializations_subparrent' => trim($specializations_subparrents),
+                'specializations' => trim($specializations),
+                'job_description' => trim($form_state['values']['Jobdescription']['value']),
+                'requirments' => trim($form_state['values']['requirments']['value']),
+                'job_country' => trim($form_state['values']['job_country']),
+                'job_state' => trim($job_state),
+                'fields_of_study_required' => trim($form_state['values']['fieldsofstudy']),
+                'level_of_awards' => trim($level_of_awards),
+                'lanaguage_skills' => trim($form_state['values']['languageskills']),
+                'other_skills' => trim($form_state['values']['otherskills']),
+                'applicable_method_call' => trim($form_state['values']['applicable_call']),
+                'applicable_method_email' => trim($form_state['values']['applicable_email']),
+                'applicable_method_others' => trim($form_state['values']['applicable_others']),
+                'deadline_for_application' => trim(date("Y-m-d", strtotime($deadline_date))),
+                'close_of_this_job_post' => trim(date("Y-m-d", strtotime($close_jobpost_date))),
+                'year_of_experience' => trim($form_state['values']['year_of_experience']),
+                'salary' => trim(str_replace(',', '', $form_state['values']['salary'])),
+                'attachment_name' => trim($filename),
+                'attachment_path' => trim($dest_upload_flyers),
+                'contact_information_display' => trim($form_state['values']['information_provided']),
+                'date_time' => trim(date('Y-m-d H:i:s')),
+            ))
+            ->execute();
+
+    $employer_jobs_lastid = $employer_jobs;
+
+    /* Insert job id, start */
+    if ($employer_jobs_lastid <= 9)
+        $value = "000" . $employer_jobs_lastid;
+    else if ($employer_jobs_lastid <= 99 && $employer_jobs_lastid > 9)
+        $value = "00" . $employer_jobs_lastid;
+    else if ($employer_jobs_lastid <= 999 && $employer_jobs_lastid > 99)
+        $value = "0" . $employer_jobs_lastid;
+    else
+        $value = $employer_jobs_lastid;
+
+    $jobid = 'JP-' . $value;
+
+    $fields = array(
+        'jobid' => $jobid,
+    );
+    $employer_jobs_update = db_update('employer_jobs')
+            ->fields($fields)
+            ->condition('id', $employer_jobs_lastid)
+            ->execute();
+
+    if (isset($form_state['values']['state']) && $form_state['values']['state'] != "")
+        $state = $form_state['values']['state'];
+    else
+        $state = 0;
+
+    $employer_jobs_contact_person = db_insert('employer_jobs_contact_person')
+            ->fields(array(
+                'employer_jobid' => trim($employer_jobs_lastid),
+                'federal_title' => trim($form_state['values']['federal_title']),
+                'p_title' => trim($form_state['values']['title']),
+                'firstname' => trim($form_state['values']['fname']),
+                'lastname' => trim($form_state['values']['lname']),
+                'designation' => trim($form_state['values']['designation']),
+                'street' => trim($form_state['values']['addressline_1']),
+                'city' => trim($form_state['values']['city']),
+                'state' => trim($state),
+                'country' => trim($form_state['values']['country']),
+                'zipcode' => trim($form_state['values']['zip_code']),
+                'telephone' => trim($form_state['values']['telephone']),
+                'fax' => trim($form_state['values']['fax']),
+                'email' => trim($form_state['values']['email_valid']),
+            ))
+            ->execute();
+
+    audit_log('job inserted', $jobid);
+
+    drupal_set_message('Job post has been added successfully', 'status');
+    drupal_goto('employer/managejobs');
+}
+
+/**
+ * Employer page validation code
+ */
+function employer_form_validate($form, &$form_state) {
+
+    $upload_flyers = $_FILES["files"]["name"]['upload_flyers'];
+    $allowed = array('gif', 'png', 'jpg', 'jpeg');
+    if ($upload_flyers != "") {
+        $upload_flyers_ext = pathinfo($upload_flyers, PATHINFO_EXTENSION);
+        if (!in_array($upload_flyers_ext, $allowed)) {
+            form_set_error('upload_flyers', t('Invalid file extension for Upload Flyers'));
+        }
+    }
+}
+
+/**
+ * Employer edit job post
+ */
+function editjobpost($eid) {
+    global $user;
+    if ($eid != "") {
+        /* Decrypting the data using configration key */
+        $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+        $eid = decrypt($eid, $decrypting_key);
+
+        $view_job = db_select('employer_jobs', 'e');
+        $view_job->innerjoin('employer_jobs_contact_person', 'c', 'e.id = c.employer_jobid');
+        $view_job->fields('e', array());
+        $view_job->fields('c', array());
+        $view_job->condition('e.id', trim($eid), '=');
+
+        return $employer_details = $view_job->execute()
+                ->fetchAll();
+    } else {
+        return $employer_details = db_select('employer_registration')
+                ->fields('employer_registration')
+                ->condition('uid', $user->uid, '=')
+                ->execute()
+                ->fetchAll();
+    }
+}
+
+/**
+ * Employer post a job html code
+ */
+function employer_form($form, &$form_state, $eid) {
+    global $user;
+    global $base_url;
+    if ($user->uid == 0)
+        drupal_goto('user');
+
+    drupal_add_css(drupal_get_path('theme', 'bootstrap_business') . '/css/jquery-ui.css');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery-ui.js');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery.validate.js');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jqueryformvalidation.js');
+    drupal_add_js(drupal_get_path('module', 'employer') . '/js/custom_validations.js');
+    drupal_add_js('jQuery(document).ready(function($) { 
+$("#deadline").datepicker({
+ changeMonth: true,
+ changeYear: true,
+ showOn: "both",
+ minDate: "0d",
+ dateFormat:"dd/mm/yy",
+ buttonImage: "' . file_create_url('public://calendar.gif') . '",
+ buttonImageOnly: true,
+ onSelect: function(selected) {
+   $("#close_jobpost").datepicker("option","minDate", selected)
+  }
+});
+$("#close_jobpost").datepicker({
+ changeMonth: true,
+ changeYear: true,
+ showOn: "both",
+ minDate: "0d",
+ dateFormat:"dd/mm/yy",
+ buttonImage: "' . file_create_url('public://calendar.gif') . '",
+ buttonImageOnly: true,
+ onSelect: function(selected) {
+    $("#deadline").datepicker("option","maxDate", selected)
+   }
+});
+});', 'inline');
+
+
+    /* Call edit a job post function */
+    $employer_details = editjobpost($eid);
+
+
+    $form = array();
+    $form['mandatory'] = array(
+        '#type' => 'item',
+        '#markup' => '<div class="mandatory"><span>*</span> Indicates Mandatory</div>',
+    );
+    $form['job_details'] = array(
+        '#type' => 'item',
+        '#markup' => '<h2>Job Details <span> - Specify details of job you are going to post</span></h2>',
+    );
+    $form['jobtitle'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Job Title',
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->job_title) ? $employer_details[0]->job_title : ''),
+        '#maxlength' => 50,
+    );
+    $form['positionoffered'] = array(
+        '#type' => 'select',
+        '#title' => 'Position Offered',
+        '#options' => positionoffered(),
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->position_offered) ? $employer_details[0]->position_offered : '')
+    );
+    $form['numberofvacancies'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Number of Vacancies',
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->number_of_vacancies) ? $employer_details[0]->number_of_vacancies : ''),
+        '#maxlength' => 5,
+    );
+    $form['Jobsfor'] = array(
+        '#title' => t('Job Type <span title="This field is required." class="form-required">*</span>'),
+        // The prefix/suffix provide the div that we're replacing, named by
+        // #ajax['wrapper'] above.
+        '#prefix' => '<div id="Jobsfor">',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset'
+    );
+    $form['Jobsfor']['Jobsfor_checkboxes'] = array(
+        '#type' => 'checkboxes',
+        '#options' => jobtype(),
+        '#attributes' => array(
+            'name' => 'Jobsfor_checkboxes[]'
+        ),
+        '#default_value' => (isset($employer_details[0]->jobs_type) ? explode(',', $employer_details[0]->jobs_type) : array()),
+    );
+    $form['Jobsfor']['outher_textfield'] = array(
+        '#type' => 'textfield',
+        '#prefix' => '<div id="outher_inputtextfield" style="display:none;">',
+        '#suffix' => '</div>',
+        '#title' => 'Please Specify',
+        '#maxlength' => 20,
+    );
+    $form['specializations'] = array(
+        '#title' => t('Specialization <span title="This field is required." class="form-required">*</span>'),
+        '#prefix' => '<div id="specializations">',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset',
+    );
+    $form['categories'] = array(
+        '#prefix' => '<div id="categories">',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset'
+    );
+
+    $category_parrents = db_select('specializations_p')
+            ->fields('specializations_p')
+            ->execute()
+            ->fetchAll();
+    foreach ($category_parrents as $category_parrent_name):
+        $form['categories']['categories_parrents' . $category_parrent_name->name] = array(
+            '#title' => $category_parrent_name->name,
+            '#prefix' => '<div id="categorie_parrents">',
+            '#suffix' => '</div>',
+            '#type' => 'fieldset'
+        );
+        $category_sub_parrents = db_select('specializations_sp')
+                ->fields('specializations_sp')
+                ->condition('spid', $category_parrent_name->sid, '=')
+                ->execute()
+                ->fetchAll();
+        foreach ($category_sub_parrents as $category_sub_parrent_name):
+            unset($last_levelof_category_childs);
+            $form['categories']['categories_parrents' . $category_parrent_name->name]['categories_sub' . $category_sub_parrent_name->name] = array(
+                '#title' => $category_sub_parrent_name->name,
+                '#prefix' => '<div id="categorie_sub_parrents">',
+                '#suffix' => '</div>',
+                '#type' => 'fieldset'
+            );
+            $category_parrent_childs = db_select('specializations_c')
+                    ->fields('specializations_c')
+                    ->condition('cid', $category_sub_parrent_name->sid, '=')
+                    ->execute()
+                    ->fetchAll();
+            foreach ($category_parrent_childs as $category_parrent_child_name):
+                $last_levelof_category_childs[$category_parrent_child_name->sid] = $category_parrent_child_name->name;
+            endforeach;
+            $form['categories']['categories_parrents' . $category_parrent_name->name]['categories_sub' . $category_sub_parrent_name->name]['categories_checkboxes' . $category_sub_parrent_name->name] = array(
+                '#type' => 'checkboxes',
+                '#options' => $last_levelof_category_childs,
+                '#attributes' => array(
+                    'name' => 'categories_checkboxes[]',
+                    'id' => 'categories_checkboxes[]'
+                ),
+                '#default_value' => (isset($employer_details[0]->specializations) ? explode(',', $employer_details[0]->specializations) : array()),
+            );
+
+        endforeach;
+    endforeach;
+
+    $form['Jobdescription'] = array(
+        '#title' => 'Job Description',
+        '#type' => 'text_format',
+        '#format' => filter_default_format(),
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->job_description) ? $employer_details[0]->job_description : ''),
+        '#rows' => 3,
+    );
+    $form['requirments'] = array(
+        '#type' => 'text_format',
+        '#format' => filter_default_format(),
+        '#title' => 'Requirments',
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->requirments) ? $employer_details[0]->requirments : ''),
+        '#rows' => 3,
+    );
+    $form['address']['job_country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#options' => array('' => 'Select') + countries_list(),
+        '#required' => TRUE,
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_state_list_ajax',
+            'wrapper' => 'state-list-wrapper',
+        ),
+        '#default_value' => (isset($employer_details[0]->job_country) ? $employer_details[0]->job_country : ''),
+    );
+    // Wrapper for state dropdown list
+    $form['address']['wrapper'] = array(
+        '#prefix' => '<div id="state-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+
+    if ((isset($form_state['values']['job_country']) && $form_state['values']['job_country'] != "" || isset($employer_details[0]->job_state))) {
+        if (!isset($form_state['values']['job_country'])) {
+            $cid = $employer_details[0]->job_country;
+        } else {
+            $cid = $form_state['values']['job_country'];
+        }
+        $state_list = db_select('states_list')
+                ->fields('states_list')
+                ->condition('cid', $cid, '=')
+                ->execute()
+                ->fetchAll();
+        $state_list_arr[''] = 'Select';
+        foreach ($state_list as $value):
+            $state_list_arr[$value->id] = $value->name;
+        endforeach;
+        if (count($state_list) > 0) {
+            // Province dropdown list
+            $form['address']['wrapper']['job_state'] = array(
+                '#type' => 'select',
+                '#title' => t('State'),
+                '#options' => $state_list_arr,
+                '#required' => TRUE,
+                '#default_value' => (isset($employer_details[0]->job_state) ? $employer_details[0]->job_state : ''),
+            );
+        }
+    }
+    $form['year_of_experience'] = array(
+        '#type' => 'select',
+        '#title' => 'Minimum Experience Required',
+        '#required' => TRUE, //make this field required
+        '#options' => yearofexperience(),
+        '#default_value' => (isset($employer_details[0]->year_of_experience) ? $employer_details[0]->year_of_experience : ''),
+    );
+    $form['salary'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Salary (MYR) in digits',
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->salary) ? number_format($employer_details[0]->salary) : ''),
+        '#description' => 'Specify zero if there is no salary for this job',
+        '#maxlength' => 10,
+    );
+    $form['candidate_profile'] = array(
+        '#type' => 'item',
+        '#markup' => '<h2>Desired Candidate Profile <span>- Specify details of the kind of person you are looking for this Job</span></h2>',
+    );
+    $form['fieldsofstudy'] = array(
+        '#type' => 'select',
+        '#title' => 'Fields of Study Required',
+        '#options' => fields_of_study(),
+        '#required' => TRUE, //make this field required
+        '#default_value' => (isset($employer_details[0]->fields_of_study_required) ? $employer_details[0]->fields_of_study_required : ''),
+    );
+
+    $form['level_of_awards_title'] = array(
+        '#title' => t('Level of Awards (Qualification) <span title="This field is required." class="form-required">*</span>'),
+        '#prefix' => '<div id="level_of_awards_title">',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset'
+    );
+    $form['level_of_awards'] = array(
+        '#prefix' => '<div id="level_of_awards_input">',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset'
+    );
+    $levelof_qualifcation_none = db_select('levelof_qualifcation')
+            ->fields('levelof_qualifcation')
+            ->condition('qid', 0, '=')
+            ->execute()
+            ->fetchAll();
+    foreach ($levelof_qualifcation_none as $qualifcation_none):
+        $all_levelof_qualifcation_none[$qualifcation_none->id] = $qualifcation_none->name;
+    endforeach;
+    $form['level_of_awards']['Jobsfor_qualification'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $all_levelof_qualifcation_none,
+        '#attributes' => array(
+            'name' => 'level_of_awards[]'
+        ),
+        '#default_value' => (isset($employer_details[0]->level_of_awards) ? explode(",", $employer_details[0]->level_of_awards) : array()),
+    );
+
+    $qualifcation_result = db_select('qualifcation')
+            ->fields('qualifcation')
+            ->execute()
+            ->fetchAll();
+
+    foreach ($qualifcation_result as $qualifcation):
+        unset($all_levelof_qualifcation);
+        $form['level_of_awards']['Jobsfor_' . $qualifcation->name] = array(
+            '#type' => 'fieldset',
+            '#title' => $qualifcation->name,
+            '#prefix' => '<div id="level_Jobsfor_degree">',
+            '#suffix' => '</div>',
+        );
+        $levelof_qualifcation_result = db_select('levelof_qualifcation')
+                ->fields('levelof_qualifcation')
+                ->condition('qid', $qualifcation->id, '=')
+                ->execute()
+                ->fetchAll();
+        foreach ($levelof_qualifcation_result as $levelof_qualifcation):
+            $all_levelof_qualifcation[$levelof_qualifcation->id] = $levelof_qualifcation->name;
+        endforeach;
+        $form['level_of_awards']['Jobsfor_' . $qualifcation->name]['Jobsfor_checkboxes' . $qualifcation->name] = array(
+            '#type' => 'checkboxes',
+            '#options' => $all_levelof_qualifcation,
+            '#attributes' => array(
+                'name' => 'level_of_awards[]'
+            ),
+            '#default_value' => (isset($employer_details[0]->level_of_awards) ? explode(",", $employer_details[0]->level_of_awards) : array()),
+        );
+    endforeach;
+    $form['languageskills'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Lanaguage Skills',
+        '#default_value' => (isset($employer_details[0]->lanaguage_skills) ? $employer_details[0]->lanaguage_skills : ''),
+        '#maxlength' => 50,
+    );
+    $form['otherskills'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Other Skills',
+        '#default_value' => (isset($employer_details[0]->other_skills) ? $employer_details[0]->other_skills : ''),
+        '#maxlength' => 50,
+    );
+    $form['dates_procedure'] = array(
+        '#type' => 'item',
+        '#markup' => '<h2>Job Application procedure & Dates <span>- Specify the details of Job applying procedure and dates of job post</span></h2>',
+    );
+    $form['applicable_method'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Applicable Method',
+    );
+
+    $form['applicable_method']['applicable_call'] = array(
+        '#type' => 'textfield',
+        '#id' => 'applicable_call',
+        '#name' => 'applicable_call',
+        '#title' => 'Call',
+        '#maxlength' => 10,
+        '#default_value' => (isset($employer_details[0]->applicable_method_call) ? $employer_details[0]->applicable_method_call : ''),
+        '#maxlength' => 10,
+    );
+    $form['applicable_method']['applicable_email'] = array(
+        '#type' => 'textfield',
+        '#id' => 'applicable_email',
+        '#title' => 'Email',
+        '#default_value' => (isset($employer_details[0]->applicable_method_email) ? $employer_details[0]->applicable_method_email : ''),
+        '#maxlength' => 50,
+    );
+    $form['applicable_method']['applicable_others'] = array(
+        '#type' => 'textfield',
+        '#id' => 'applicable_others',
+        '#title' => 'Others',
+        '#default_value' => (isset($employer_details[0]->applicable_method_others) ? $employer_details[0]->applicable_method_others : ''),
+        '#maxlength' => 50,
+    );
+
+    $form['deadline'] = array(
+        '#type' => 'textfield',
+        '#id' => 'deadline',
+        '#title' => 'Deadline for Application',
+        '#required' => TRUE, //make this field required
+        '#attributes' => array('readonly' => 'readonly'),
+        '#default_value' => (isset($employer_details[0]->deadline_for_application) ? date('d/m/Y', strtotime($employer_details[0]->deadline_for_application)) : ''),
+    );
+    $form['close_jobpost'] = array(
+        '#type' => 'textfield',
+        '#id' => 'close_jobpost',
+        '#title' => 'Close of this Job Post Date',
+        '#required' => TRUE, //make this field required
+        '#attributes' => array('readonly' => 'readonly'),
+        '#default_value' => (isset($employer_details[0]->close_of_this_job_post) ? date('d/m/Y', strtotime($employer_details[0]->close_of_this_job_post)) : ''),
+    );
+
+    $image_disp = '';
+    if ($eid != "") {
+        $variables = array(
+            'path' => $employer_details[0]->attachment_path,
+            'alt' => $employer_details[0]->attachment_name,
+            'title' => $employer_details[0]->attachment_name,
+            'width' => '150',
+            'height' => '150',
+            'attributes' => array('class' => 'some-img'),
+        );
+        $form['upload_flyers_path'] = array(
+            '#type' => 'hidden',
+            '#value' => $employer_details[0]->attachment_path,
+        );
+        if ($employer_details[0]->attachment_path != "")
+            $image_disp = theme('image', $variables);
+    }
+    $form['upload_flyers'] = array(
+        '#type' => 'file',
+        '#title' => t('Upload flyer image for this job (if any)'),
+        '#description' => t('Click "Browse..." to select an image to upload.'),
+        '#prefix' => '<div class="form-item form-type-file form-item-files-company-logo">',
+        '#suffix' => $image_disp . '</div>',
+    );
+    $form['dateof_posting'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Date of Posting',
+        '#value' => date('d/m/Y'),
+        '#attributes' => array(
+            'disabled' => 'disabled',
+        ),
+    );
+    $form['contact'] = array(
+        '#type' => 'item',
+        '#markup' => '<h2>Contact Information  <span>- Select account contact details if you want to display with the job post </span></h2>',
+    );
+    $form['information_provided'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Information provided in this section will NOT be included in the job posting, if you would like to do otherwise, please tick here'),
+        '#id' => 'information_provided',
+        '#default_value' => (isset($employer_details[0]->contact_information_display) ? $employer_details[0]->contact_information_display : 0),
+    );
+
+    if (isset($employer_details[0]->contact_information_display) && $employer_details[0]->contact_information_display == 1)
+        $style = '';
+    else
+        $style = 'style="display:none;"';
+    $form['contact_person_information'] = array(
+        '#prefix' => '<div id="contact_person_information_input" ' . $style . '>',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset'
+    );
+    $form['contact_person_information']['contact_person_name'] = array(
+        '#title' => t("Contact Person"),
+        '#prefix' => '<div id="contact_person_name_input">',
+        '#suffix' => '</div>',
+        '#type' => 'fieldset'
+    );
+    $form['contact_person_information']['contact_person_name']['federal_title'] = array(
+        '#title' => 'Federal/State title',
+        '#type' => 'select',
+        '#options' => array('' => 'Select') + comp_titles(),
+        '#required' => TRUE,
+        '#default_value' => $employer_details[0]->federal_title,
+    );
+    $form['contact_person_information']['contact_person_name']['title'] = array(
+        '#type' => 'select',
+        '#id' => 'title',
+        '#title' => 'Title',
+        '#options' => array(
+            '' => 'Select',
+            'Dr' => 'Dr.',
+            'Mr' => 'Mr.',
+            'Mrs' => 'Mrs.',
+            'Ms' => 'Ms.',
+        ),
+        '#default_value' => $employer_details[0]->p_title,
+        '#required' => TRUE, //make this field required
+    );
+    $form['contact_person_information']['contact_person_name']['fname'] = array(
+        '#type' => 'textfield',
+        '#id' => 'fname',
+        '#title' => 'Firstname',
+        '#default_value' => $employer_details[0]->firstname,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 20,
+    );
+    $form['contact_person_information']['contact_person_name']['lname'] = array(
+        '#type' => 'textfield',
+        '#id' => 'lname',
+        '#title' => 'Lastname',
+        '#default_value' => $employer_details[0]->lastname,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 20,
+    );
+    $form['contact_person_information']['designation'] = array(
+        '#type' => 'textfield',
+        '#id' => 'designation',
+        '#title' => 'Designation',
+        '#default_value' => $employer_details[0]->designation,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 30,
+    );
+    $form['contact_person_information']['email_valid'] = array(
+        '#type' => 'textfield',
+        '#id' => 'email_valid',
+        '#title' => 'Email',
+        '#default_value' => $user->mail,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 50,
+    );
+    $form['contact_person_information']['addressline_1'] = array(
+        '#type' => 'textfield',
+        '#id' => 'addressline_1',
+        '#title' => 'Street',
+        '#default_value' => $employer_details[0]->street,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 50,
+    );
+    $form['contact_person_information']['city'] = array(
+        '#type' => 'textfield',
+        '#id' => 'city',
+        '#title' => 'City',
+        '#default_value' => $employer_details[0]->city,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 50,
+    );
+    $form['contact_person_information']['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#options' => array('' => 'Select') + countries_list(),
+        '#required' => TRUE,
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_contactform_state_list_ajax',
+            'wrapper' => 'child-list-wrapper',
+        ),
+        '#default_value' => (isset($employer_details[0]->country) ? $employer_details[0]->country : ''),
+    );
+    // Wrapper for state dropdown list
+    $form['contact_person_information']['wrapper'] = array(
+        '#prefix' => '<div id="child-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+
+    if ((isset($form_state['values']['country']) && $form_state['values']['country'] != "" ) || $employer_details[0]->state != "") {
+
+        if (!isset($form_state['values']['country']))
+            $contact_cid = $employer_details[0]->country;
+        else
+            $contact_cid = $form_state['values']['country'];
+
+        $state_list_contact = db_select('states_list')
+                ->fields('states_list')
+                ->condition('cid', $contact_cid, '=')
+                ->execute()
+                ->fetchAll();
+        $state_list_contact_list[''] = 'Select';
+        foreach ($state_list_contact as $value):
+            $state_list_contact_list[$value->id] = $value->name;
+        endforeach;
+        if (count($state_list_contact_list) > 1) {
+            // Province dropdown list
+            $form['contact_person_information']['wrapper']['state'] = array(
+                '#type' => 'select',
+                '#title' => t('State'),
+                '#options' => $state_list_contact_list,
+                '#required' => TRUE,
+                '#default_value' => (isset($employer_details[0]->state) ? $employer_details[0]->state : ''),
+            );
+        }
+    }
+
+    $form['contact_person_information']['zip_code'] = array(
+        '#type' => 'textfield',
+        '#id' => 'zip_code',
+        '#title' => 'Zip code',
+        '#default_value' => $employer_details[0]->zipcode,
+        '#required' => TRUE, //make this field required
+        '#maxlength' => 5,
+    );
+    $form['contact_person_information']['telephone'] = array(
+        '#type' => 'textfield',
+        '#id' => 'telephone',
+        '#title' => 'Telephone (Office)',
+        '#maxlength' => 14,
+        '#default_value' => $employer_details[0]->telephone,
+        '#required' => TRUE, //make this field required
+    );
+    $form['contact_person_information']['fax'] = array(
+        '#type' => 'textfield',
+        '#id' => 'fax',
+        '#title' => 'Fax',
+        '#maxlength' => 14,
+        '#default_value' => (isset($employer_details[0]->fax) ? $employer_details[0]->fax : ''),
+    );
+    $form['reset'] = array(
+        '#type' => 'button',
+        '#button_type' => 'reset',
+        '#value' => t('Cancel'),
+        '#attributes' => array(
+            'onclick' => 'location.href="'.$base_url.'/employer/managejobs"; return false;',
+        ),
+    );
+    if ($eid != "") {
+        $submit = array('employer_form_submit_edit');
+        $form['eid'] = array(
+            '#type' => 'hidden',
+            '#value' => $eid,
+        );
+        $form['edit_jobid'] = array(
+            '#type' => 'hidden',
+            '#value' => (isset($employer_details[0]->jobid) ? $employer_details[0]->jobid : ''),
+        );
+    } else {
+        $submit = array('employer_form_submit');
+    }
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#title' => 'Submit',
+        '#value' => t('Submit'),
+        '#submit' => $submit,
+    );
+
+    $form['#attributes'] = array('id' => 'employer-form');
+
+    return $form;
+}
+
+/* Year of experience function */
+
+function yearofexperience() {
+    return array(
+        '' => 'Select Experience',
+        '0' => '0 Years', '1' => '1 Years', '2' => '2 Years', '3' => '3 Years', '4' => '4 Years', '5' => '5 Years', '6' => '6 Years',
+        '7' => '7 Years', '8' => '8 Years', '9' => '9 Years', '10' => '10 Years');
+}
+
+/* Position Offered function */
+
+function positionoffered() {
+    return array(
+        '' => 'Select Position Offered',
+        '1' => 'Senior Manager Jobs',
+        '2' => 'Manager Jobs',
+        '3' => 'Senior Executive Jobs',
+        '4' => 'Junior Executive Jobs',
+        '5' => 'Fresh/Entry Level Jobs',
+        '6' => 'Non-Executive Jobs',);
+}
+
+/* Job Type function */
+
+function jobtype() {
+    return array(
+        '1' => 'Fresh Graduate',
+        '2' => 'Permanent',
+        '3' => 'Internship',
+        '4' => 'Part Time',
+        '5' => 'Others'
+    );
+}
+
+/* Fields of study function */
+
+function fields_of_study() {
+    return array(
+        '1' => t('Advertising / Media'),
+        '2' => t('Agriculture / Aquacultre/Forestry'),
+        '3' => t('Airline Operation / Aiport Management'),
+        '4' => t('Architecture'),
+        '5' => t('Art/Design/Creative Multimedia'),
+        '6' => t('Biology'),
+        '7' => t('Bio Technology'),
+        '8' => t('Business Studies / Admininstration/Management'),
+        '9' => t('Chemistry'),
+        '10' => t('Commerce'),
+        '11' => t('Computer Science / Information Technology'),
+        '12' => t('Dentistry'),
+        '13' => t('Economics'),
+        '14' => t('Journalism'),
+        '15' => t('Education/Teaching/Training'),
+        '16' => t('Engineering (Aviation / Aeronautics/Astronautics)'),
+        '17' => t('Engineering (Bioengineering / Biomedical)'),
+        '18' => t('Engineering (Chemical)'),
+        '19' => t('Engineering (Civil)'),
+        '20' => t('Engineering (Computer/Telecommunication)'),
+        '21' => t('Engineering (Electrical / Electronics)'),
+        '22' => t('Engineering (Environmental / Health / Safety)'),
+        '23' => t('Engineering (Industrial)'),
+        '24' => t('Engineering (Marine)'),
+        '25' => t('Engineering (Material Science)'),
+        '26' => t('Engineering (Mechanical)'),
+        '27' => t('Engineering (Mechatronic / Electromechanical)'),
+        '28' => t('Engineering (Metal Fabrication / Tool & Die/Welding)'),
+        '30' => t('Engineering (Mining / Mineral)'),
+        '31' => t('Engineering (Others)'),
+        '32' => t('Engineering (Petroleum/Oil/Gas)'),
+        '33' => t('Finance / Accountancy / Banking'),
+        '34' => t('Food & Beverage Services Management'),
+        '35' => t('Food Technology /Nutrition/ Dietetics'),
+        '36' => t('Geographical Science'),
+        '37' => t('Geology / Geophysics'),
+        '38' => t('History'),
+        '39' => t('Hospitality / Tourism / Hotel Management'),
+        '40' => t('Human Resource Management'),
+        '41' => t('Humanities/Liberal Arts'),
+        '42' => t('Logistics / Transportation'),
+        '43' => t('Library Mnagement'),
+        '44' => t('Linguistics/Languages'),
+        '45' => t('Mass Communications'),
+        '46' => t('Mathematics'),
+        '47' => t('Medical Science'),
+        '48' => t('Medicine'),
+        '49' => t('Maritime Studies'),
+        '50' => t('Marketing'),
+        '51' => t('Music/Performance Arts Studies'),
+        '52' => t('Nursing'),
+        '53' => t('Optometry'),
+        '54' => t('Personal Services'),
+        '55' => t('Pharmacy/Pharmacology'),
+        '56' => t('Philosophy'),
+        '57' => t('Physical Therapy/Physiotherapy'),
+        '58' => t('Physics'),
+        '59' => t('Political Science'),
+        '60' => t('Property Development / Real Estate Management'),
+        '61' => t('Protective Services & Management'),
+        '62' => t('Psychology'),
+        '63' => t('Quantity Survey'),
+        '64' => t('Science & Technology'),
+        '65' => t('Secretarial'),
+        '66' => t('Social Science / Sociology'),
+        '67' => t('Sports Science & Management'),
+        '68' => t('Textile / Fashion Design'),
+        '69' => t('Urban Studies / Town Planning'),
+        '70' => t('Veterinary'),
+        '70' => t('Others'),
+    );
+}
+
+// To encrypt data
+function encrypt($sData, $secretKey) {
+    $key = $secretKey;
+    $td = mcrypt_module_open('cast-256', '', 'ecb', '');
+    $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+    mcrypt_generic_init($td, $key, $iv);
+    $encrypted_data = mcrypt_generic($td, $sData);
+    mcrypt_generic_deinit($td);
+    mcrypt_module_close($td);
+    $encoded_64 = encode_base64($encrypted_data);
+    return $encoded_64;
+}
+
+// To decrypt data
+function decrypt($sData, $secretKey) {
+    $decoded_64 = decode_base64($sData);
+    $key = $secretKey; // same as you used to encrypt
+    $td = mcrypt_module_open('cast-256', '', 'ecb', '');
+    $iv = mcrypt_create_iv(mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
+    mcrypt_generic_init($td, $key, $iv);
+    $decrypted_data = mdecrypt_generic($td, $decoded_64);
+    mcrypt_generic_deinit($td);
+    mcrypt_module_close($td);
+    return $decrypted_data;
+}
+
+// Base 64 encode function
+function encode_base64($sData) {
+    $sBase64 = base64_encode($sData);
+    return str_replace('=', '', strtr($sBase64, '+/', '-_'));
+}
+
+// Base 64 decode function
+function decode_base64($sData) {
+    $sBase64 = strtr($sData, '-_', '+/');
+    return base64_decode($sBase64 . '==');
+}
+
+/**
+ * Simple wrapper function for drupal_mail() to avoid extraneous code.
+ */
+function employer_drupal_mail($from, $to, $subject, $message) {
+    $my_module = 'employer';
+    $my_mail_token = microtime();
+
+    $message = array(
+        'id' => $my_module . '_' . $my_mail_token,
+        'to' => $to,
+        'subject' => $subject,
+        'body' => array($message),
+        'headers' => array(
+            'From' => $from,
+            'Sender' => $from,
+            'Return-Path' => $from,
+        ),
+    );
+    $system = drupal_mail_system($my_module, $my_mail_token);
+    $message = $system->format($message);
+    if ($system->mail($message)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+/**
+ * Student status
+ */
+function employer_student_status() {
+    return array('' => 'All', '0' => 'Applicant Applied', '1' => 'Shortlisted', '2' => 'Rejected', '4' => 'Selected');
+}
+
+/**
+ * Student status after shortlisted
+ */
+function employer_student_shortlisted_status() {
+    return array('2' => 'Request Open', '0' => 'Applicant Accepted Request', '3' => 'Applicant Rejected Request', '1' => 'Request Expired');
+}
+
+/**
+ * Student status after shortlisted
+ */
+function employer_actions() {
+    return array('4' => 'Selected Applicants', '1' => 'No Action Yet/ Still in shortlisted state');
+}
+
+/**
+ * Get Student id and jobid in student job details table based on employer table
+ */
+function job_studentid_jobid($id) {
+    $job_studentid_jobid = db_select('student_job_details')
+                    ->fields('student_job_details', array('uid', 'sjid'))
+                    ->condition('id', $id, '=')
+                    ->execute()->fetch();
+    return $job_studentid_jobid;
+}
+
+/**
+ * Get All job titles and jobid
+ */
+function all_jobtitle_jobid_function($employerid) {
+    $all_jobtitle_jobid = db_select('employer_jobs')
+            ->fields('employer_jobs', array('id', 'jobid', 'job_title'))
+            ->condition('uid', $employerid, '=')
+            ->execute()
+            ->fetchAll();
+    $all_jobtitle_jobid_arr[''] = 'Select';
+    foreach ($all_jobtitle_jobid as $value):
+        $all_jobtitle_jobid_arr[encrypt($value->id, variable_get('IIUM_Encryption_Key', NULL))] = '(' . $value->jobid . ')   ' . $value->job_title;
+    endforeach;
+    return $all_jobtitle_jobid_arr;
+}
+
+/**
+ * Check to see if a user has been assigned a certain role.
+ *
+ * @param $role
+ *   The name of the role you're trying to find.
+ * @param $user
+ *   The user object for the user you're checking; defaults to the current user.
+ * @return
+ *   TRUE if the user object has the role, FALSE if it does not.
+ */
+function user_has_role($role, $user = NULL) {
+    if ($user == NULL) {
+        global $user;
+    }
+
+    if (is_array($user->roles) && in_array($role, array_values($user->roles))) {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function employer_block_info() {
+    return array(
+        'Careers' => array(
+            'info' => t('CAREERS')
+        ),
+        'jobbycategories' => array(
+            'info' => t('JOB BY CATEGORIES')
+        ),
+    );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function employer_block_view($delta = '') {
+    $block = array();
+    if ($delta == 'Careers') {
+        $block['subject'] = t('CAREERS');
+        $block['content'] = employer_careers();
+    } else if ($delta == 'jobbycategories') {
+        $block['subject'] = t('JOB BY CATEGORIES');
+        $block['content'] = job_by_categories();
+    }
+
+    return $block;
+}
+
+/**
+ * Return all employers list
+ */
+function employer_careers() {
+    $careers = db_select('specializations_p', 'p')
+            ->fields('p', array('sid', 'name'))
+            ->orderBy('sid', 'ASC')
+            ->range(0, 2)
+            ->execute()
+            ->fetchAll();
+    $careers_display = '<div class="listing careers">
+       <ul>';
+    foreach ($careers as $value):
+        $careers_display.='<li class="list-none"><h3>' . $value->name . '</h3></li>';
+        $careers_sub = db_select('specializations_sp', 'sp')
+                ->fields('sp', array('name'))
+                ->condition('spid', $value->sid, '=')
+                ->orderBy('sid', 'ASC')
+                ->range(0, 3)
+                ->execute()
+                ->fetchAll();
+        foreach ($careers_sub as $subvalue):
+            $careers_display.='<li><a href="careers/' . encrypt($value->sid, variable_get('IIUM_Encryption_Key', NULL)) . '">' . $subvalue->name . '</a></li>';
+        endforeach;
+    endforeach;
+
+    $careers_display.='</ul><div class="view-more"><a href="careers">View More</a></div></div>';
+    return $careers_display;
+}
+
+/**
+ * Return all jobs by categories
+ */
+function job_by_categories() {
+    $encryption_key = variable_get('IIUM_Encryption_Key', NULL);
+    $careers = db_select('specializations_p', 'p')
+            ->fields('p', array('sid', 'name'))
+            ->orderBy('sid', 'ASC')
+            ->execute()
+            ->fetchAll();
+    $display_careers = '<div class="listing job-categories"><ul>';
+
+    foreach ($careers as $value):
+        $query = db_select('employer_jobs')->fields(NULL, array('field'));
+        $db_or = db_or();
+        $db_or->condition('specializations_parrent', db_like($value->sid) . ',%', 'LIKE');
+        $db_or->condition('specializations_parrent', $value->sid, '=');
+        $db_or->condition('specializations_parrent', '%,' . db_like($value->sid) . ',%', 'LIKE');
+        $db_or->condition('specializations_parrent', '%,' . db_like($value->sid), 'LIKE');
+        $query->condition($db_or);
+        $careers_count = $query->countQuery()->execute()->fetchField();
+        if ($careers_count <= 0)
+            $careers_count = "";
+        else
+            $careers_count = '(<span>' . $careers_count . '</span>)';
+        $display_careers.='<li><a href="' . base_path() . 'jobsearch/psp/'.encrypt($value->sid,$encryption_key).'">' . $value->name . '</a><span>' . $careers_count . '</span></li>';
+    endforeach;
+    $display_careers.='</ul></div>';
+    return $display_careers;
+}

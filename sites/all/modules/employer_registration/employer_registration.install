@@ -1,0 +1,174 @@
+<?php
+
+/**
+ * @file
+ * Employer registration module install file.
+ */
+
+/** 
+ *
+ * @return array
+ *   The schema which contains the structure for the employer_registration module's tables.
+ */
+/*
+ * Creating employer_registration table
+ */
+
+function employer_registration_schema() {
+    $schema['employer_registration'] = array(
+        'fields' => array(
+            'eid' => array(
+                'description' => t('The primary identifier for employer_registration.'),
+                'type' => 'int',
+                'not null' => TRUE,
+                'auto_increment' => TRUE),
+            'uid' => array(
+                'description' => t('The foriegn key identifier for employer_registration'),
+                'type' => 'int',
+                'not null' => TRUE),
+            'company_organization' => array(
+                'description' => t('The name of company.'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'address_line_1' => array(
+                'description' => t('The primary address of company.'),
+                'type' => 'text',
+                'not null' => TRUE),
+            'address_line_2' => array(
+                'description' => t('The secoundary address of company.'),
+                'type' => 'text',
+                'not null' => TRUE),
+            'city' => array(
+                'description' => t('The city name where company exists.'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'state' => array(
+                'description' => t('The state name where company exists.'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'country' => array(
+                'description' => t('The country name where company exists.'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'zipcode' => array(
+                'description' => t('The zipcode of company.'),
+                'type' => 'varchar',
+                'length' => 10,
+                'not null' => TRUE,
+                'default' => ''),
+            'p_title' => array(
+                'description' => t('The organiser title'),
+                'type' => 'varchar',
+                'length' => 15,
+                'not null' => TRUE,
+                'default' => ''),
+            'firstname' => array(
+                'description' => t('The organiser first name'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'lastname' => array(
+                'description' => t('The organiser first name'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'designation' => array(
+                'description' => t('The organiser designation'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'telephone' => array(
+                'description' => t('The telephone number'),
+                'type' => 'varchar',
+                'length' => 20,
+                'not null' => TRUE,
+                'default' => ''),
+            'fax' => array(
+                'description' => t('The fax number'),
+                'type' => 'varchar',
+                'length' => 20,
+                'not null' => TRUE,
+                'default' => ''),
+            'website' => array(
+                'description' => t('The company webiste'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'company_logo' => array(
+                'description' => t('The company logo'),
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => ''),
+            'company_banner' => array(
+                'description' => t('The company banner'),
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => ''),
+            'company_size' => array(
+                'description' => t('The company size in count'),
+                'type' => 'varchar',
+                'length' => 10,
+                'not null' => TRUE,
+                'default' => ''),
+            'nature_bussiness' => array(
+                'description' => t('The nature of bussiness'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'other' => array(
+                'description' => t('The other field for nature of bussiness'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'intro_company_organisation' => array(
+                'description' => t('Introduction to company organisation'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => ''),
+            'created_date' => array(
+                'description' => t('The current time stamp for registration'),
+                'type' => 'int',
+                'not null' => TRUE),
+            'company_registration_number' => array(
+                'description' => t('Registration number of the company'),
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => TRUE,
+                'default' => '')
+        ),        
+        'unique keys' => array(
+            'uid' => array('uid')
+        ),
+        'primary key' => array('eid'),
+    );
+    return $schema;
+}
+
+function employer_registration_install() {
+    // Create my table.
+    if(db_table_exists('employer_registration') == FALSE) {
+        drupal_install_schema('employer_registration');
+    }
+}
+
+function employer_registration_uninstall() {
+    // Drop my table.
+    drupal_uninstall_schema('employer_registration');
+}

@@ -1,0 +1,8 @@
+name = Psychometric Test
+description = Interface for managing Psychometric Test
+package = Psychometric Test
+core = 7.x
+version = 7.x.1.0
+php = 5.3
+
+configure = admin/config/content/psychometrics

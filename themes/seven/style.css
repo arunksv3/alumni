@@ -1,0 +1,1854 @@
+
+/**
+ * Generic elements.
+ */
+body {
+  color: #000;
+  background: #fff;
+  font: normal 81.3%/1.538em "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+}
+a {
+  color: #0074BD;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+hr {
+  margin: 0;
+  padding: 0;
+  border: none;
+  height: 1px;
+  background: #cccccc;
+}
+legend {
+  font-weight: bold;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+  margin: 10px 0;
+}
+h1 {
+  font-size: 1.538em;
+}
+h2 {
+  font-size: 1.385em;
+}
+h3 {
+  font-size: 1.231em;
+}
+h4 {
+  font-size: 1.154em;
+}
+h5,
+h6 {
+  font-size: 1.077em;
+}
+p {
+  margin: 1em 0;
+}
+dl {
+  margin: 0 0 20px;
+}
+dl dd,
+dl dl {
+  margin-left: 20px; /* LTR */
+  margin-bottom: 10px;
+}
+blockquote {
+  margin: 1em 40px;
+}
+address {
+  font-style: italic;
+}
+u,
+ins {
+  text-decoration: underline;
+}
+s,
+strike,
+del {
+  text-decoration: line-through;
+}
+big {
+  font-size: larger;
+}
+small {
+  font-size: smaller;
+}
+sub {
+  vertical-align: sub;
+  font-size: smaller;
+  line-height: normal;
+}
+sup {
+  vertical-align: super;
+  font-size: smaller;
+  line-height: normal;
+}
+nobr {
+  white-space: nowrap;
+}
+abbr,
+acronym {
+  border-bottom: dotted 1px;
+}
+ul,
+.block ul,
+.item-list ul {
+  list-style-type: disc;
+  list-style-image: none;
+  margin: 0.25em 0 0.25em 1.5em; /* LTR */
+}
+.item-list .pager{ margin:1em 0 2em !important;}
+.item-list .pager li {
+  padding: 0.5em;
+}
+.item-list ul li,
+li.leaf,
+ul.menu li {
+  list-style-type: disc;
+  list-style-image: none;
+}
+ul.menu li {
+  margin: 0;
+}
+ol {
+  list-style-type: decimal;
+  margin: 0.25em 0 0.25em 2em; /* LTR */
+}
+.item-list ul li.collapsed,
+ul.menu li.collapsed {
+  list-style-image:url(../../misc/menu-collapsed.png);
+  list-style-type:disc;
+}
+.item-list ul li.expanded,
+ul.menu li.expanded {
+  list-style-image:url(../../misc/menu-expanded.png);
+  list-style-type:circle;
+}
+quote,
+code {
+  margin: .5em 0;
+}
+code,
+pre,
+kbd {
+  font-size: 1.231em;
+}
+pre {
+  margin: 0.5em 0;
+  white-space: pre-wrap;
+}
+
+/**
+ * Skip link.
+ */
+#skip-link {
+  margin-top: 0;
+  position: absolute;
+  left: 50%; /* LTR */
+  margin-left: -5.25em; /* LTR */
+  width: auto;
+  z-index: 50;
+}
+#skip-link a,
+#skip-link a:link,
+#skip-link a:visited {
+  display: block;
+  background: #444;
+  color: #fff;
+  font-size: 0.94em;
+  padding: 1px 10px 2px 10px; /* LTR */
+  text-decoration: none;
+  -moz-border-radius: 0 0 10px 10px;
+  -webkit-border-top-left-radius: 0;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+  border-radius: 0 0 10px 10px;
+}
+#skip-link a:hover,
+#skip-link a:focus,
+#skip-link a:active {
+  outline: 0;
+}
+
+/**
+ * Branding.
+ */
+#branding {
+  overflow: hidden;
+  padding: 20px 20px 0 20px; /* LTR */
+  position: relative;
+  background-color: #e0e0d8;
+}
+#branding div.breadcrumb {
+  font-size: 0.846em;
+  padding-bottom: 5px;
+}
+#branding div.block {
+  position: relative;
+  float: right; /* LTR */
+  width: 240px;
+  padding-left: 10px; /* LTR */
+  background: #333;
+}
+#branding div.block form label {
+  display: none;
+}
+#branding div.block form div.form-item {
+  float: left; /* LTR */
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+#branding div.block form input.form-text {
+  width: 140px;
+  margin-right: 10px; /* LTR */
+}
+#branding div.block form input.form-submit {
+  text-align: center;
+  width: 80px;
+}
+
+/**
+ * Help.
+ */
+#help {
+  font-size: 0.923em;
+  margin-top: 1em;
+}
+#help p {
+  margin: 0 0 10px;
+}
+#help div.more-help-link {
+  text-align: right; /* LTR */
+}
+
+/**
+ * Page title.
+ */
+#page-title {
+  background: #333;
+  padding-top: 20px;
+}
+#branding h1.page-title {
+  color: #000;
+  margin: 0;
+  padding-bottom: 10px;
+  font-size: 1.385em;
+  font-weight: normal;
+  float: left; /* LTR */
+}
+
+/**
+ * Console.
+ */
+#console {
+  margin: 9px 0 10px;
+}
+
+/**
+ * Tabs.
+ */
+ul.primary {
+  float: right; /* LTR */
+  border-bottom: none;
+  text-transform: uppercase;
+  font-size: 0.923em;
+  height: 2.60em;
+  margin: 0;
+  padding-top: 0;
+}
+ul.primary li {
+  float: left; /* LTR */
+  list-style: none;
+  margin: 0 2px;
+}
+ul.primary li a:link,
+ul.primary li a.active,
+ul.primary li a:active,
+ul.primary li a:visited,
+ul.primary li a:hover,
+ul.primary li.active a {
+  display: block;
+  float: left; /* LTR */
+  height: 2.60em;
+  line-height: 2.60em;
+  padding: 0 18px 8px;
+  background-color: #a6a7a2;
+  color: #000;
+  font-weight: bold;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: #a6a7a2;
+  -moz-border-radius: 8px 8px 0 0;
+  -webkit-border-top-left-radius: 8px;
+  -webkit-border-top-right-radius: 8px;
+  border-radius: 8px 8px 0 0;
+}
+ul.primary li.active a,
+ul.primary li.active a.active,
+ul.primary li.active a:active,
+ul.primary li.active a:visited {
+  background-color: #fff;
+  border-color: #c9cac4;
+}
+ul.primary li a:hover {
+  color: #fff;
+}
+ul.primary li.active a:hover {
+  color: #000;
+}
+.tabs-secondary {
+  clear: both;
+}
+ul.secondary {
+  float: right; /* LTR */
+  font-size: 0.923em;
+  padding: 0 3px 5px;
+  line-height: 1.385em;
+  overflow: hidden;
+  background-color: #fff;
+}
+ul.secondary li {
+  margin: 0 5px;
+  float: none; /* LTR */
+}
+ul.secondary li a {
+  background-color: #ddd;
+  color: #000;
+  display: inline-block;
+}
+ul.secondary li a,
+ul.secondary li a:hover,
+ul.secondary li.active a,
+ul.secondary li.active a.active {
+  /*padding: 2px 10px;*/ padding:10px 35px; font-size:15px;
+  -moz-border-radius: 7px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px;
+}
+ul.secondary li a:hover,
+ul.secondary li.active a,
+ul.secondary li.active a.active {
+  color: #fff;
+  background: #666;
+}
+#content {
+  clear: left;
+}
+
+/**
+ * Page layout.
+ */
+#page {
+  padding: 20px 0 40px 0; /* LTR */
+  margin-right: 40px; /* LTR */
+  margin-left: 40px; /* LTR */
+  background: #fff;
+  position: relative;
+  color: #333;
+}
+#secondary-links ul.links li {
+  padding: 0 10px 10px 0; /* LTR */
+}
+#secondary-links ul.links li a {
+  font-size: 0.923em;
+  background: #777;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  height: 55px;
+  width: 80px;
+  overflow: hidden;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+#secondary-links ul.links li a:hover {
+  background: #999;
+}
+ul.links li,
+ul.inline li {
+  padding-right: 1em; /* LTR */
+}
+ul.inline li {
+  display: inline;
+}
+#secondary-links ul.links li.active-trail a,
+#secondary-links ul.links li a.active {
+  background: #333;
+}
+
+ul.admin-list li {
+  position: relative;
+  padding-left: 30px; /* LTR */
+  /*padding-top: 9px;*/ padding-top: 11px;
+  border-top: 1px solid #ccc;
+  margin-left: 0; /* LTR */
+  margin-bottom: 10px;
+  background: url(images/list-item.png) no-repeat 0 11px; /* LTR */
+  list-style-type: none;
+  list-style-image: none; 
+}
+.admin-panel .item-list ul,
+ul.admin-list {
+  margin: 0;
+  padding: 0;
+}
+.admin-panel .item-list ul,
+ul.admin-list.compact {
+  margin: 8px 0;
+}
+.admin-panel .item-list li,
+ul.admin-list.compact li {
+  border: none;
+  background: none;
+  margin: 0 0 0.75em;
+  line-height: 1;
+  padding: 0;
+}
+ul.admin-list li:last-child {
+  border-bottom: none;
+}
+ul.admin-list li a {
+  margin-left: -30px; /* LTR */
+  padding: 0 0 4px 30px; /* LTR */
+  min-height: 0;
+}
+ul.admin-list.compact li a {
+  margin-left: 0; /* LTR */
+  padding: 0;
+}
+ul.admin-list li div.description a {
+  margin-left: 0; /* LTR */
+  padding: 0;
+  min-height: inherit;
+}
+div.submitted {
+  color: #898989;
+}
+
+/**
+ * Tables.
+ */
+table {
+  width: 100%;
+  font-size: 0.923em;
+  margin: 0 0 10px;
+  border: 1px solid #bebfb9;
+}
+table td,
+table th {
+  vertical-align: middle;
+  padding: 8px 10px;
+  border: 0;
+  color: #000;
+}
+tr.even,
+tr.odd {
+  border-width: 0 1px 0 1px;
+  border-style: solid;
+  border-color: #bebfb9;
+  background: #f3f4ee;
+}
+tr.odd {
+  background: #fff;
+}
+tr.drag {
+  background: #fe7;
+}
+tr.drag-previous {
+  background: #ffb;
+}
+table th {
+  text-transform: uppercase;
+  background: #e1e2dc;
+  font-weight: normal;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #bebfb9;
+  padding: 3px 10px;
+}
+/**
+ * Force browsers to calculate the width of a 'select all' TH element.
+ */
+table th.select-all {
+  width: 1px;
+}
+table th.active {
+  background: #bdbeb9;
+}
+table th a {
+  display: block;
+  position: relative;
+}
+table th.active a {
+  padding: 0 25px 0 0; /* LTR */
+}
+table th.active img {
+  position: absolute;
+  top: 3px;
+  right: 3px; /* LTR */
+}
+table td.active {
+  background: #e9e9dd;
+}
+table tr.odd td.active {
+  background: #f3f4ee;
+}
+table tr.selected td.active,
+table tr.selected td {
+  background: #ffc;
+  border-color: #eeb;
+}
+table.system-status-report tr {
+  border-bottom: 1px solid #ccc;
+}
+table.system-status-report tr.ok {
+  color: #255b1e;
+  background-color: #e5ffe2;
+}
+table.system-status-report tr.info {
+  color: #040f37;
+  background-color: #bdf;
+}
+table.system-status-report tr.warning {
+  color: #840;
+  background-color: #fffce5;
+}
+table.system-status-report tr.error {
+  color: #8c2e0b;
+  background-color: #fef5f1;
+}
+/**
+ * Exception for webkit bug with the right border of the last cell
+ * in some tables, since it's webkit only, we can use :last-child
+ */
+tr td:last-child {
+  border-right: 1px solid #bebfb9; /* LTR */
+}
+
+
+/**
+ * Fieldsets.
+ *
+ * Fieldset legends are displayed like containers in Seven. However, several
+ * browsers do not support styling of LEGEND elements. To achieve the desired
+ * styling:
+ * - All fieldsets use 'position: relative'.
+ * - All legend labels are wrapped in a single span.fieldset-legend that uses
+ *   'position: absolute', which means that the LEGEND element itself is not
+ *   rendered by browsers.
+ * - Due to using 'position: absolute', collapsed fieldsets do not have a
+ *   height; the fieldset requires a 'padding-top' to make the absolute
+ *   positioned .fieldset-legend appear as though it would have a height.
+ * - Various browsers are positioning the legend differently if there is a
+ *   'padding-left'/'padding-right' applied on a fieldset and inherit the
+ *   positioning even to absolute positioned elements within; we therefore have
+ *   to apply all padding to the inner .fieldset-wrapper instead.
+ */
+fieldset {
+  border: 1px solid #ccc;
+  padding: 2.5em 0 0 0; /* LTR */
+  position: relative;
+  margin: 1em 0;
+}
+fieldset .fieldset-legend {
+  margin-top: 0.5em;
+  padding-left: 15px; /* LTR */
+  position: absolute;
+  text-transform: uppercase;
+}
+fieldset .fieldset-wrapper {
+  padding: 0 13px 13px 15px; /* LTR */
+}
+fieldset.collapsed {
+  background-color: transparent;
+}
+html.js fieldset.collapsed {
+  border-width: 1px;
+  height: auto;
+}
+fieldset fieldset {
+  background-color: #fff;
+}
+fieldset fieldset fieldset {
+  background-color: #f8f8f8;
+}
+
+/**
+ * Form elements.
+ */
+.form-item {
+  padding: 9px 0;
+  margin: 0 0 10px;
+}
+.filter-wrapper .form-item,
+div.teaser-checkbox .form-item,
+.form-item .form-item {
+  padding: 5px 0;
+  margin: 0;
+  border: 0;
+}
+.form-type-checkbox {
+  padding: 0;
+}
+.text-format-wrapper .form-item {
+  padding-bottom: 0;
+}
+.form-item label {
+  margin: 0;
+  padding: 0;
+}
+.form-item label.option {
+  font-size: 0.923em;
+  text-transform: none;
+}
+.form-item label.option input {
+  vertical-align: middle;
+}
+.form-disabled input.form-autocomplete,
+.form-disabled input.form-text,
+.form-disabled input.form-file,
+.form-disabled textarea.form-textarea,
+.form-disabled select.form-select {
+  background-color: #eee;
+  color: #777;
+}
+
+/* Filter */
+.filter-wrapper {
+  border-top: 0;
+  padding: 10px 2px;
+}
+.filter-wrapper .fieldset-wrapper {
+  padding: 0 6px;
+}
+.filter-wrapper .form-item,
+.filter-wrapper .filter-guidelines,
+.filter-wrapper .filter-help {
+  font-size: 0.923em;
+  padding: 2px 0 0 0; /* LTR */
+}
+ul.tips,
+div.description,
+.form-item div.description {
+  margin: 5px 0;
+  /*line-height: 1.231em;*/ line-height:1.450em;
+  font-size: 0.923em;
+  color: #666;
+}
+ul.tips li {
+  margin: 0.25em 0 0.25em 1.5em; /* LTR */
+}
+body div.form-type-radio div.description,
+body div.form-type-checkbox div.description {
+  margin-left: 1.5em; /* LTR */
+}
+input.form-submit,
+a.button, .form-reset, #edit-cancel{
+  cursor: pointer;
+  padding: 4px 17px;
+  margin-bottom: 1em;
+  margin-right: 1em; /* LTR */
+  color: #5a5a5a;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1.077em;
+  font-family: "Lucida Grande", Verdana, sans-serif;
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  background: url(images/buttons.png) 0 0 repeat-x;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+}
+#edit-cancel{padding:5px 17px;}
+a.button:link,
+a.button:visited,
+a.button:hover,
+a.button:active, #edit-cancel:hover {
+  text-decoration: none;
+  color: #5a5a5a;
+}
+input.form-submit:active {
+  background: #666;
+  color: #fff;
+  border-color: #555;
+  text-shadow: #222 0 -1px 0;
+}
+input.form-button-disabled,
+input.form-button-disabled:active {
+  background: #eee none;
+  border-color: #eee;
+  text-shadow: none;
+  color: #999;
+}
+input.form-autocomplete,
+input.form-text,
+input.form-file,
+textarea.form-textarea,
+select.form-select {
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-top-color: #999;
+  background: #fff;
+  color: #333; background: linear-gradient(#fff, #f1f1f1) repeat scroll 0 0 #eee; border: 1px solid #ccc;
+}
+select.form-select{padding: 4px 2px;}
+input.form-text:focus,
+input.form-file:focus,
+textarea.form-textarea:focus,
+select.form-select:focus {
+  color: #000;
+  border-color: #ace; 
+}
+
+ul.action-links {
+  margin: 1em 0;
+  padding: 0 20px 0 20px; /* LTR */
+  list-style-type: none;
+  overflow: hidden;
+}
+ul.action-links li {
+  float: left; /* LTR */
+  margin: 0 1em 0 0; /* LTR */
+}
+ul.action-links a {
+  padding-left: 15px; /* LTR */
+  background: transparent url(images/add.png) no-repeat 0 center;
+  line-height: 30px;
+}
+
+/* Exceptions */
+#diff-inline-form select,
+div.filter-options select {
+  padding: 0;
+}
+
+/**
+ * System.
+ */
+div.admin .right,
+div.admin .left {
+  width: 49%;
+  margin: 0;
+}
+div.admin-panel,
+div.admin-panel .body {
+  padding: 0;
+  clear: left;
+}
+div.admin-panel {
+  margin: 0 0 20px;
+  padding: 9px;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+}
+div.admin-panel h3 {
+  font-size: 0.923em;
+  text-transform: uppercase;
+  margin: 0;
+  padding-bottom: 9px;
+}
+
+/* admin/appearance */
+#system-themes-page h2 {
+  font-weight: normal;
+  text-transform: uppercase;
+}
+.theme-selector h3 {
+  font-weight: normal;
+}
+.theme-default h3 {
+  font-weight: bold;
+}
+.system-themes-list-enabled .theme-selector h3 {
+  margin-top: 0;
+}
+
+/* Update options. */
+div.admin-options {
+  background: #f8f8f8;
+  line-height: 30px;
+  height: 30px;
+  padding: 9px;
+  border: 1px solid #ccc;
+  margin: 0 0 10px;
+}
+div.admin-options label {
+  text-transform: uppercase;
+  font: 0.846em/1.875em Lucida Grande, Lucida Sans Unicode, sans-serif;
+}
+div.admin-options label,
+div.admin-options div.form-item {
+  margin-right: 10px; /* LTR */
+  float: left; /* LTR */
+}
+div.admin-options div.form-item {
+  padding: 0;
+  border: 0;
+}
+
+/* Update status */
+.versions table.version {
+  border: none;
+}
+
+/* Maintenance theming */
+body.in-maintenance #sidebar-first {
+  float: left; /* LTR */
+  width: 200px;
+}
+body.in-maintenance #content {
+  float: right; /* LTR */
+  width: 550px;
+  padding-right: 20px; /* LTR */
+  clear: none;
+}
+body.in-maintenance #page {
+  overflow: auto;
+  width: 770px;
+  margin: 0 auto;
+  padding-top: 2em;
+}
+body.in-maintenance #branding h1 {
+  width: 770px;
+  margin: 0 auto;
+  float: none;
+}
+body.in-maintenance .form-radios .form-type-radio {
+  padding: 2px 0;
+}
+body.in-maintenance div.form-item:after {
+  content: "";
+  display: none;
+  clear: none;
+}
+body.in-maintenance .form-submit {
+  display: block;
+}
+body.in-maintenance #logo {
+  margin-bottom: 1.5em;
+  max-width: 180px;
+}
+ol.task-list {
+  margin-left: 0; /* LTR */
+  list-style-type: none;
+  list-style-image: none;
+}
+ol.task-list li {
+  padding: 0.5em 1em 0.5em 20px; /* LTR */
+  color: #adadad;
+}
+ol.task-list li.active {
+  background: transparent url(images/task-item.png) no-repeat 3px 50%; /* LTR */
+  padding: 0.5em 1em 0.5em 20px; /* LTR */
+  color: #000;
+}
+ol.task-list li.done {
+  background: transparent url(images/task-check.png) no-repeat 0 50%;
+  color: green;
+}
+
+/* Overlay theming */
+.overlay #branding {
+  background-color: #fff;
+  padding-top: 15px;
+}
+.overlay #branding h1.page-title,
+.overlay #left,
+.overlay #footer {
+  display: none;
+}
+.overlay #page {
+  margin: 0;
+  padding: 0 20px;
+}
+.overlay #branding div.breadcrumb {
+  float: left; /* LTR */
+  position: relative;
+  z-index: 10;
+}
+#overlay-tabs {
+  bottom: -1px;
+  font-size: 1.54em;
+  line-height: 1.54em;
+  margin: 0;
+}
+#overlay-tabs li {
+  margin: 0 -2px;
+}
+.overlay ul.secondary {
+  background: transparent none;
+  margin: -1.4em 0 0.3em 0; /* LTR */
+  overflow: visible;
+}
+.overlay #content {
+  padding: 0;
+}
+h1#overlay-title {
+  font-weight: normal;
+}
+
+/* Shortcut theming */
+div.add-or-remove-shortcuts {
+  float: left; /* LTR */
+  padding-top: 6px;
+  padding-left: 6px; /* LTR */
+}
+
+/* Dashboard */
+#dashboard .dashboard-region div.block h2 {
+  background: #E0E0D8;
+}
+#dashboard div.block h2 {
+  margin: 0;
+  font-size: 1em;
+  padding: 3px 10px;
+}
+#dashboard div.block div.content {
+  padding: 10px 5px 5px 5px; /* LTR */
+}
+#dashboard div.block div.content ul.menu {
+  margin-left: 20px; /* LTR */
+}
+#dashboard .dashboard-region .block {
+  border: #ccc 1px solid;
+}
+
+/* Field UI */
+
+#field-display-overview input.field-formatter-settings-edit {
+  margin: 0;
+  padding: 1px 8px;
+}
+#field-display-overview tr.field-formatter-settings-changed {
+  background: #FFFFBB;
+}
+#field-display-overview tr.drag {
+  background: #FFEE77;
+}
+#field-display-overview tr.field-formatter-settings-editing {
+  background: #D5E9F2;
+}
+#field-display-overview .field-formatter-settings-edit-form .form-item {
+  margin: 10px 0;
+}
+#field-display-overview .field-formatter-settings-edit-form .form-submit {
+  margin-bottom: 0;
+}
+
+/* Recent content block */
+#dashboard div#block-node-recent div.content {
+  padding: 0;
+}
+#block-node-recent table,
+#block-node-recent tr {
+  border: none;
+}
+#block-node-recent .more-link {
+  padding: 0 5px 5px 0; /* LTR */
+}
+
+/* User login block */
+#user-login-form .openid-links {
+  margin-left: 0; /* LTR */
+}
+#user-login-form .openid-links .user-link {
+  margin-left: 1.5em; /* LTR */
+}
+
+/* Disable overlay message */
+#overlay-disable-message {
+  background-color: #addafc;
+}
+#overlay-disable-message a,
+#overlay-disable-message a:visited {
+  color: #000;
+}
+#overlay-disable-message a:focus,
+#overlay-disable-message a:active {
+  outline: none;
+  text-decoration: underline;
+}
+.overlay-disable-message-focused a {
+  padding: 0.4em 0.6em;
+}
+.overlay-disable-message-focused #overlay-dismiss-message {
+  background-color: #59a0d8;
+  color: #fff;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+ /*----------------------------------------------- employer form css open -----------------------------------------------*/
+/*------------ Contact Person css open ------------*/
+#user-profile-form #edit-contact{border:none; clear: both; overflow: hidden;}
+#user-profile-form #edit-contact .fieldset-wrapper{border-top: 1px solid #ccc; overflow: hidden; padding: 10px 0 0;}
+#user-profile-form #edit-contact .fieldset-legend, 
+#user-profile-form #edit-address .fieldset-legend{border:none; margin: 0 0 10px; overflow: hidden; padding: 5px 0 12px; width: 98.3%;}
+#user-profile-form #edit-contact .fieldset-legend h2{ margin:0; font-size:15px; font-weight:600; text-transform: capitalize;}
+#user-profile-form #edit-contact .fieldset-legend h2 span{ font-size:12px; font-weight:normal;}
+
+#user-profile-form #edit-contact .form-item-p-title{float: left; margin:0 2em 0 0; width: 7%; padding:0;}
+#user-profile-form #edit-contact .form-item-firstname{float: left; margin:0 2em 0 0; width:25%; padding:0;}
+#user-profile-form #edit-contact input.form-text{width: 98%;}
+#user-profile-form #edit-contact .form-item-lastname{float: left; width:25%; margin:0; padding:0;}
+
+/*------- Company Details css open -------*/
+#user-profile-form #edit-company-details{ border-bottom: 1px solid #ccc; margin: 0 0 5px; padding-bottom: 5px;}
+#user-profile-form #edit-company-details h2{margin:0; font-size:15px; font-weight:600;}
+#user-profile-form #edit-company-details h2 span{ font-size:12px; font-weight:normal;}
+
+#user-profile-form .form-item-company-organization{ float:left; width:40%; margin:0;}
+
+#user-profile-form #edit-address{ border:none; clear: both; margin: 0; padding: 0;}
+#user-profile-form #edit-address .fieldset-wrapper{ padding:0;}
+
+#user-profile-form #edit-address .form-item-street{float: left; margin: 0 2em 0 0; width: 20%;}
+#user-profile-form #edit-address .form-item-town{float: left; margin: 0 2em 0 0; width: 25%;}
+#user-profile-form #edit-address .form-item-city{float: left; margin: 0 2em 0 0; width: 31%;}
+#user-profile-form #edit-address .form-item-country{ float:left; margin: 0 2em 0 0; clear:both;}
+#user-profile-form #edit-address .form-item-state{ float:left; margin: 0 2em 0 0; }
+#user-profile-form #edit-address .form-item-zipcode{float: left; margin: 0 2em 0 0; width: 12%;}
+
+#user-profile-form #edit-nature-bussiness{background:#eee; border: 1px solid #ccc; height: 200px; margin-top: 5px; overflow-y: scroll; padding: 10px;}
+
+#user-profile-form #edit-intro-company-organisation{ width:100%;}
+
+#user-profile-form #edit-rip, 
+#user-register-form #edit-rip{margin:0 0 15px 0; padding: 1.4em 1em 0em; background:#eee; border: 1px solid #ccc; overflow: hidden;width: 70%;}
+#user-profile-form #edit-rip legend span, 
+#user-register-for #edit-rip legend span{ padding:0;} 
+#user-profile-form #edit-rip .fieldset-wrapper, 
+#user-register-for #edit-rip .fieldset-wrapper{ padding:0;}
+#user-profile-form #edit-rip #edit-restrict-by-ip-address, 
+#user-register-for #edit-rip #edit-restrict-by-ip-address{width: 61.7%;}
+#user-profile-form .description, 
+#user-register-for .description{color: #979696; font-size: 11px;}
+
+#user-profile-form #edit-ckeditor .description{ clear:both;}
+#user-profile-form #edit-name, #user-profile-form #edit-mail--2, #user-profile-form #edit-current-pass{width:30%;}
+
+
+#user-profile-form #edit-ckeditor .form-item-ckeditor-width{ margin:0; padding-bottom:0;}
+#user-profile-form #edit-ckeditor-width{ width:38%;}
+/*------- Company Details css open -------*/user-profile-form
+
+#user-profile-form #edit-address .form-item-address-line-1, 
+#user-profile-form #edit-address .form-item-address-line-2, 
+/*#user-profile-form #edit-address .form-item-state,
+#user-profile-form #edit-address .form-item-country*/{float: left; margin-right: 1.7em; width: 31%;}
+
+/*#user-profile-form #edit-address .form-item-city,
+#user-profile-form #edit-address .form-item-zipcode{ float:left; width:31.8%;}*/
+#user-profile-form #edit-address input.form-text{width: 98%;}
+
+.form-item-company-size{float: left; margin-right: 1.7em; width: 10%;}
+.form-item-company-size input.form-text{width: 94%;}
+
+#user-profile-form .form-item-website{float: left; width:36.5%;}
+#user-profile-form .form-item-website input.form-text{width: 95.4%;}
+#user-profile-form .form-item-nature-bussiness{ clear:both;}
+
+#user-profile-form .form-item-files-company-logo img{ width:100px;}
+
+
+#user-profile-form #edit-nature-bussiness .form-type-checkbox{float: left; width: 33%;}
+#user-profile-form .form-item-intro-company-organisation{ clear:both;}
+#user-profile-form .form-item-intro-company-organisation .grippie{ display:none;}
+/*.form-item-files-company-logo, .form-item-files-company-banner{ float:left; width:65%;}*/
+
+#user-profile-form .form-item-designation{ clear:both;}
+#user-profile-form .form-item-designation, 
+#user-profile-form .form-item-telephone{float: left; margin-right: 1.7em; width:30.2%;}
+
+#user-profile-form .form-item-fax{float:left; width:32.2%;}
+input.form-text{width: 98%; padding:5px 5px; background: linear-gradient(#fff, #f1f1f1) repeat scroll 0 0 #eee; border: 1px solid #ccc;}
+
+#user-profile-form #edit-ckeditor{ display:none;}
+/*#user-profile-form #edit-name, 
+#user-profile-form #edit-mail{width: 95.9%;}*/
+#user-profile-form #edit-company-organization{width: 96%;}
+
+#user-profile-form #edit-account .form-item-name{ float:none; width:auto;}
+/*#user-profile-form .form-item-name, */
+#user-profile-form .form-item-mail, 
+#user-profile-form .form-type-password-confirm, 
+#user-profile-form .form-type-radios, 
+#user-profile-form .form-type-checkboxes{ padding:0;}
+
+#user-profile-form .password-strength, 
+#user-profile-form .password-confirm{ margin-top:0 !important;}
+
+#user-profile-form .form-type-radio{ float:left;/* width:25%;*/ margin-right:15px; border:none !important; width:auto !important; padding:0 !important;}
+#user-profile-form .form-item-roles{background:#f8f2e2; border: 1px solid #ccc; clear: both; overflow: hidden; padding: 5px 10px;}
+#user-profile-form .form-type-checkbox{ float:left; margin-right:15px;}
+
+#user-profile-form #edit-account .form-item-htmlmail-plaintext{ display:none;}
+
+#user-profile-form #edit-account .form-item-status{background:#f8f2e2; border: 1px solid #ccc; overflow: hidden; padding: 5px 10px; width: 40.4%;}
+
+#user-profile-form #edit-account #edit-status{float: left; margin-bottom:0.8em;}
+
+#user-profile-form #edit-actions{clear: both; float: left; margin: 2em 0;}
+
+/*------- Shortcuts css open -------*/
+#shortcut-set-switch #edit-set .form-item-set{float: left; margin-right: 15px;}
+#shortcut-set-switch .form-type-radios{ float:left; width:100%;}
+#shortcut-set-switch .form-item-new{ padding-left:0;}
+#shortcut-set-switch .form-item-new #edit-new{ width:35%;}
+/*------- Shortcuts css End -------*/
+
+#user-admin-roles td.edit-name{ background:#ccc;}
+#user-admin-roles td.edit-name #edit-add{ margin-bottom:0;}
+
+/*------------ Contact Person css End ------------*/
+
+/*------- CONTACT PERSON Css Open -------*/
+#employer-registration-form fieldset{ border:none; margin-bottom:0;}
+#employer-registration-form fieldset .fieldset-legend{  padding-left:0; padding-bottom:0.5em; width:100%;}
+#employer-registration-form fieldset .fieldset-legend h2{ font-size:12px; margin:0; border-bottom:1px solid #ccc;}
+#employer-registration-form fieldset .fieldset-wrapper{ padding:0 0 13px;}
+
+#employer-registration-form .form-item-p-title{float: left; margin-right: 2em;}
+#employer-registration-form .form-item-firstname, #employer-registration-form .form-item-lastname{float: left; width: 30%; margin-right: 2em;}
+
+#employer-registration-form #edit-company-details{ padding:0; margin:0; border-bottom:1px solid #ccc;}
+#employer-registration-form #edit-company-details h2{ margin:0 0 0.5em 0; padding:0; font-size:12px;}
+
+#employer-registration-form .form-item-company-organization{ float:left; width:47.5%;}
+
+#employer-registration-form #edit-address{clear: both; padding-top: 0; margin-top: 0;}
+#employer-registration-form #edit-address .form-item-street{float: left; padding-top: 0; width: 25%; margin-right: 2em;}
+#employer-registration-form #edit-address .form-item-city{float: left; width: 20%; padding-top: 0; margin-right: 2em;}
+#employer-registration-form #edit-address .form-item-country{float: left; margin-right: 1.7em; padding-top: 0;}
+#employer-registration-form #edit-address #state-list-wrapper .form-item-state{float: left; padding-top: 0; margin-right: 2em;}
+#employer-registration-form #edit-address .form-item-zipcode{float: left; width: 14%; padding-top: 0;}
+
+#employer-registration-form .form-item-website{ float:left; width:36%;}
+#employer-registration-form .form-item-nature-bussiness{ clear:both;}
+#employer-registration-form #edit-nature-bussiness{height: 200px; overflow-y: scroll; border: 1px solid #ccc; margin: 0.5em 0 0 0; padding:1em;}
+#employer-registration-form .form-type-checkbox{float: left; margin-right: 1em; width:31%;}
+
+#employer-registration-form .form-item-files-company-logo{ margin:0; padding:0;}
+#employer-registration-form .form-item-files-company-logo img{ width:100px;}
+
+#employer-registration-form .form-item-designation{float: left; width: 30%; margin-right: 2em;}
+#employer-registration-form .form-item-telephone, #employer-registration-form .form-item-fax{float: left; width: 11%; margin-right: 2em;}
+
+#employer-registration-form #edit-rip{margin:0 0 15px 0; padding:2em 1em 0em; background:#eee; border: 1px solid #ccc; overflow: hidden;width: 70%; clear:both;} 
+#employer-registration-form #edit-rip legend span{ padding:0;}  
+#employer-registration-form #edit-rip .fieldset-wrapper{ padding:0;}
+
+#employer-registration-form #edit-rip .form-item-restrict-by-ip-address{padding: 0; margin:0; width: 47%; }
+
+#employer-registration-form #edit-ckeditor{ margin:0;}
+#employer-registration-form #edit-ckeditor .fieldset-legend{ background:none;}
+
+#employer-registration-form #edit-account .form-item-name{float: left; width: 50%;}
+#employer-registration-form #edit-account .form-item-mail{float: left; margin: 0; padding: 0; width: 50%; clear: both;}
+#employer-registration-form #edit-account .form-item-htmlmail-plaintext{ clear:both;}
+
+#employer-registration-form .form-item-pass{ clear:both;}
+#employer-registration-form .form-item-pass .password-strength{ margin-top:0;} 
+#employer-registration-form .confirm-parent .password-confirm{ margin-top:0;} 
+
+#employer-registration-form #edit-account .form-item-status{background:#f8f2e2; border: 1px solid #ccc; overflow: hidden; padding: 5px 10px; width: 40.4%;}
+#employer-registration-form #edit-account .form-item-status .form-type-radio{ float:left;/* width:25%;*/ margin-right:15px; border:none !important; width:auto !important; padding:0 !important;}
+
+#employer-registration-form .form-item-roles{background:#f8f2e2; border: 1px solid #ccc; clear: both; overflow: hidden; padding: 5px 10px;}
+#employer-registration-form .form-type-checkbox{ float:left; margin-right:15px; width:auto;}
+/*------- CONTACT PERSON Css End -------*/
+
+/*----------------------------------------------- employer form css End -----------------------------------------------*/
+
+/*----------------------------------------------- Student form css open -----------------------------------------------*/
+#user-profile-form #edit-title{border-bottom: 1px solid #ccc; margin: 10px 0 5px; padding: 0 0 5px;}
+#user-profile-form #edit-title h2{ font-size: 15px; font-weight: 600; margin: 0;}
+#user-profile-form .form-item-application-id{float: left; margin-bottom: 0; margin-right: 2em; padding-bottom: 0; width: 15%;}
+#user-profile-form .form-item-name{float: left; margin-bottom: 0; margin-right: 2em; padding-bottom: 0; width: 25%;}
+#user-profile-form .form-item-username{float: left; margin-bottom: 0; padding-bottom: 0; width: 25%;}
+#user-profile-form .form-item-usertype{ clear: both; float: left; margin-bottom: 0; margin-right: 2em; padding-bottom: 0; width: 25%;}
+#user-profile-form .form-item-userrole{float: left; margin-bottom: 0; margin-right: 2em; padding-bottom: 0; width: 25%;}
+#user-profile-form .form-item-email{float: left; margin-bottom: 0; padding-bottom: 0; width: 30%;}
+#user-profile-form .form-item-dob{clear: both; float: left; margin-bottom: 0; margin-right: 2em; padding-bottom: 0; position: relative; width: 11%;}
+#user-profile-form .form-item-dob img{position: absolute; right: 0; top: 35px;}
+#user-profile-form .form-item-mobile{float: left; margin-bottom: 0; margin-right: 2em; padding-bottom: 0; width: 30%;}
+#user-profile-form .form-item-telephone{margin-bottom: 0;}
+#user-profile-form .form-item-additional-info{clear: both; margin-bottom: 2em; padding-bottom: 0; width:72%;}
+
+/*----------------------------------------------- Student form css End -----------------------------------------------*/
+
+/*----------------------------------------------- faculty form css open -----------------------------------------------*/
+#user-profile-form .form-item-ldap-value{clear: both; float: left; margin: 0 2em 0 0; width: 23%;}
+#user-profile-form .form-item-ldap-type{float: left; margin: 0 2em 0 0; width: 23%;}
+#user-profile-form .form-item-role{float: left; margin: 0 2em 0 0; width: 14%;}
+#user-profile-form .form-item-files-photo{float: left; margin: 0 3em 0 0;}
+#user-profile-form #edit-image{float: left; margin: 0; padding: 10px 0 0; /*width: 40%;*/ width:100%;}
+#user-profile-form #edit-image img{ width:150px;}
+#user-profile-form .form-item-nationality{clear: both; float: left; margin: 0 2em 0 0; width: 18%;}
+#user-profile-form .form-item-country{float: left; margin: 0 2em 0 0; /*width: 15%;*/}
+#user-profile-form .form-item-state{float: left; margin: 0 2em 0 0; width: 17%;}
+#user-profile-form .form-item-department{float: left; margin: 0 2em 0 0; width: 20%;}
+#user-profile-form .form-item-physical-department{float: left; margin: 0 2em 0 0; width: 20%;}
+
+/*----------------------------------------------- faculty form css open -----------------------------------------------*/
+
+#node-admin-content #edit-filters{background:#f8f2e2;}
+#node-admin-content #edit-filters #edit-status #edit-filters--2{ width:auto;}
+#node-admin-content #edit-filters #edit-status #edit-filters--2 .form-item-status{float: left; margin-right: 2em;}
+#node-admin-content #edit-filters #edit-status #edit-filters--2 .form-item-type{float: left; margin-right: 2em;}
+#node-admin-content #edit-filters #edit-status #edit-filters--2 .form-item-language{float: left;}
+#node-admin-content #edit-filters #edit-status #edit-filters--2 label{text-transform: capitalize; width:auto; margin-right:15px; line-height: 28px;}
+
+#user-filter-form #edit-filters{ background:#f8f2e2;}
+#user-filter-form #edit-filters .fieldset-wrapper{padding:10px 15px;}
+
+#user-filter-form #edit-filters #edit-status #edit-filters--2{ width:auto;}
+#user-filter-form #edit-filters #edit-status #edit-filters--2 .form-item-role{float: left; margin-right: 2em;}
+#user-filter-form #edit-filters #edit-status #edit-filters--2 .form-item-permission{float: left; margin-right: 2em;}
+#user-filter-form #edit-filters #edit-status #edit-filters--2 .form-item-status{ float:left;}
+#user-filter-form #edit-filters #edit-status #edit-filters--2 label{text-transform: capitalize; width:auto; margin-right:15px; line-height: 28px;}
+
+#user-admin-account #edit-options, 
+#node-admin-content #edit-options{border:none; margin: 0;}
+#user-admin-account #edit-options legend span, 
+#node-admin-content #edit-options legend span{ padding:0;}
+#user-admin-account #edit-options .fieldset-wrapper, 
+#node-admin-content #edit-options .fieldset-wrapper{ padding:0;}
+
+
+#user-admin-account .item-list ul {margin-left:0;}
+#user-admin-account .item-list ul li{list-style:none;}
+
+/*#user-register-form #edit-rip{border:none; padding: 2em 0 0; margin-bottom:0;}*/
+#user-register-form #edit-rip .fieldset-legend{ padding:0 !important;}
+#user-register-form #edit-rip .fieldset-wrapper{ padding:0;}
+#user-register-form #edit-rip .fieldset-wrapper .form-item{margin-bottom: 0; padding-bottom: 0;}
+#user-register-form #edit-rip #edit-restrict-by-ip-address, #user-register-form #edit-account #edit-name, #user-register-form #edit-account #edit-mail{ width:30%;}
+#user-register-form #edit-account .form-item-name{ padding-bottom:0;}
+#user-register-form #edit-account .form-item-mail, #user-register-form #edit-account .form-item-pass{ padding-bottom:0; margin-bottom:0;}
+
+#user-register-form .form-item-pass div.password-confirm{ margin-top:0;}
+#user-register-form .form-item-pass .password-parent .password-strength{margin-top:0;}
+
+#user-register-form .form-type-radio, #user-register-form .form-type-checkbox{ float:left;/* width:25%;*/ margin-right:15px; border:none !important; width:auto !important; padding:0 !important;}
+#user-register-form .form-item-roles, #user-register-form .form-type-radios{background:#f8f2e2; border: 1px solid #ccc; clear: both; overflow: hidden; padding: 5px 10px;}
+
+#user-register-form #edit-actions{clear: both; float: left; margin-top: 1em;}
+
+#user-register-form .description{color: #979696;font-size: 11px;}
+
+/*------------ Edit Banner css open ------------*/
+#banner-node-form .form-item-title{margin-bottom: 0; padding-bottom: 0; width: 40%;}
+#banner-node-form #edit-field-link{ width:40%;}
+#banner-node-form #edit-field-link .form-item-field-link-und-0-value{margin: 0; padding-top: 0;}
+#banner-node-form #edit-body .form-item-body-und-0-value{ margin-bottom:1em;}
+#banner-node-form #edit-body #edit-body-und-0-format{border-top: 1px solid #ccc;margin-top: 0.5em;}
+
+#page-node-form .form-item-title{margin-bottom: 0; padding-bottom: 0; width: 40%;}
+#page-node-form #edit-body .form-item-body-und-0-value{ margin-bottom:1em;}
+#page-node-form #edit-body #edit-body-und-0-format{border-top: 1px solid #ccc;margin-top: 0.5em;}
+
+#faq-node-form .form-item-title{margin-bottom: 0; padding-bottom: 0; width: 47%;}
+#faq-node-form #edit-field-detailed-question .form-item-field-detailed-question-und-0-value{ margin-bottom:1em;}
+#faq-node-form #edit-field-detailed-question #edit-field-detailed-question-und-0-format{border-top: 1px solid #ccc;margin-top: 0.5em;}
+#faq-node-form #edit-body .form-item-body-und-0-value{ margin-bottom:1em;}
+#faq-node-form #edit-body #edit-body-und-0-format{border-top: 1px solid #ccc;margin-top: 0.5em;}
+/*------------ Edit Banner css End ------------*/
+
+#user-admin-role #edit-name{ width:40%;}
+
+/*------------ Manage Tips Advices css open ------------*/
+#manage-tips-advices .manage-tips{background:#f8f2e2; border: 1px solid #ccc; padding:0.6em 1em 1em; margin-bottom:1em;}
+#manage-tips-advices #edit-manage-header{ margin:0; padding:0;}
+#manage-tips-advices #edit-manage-header h2{border-bottom: 1px solid #ccc; font-size: 16px; margin: 5px 0 3px; padding: 0 0 5px;}
+#manage-tips-advices .form-item-keyword{float: left; width: 25%; margin-right: 1.7em; padding-bottom:0;}
+#manage-tips-advices .form-item-category{float: left; margin-right: 1.7em;  padding-bottom:0;}
+#manage-tips-advices .form-item-general-advice{float: left; margin-right: 1.7em;}
+#manage-tips-advices .form-item-article-type{clear: both; margin-right: 1.7em; float: left;}
+#manage-tips-advices #edit-daterange{float: left; width: 41%; border:none; padding:0; margin:10px 0 0 0;}
+
+#edit-daterange .fieldset-wrapper{ border:none; padding:0; margin: 0 0 5px;}
+#edit-daterange legend{font-size: 110%; font-weight: normal; margin-bottom: 3px; color: #444; text-transform: inherit;}
+#edit-daterange legend span{ margin:0; font-weight:600; padding:0; }
+#edit-daterange .form-item-from{float: left; margin-right:0.8em; width: 47%; position: relative; padding:15px 0 0 0;}
+#edit-daterange .form-item-from label{ float:left; margin:0 10px 0 0; line-height: 25px;}
+#edit-daterange .form-item-from input.form-text{float: left; width: 72%;}
+#edit-daterange .form-item-from img{position: absolute; right: 10px; top: 21px;}
+
+#edit-daterange .form-item-to{float: left; width:47%; position: relative; padding:15px 0 0 0;}
+#edit-daterange .form-item-to label{ float:left; margin:0 10px 0 0; line-height: 25px;}
+#edit-daterange .form-item-to input.form-text{float: left; width: 72%;}
+#edit-daterange .form-item-to img{position: absolute; right: 27px; top: 21px;}
+
+#manage-tips-advices #edit-buttons{ clear:both; border:none; margin:1em 0 0 0; padding:0;}
+#manage-tips-advices #edit-buttons .fieldset-wrapper{ padding:0;}
+.options a{ padding:0 5px;}
+
+/*------ Manage Tips Advices Edit css open ------*/
+#add-tips-advices #edit-tips-advices-heading{ margin:0; padding:0 0 5px 0;}
+#add-tips-advices .form-item-category{float: left; margin-right: 1.7em; }
+#add-tips-advices .form-item-general-advice{float: left; margin-right: 1.7em; /*width: 37%; */padding:0;}
+#add-tips-advices .form-item-career-p{float: left; margin-right: 1.7em; /*width: 31%;*/}
+#add-tips-advices .form-item-career-sp{float: left; padding-top: 1.9em; width: 37%;}
+#add-tips-advices #child-list-wrapper{float: left; margin-right: 1.7em;width: 40%;}
+#add-tips-advices #child-list-wrapper .form-item-career-c{ padding-top: 1.9em; }
+#add-tips-advices .form-item-field-of-study{float: left; margin-right: 1.7em; /*width: 43%;*/}
+#add-tips-advices .form-item-qualification{float: left; /*width: 26%;*/}
+#add-tips-advices #qualification-list-wrapper{float: left; margin-right: 1.7em; /*width: 50%;*/}
+#add-tips-advices .form-item-advice-industries{float: left; margin-right: 1.7em; width: 45%;}
+
+#add-tips-advices .form-item-title{float: left; width: 32%; }
+#add-tips-advices .form-item-article-type{ clear:both; width:100%;}
+#add-tips-advices #article_image{ margin-bottom:1em;}
+
+#add-tips-advices #edit-buttons{ border:none; padding:0; width:23%;}
+#add-tips-advices fieldset .fieldset-wrapper{ padding:0;}
+#add-tips-advices #edit-submit{ float:left;}
+#add-tips-advices .cancelbtn{ float:right; padding:10px 24px 10px;}
+#add-tips-advices .cancelbtn a {
+  cursor: pointer;
+  padding: 4px 17px;
+  margin-bottom: 1em;
+  margin-right: 1em; /* LTR */
+  color: #5a5a5a;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1.077em;
+  font-family: "Lucida Grande", Verdana, sans-serif;
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  background: url(images/buttons.png) 0 0 repeat-x;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;}
+#add-tips-advices .cancelbtn a:hover{ text-decoration: none;color: #5a5a5a;}
+/*------ Manage Tips Advices Edit css End ------*/
+
+/*------------ Manage Tips Advices css End ------------*/
+
+/*------------ View Events css open ------------*/
+#events-news-events #events_list #edit-div{background:#f8f2e2; border: 1px solid #ccc; padding:0.6em 1em 1em; margin-bottom:2em;}
+#events-news-events .form-item-event-code{float: left; margin-right: 2em; width: 10%;}
+#events-news-events .form-item-event-title{float: left; margin-right: 1.6em; width: 40%;}
+#events-news-events .form-item-registration{float: left; margin-right: 2em;}
+#events-news-events .form-item-status{ float:left;}
+
+#edit-date{ float: left; /*width: 37%;*/ width: 41%;}
+#edit-date label{ float:left; width:100%;}
+.form-item-from-date{float: left; margin-right: 0.6em; position: relative; /*width:46%;*/ width:40%; margin-bottom:0; padding:0;} 
+.form-item-from-date label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+.form-item-from-date input.form-text{float: left; width:70%;}
+.form-item-from-date img{position: absolute; right: 11px; top:11px;}
+
+.form-item-to-date{float: left; margin-right: 0.7em; position: relative; /*width:44%;*/ width:40%; margin-bottom:0; padding:0;}
+.form-item-to-date label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+.form-item-to-date input.form-text{float: left; width:80%;}
+.form-item-to-date img{position: absolute; right:7px; top:11px;}
+
+.submit_clear_but{clear: both; overflow: hidden; padding: 1em 0 0;}
+.submit_clear_but input.form-submit{ float:left;}
+.submit_clear_but #edit-cancel{ float:left;}
+.submit_clear_but #edit-cancel a{/*padding: 5px 17px;*/ color:#5a5a5a;}
+.submit_clear_but #edit-cancel a:hover{ text-decoration:none;}
+/*------------ View Events css End ------------*/
+
+/*------------ View News css open ------------*/
+#events-news-news #news_list #edit-div{background:#f8f2e2; border: 1px solid #ccc; padding:0.6em 1em 1em; margin-bottom:2em;}
+#events-news-news .form-item-news-title{float: left; margin-right: 2em; width: 30%;}
+#events-news-news .form-item-reported-by{ float:left;}
+#events-news-news #edit-date{ clear:both;}
+#events-news-news .form-item-category{float: left; margin-right: 1.7em;}
+#events-news-news .form-item-status{ float:left;}
+/*------------ View News css End ------------*/
+
+/*------------ Create Event css open ------------*/
+#events-news-create-event #edit-title, 
+#events-news-update-event #edit-title{ padding:0; padding:0;}
+#events-news-create-event .form-item-event-code, 
+#events-news-update-event .form-item-event-code{float: left; margin-right: 2em; width: 10%; padding:0; margin-bottom:0;}
+#events-news-create-event .form-item-event-title, 
+#events-news-update-event .form-item-event-title{ float:left; padding:0; margin-bottom:0;}
+
+#events-news-create-event #edit-date, 
+#events-news-update-event #edit-date{ clear:both; width:88%; margin:0; }
+
+#events-news-create-event .form-item-from-date, 
+#events-news-update-event .form-item-from-date{float: left; margin-right: 0.3em; position: relative; /*width:16%;*/ width:18%;} 
+#events-news-create-event .form-item-from-date label, 
+#events-news-update-event .form-item-from-date label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+#events-news-create-event .form-item-from-date input.form-text, 
+#events-news-update-event .form-item-from-date input.form-text{float: left; width: 65%;}
+#events-news-create-event .form-item-from-date img, 
+#events-news-update-event .form-item-from-date img{position: absolute; right: 14px; top:11px;}
+
+#events-news-create-event .form-item-to-date, 
+#events-news-update-event .form-item-to-date{float: left; margin-right: 0.3em; position: relative; /*width:15%;*/ width:17%;}
+#events-news-create-event .form-item-to-date label, 
+#events-news-update-event .form-item-to-date label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+#events-news-create-event .form-item-to-date input.form-text, 
+#events-news-update-event .form-item-to-date input.form-text{float: left; width: 75%;}
+#events-news-create-event .form-item-to-date img, 
+#events-news-update-event .form-item-to-date img{position: absolute; right: 8px; top: 11px;}
+
+#events-news-create-event .form-item-from-time, 
+#events-news-update-event .form-item-from-time{float: left; margin-right: 1.7em; width:16%;}
+#events-news-create-event .form-item-from-time label,
+ #events-news-update-event .form-item-from-time label{line-height: 30px; margin-bottom: 0; margin-right: 0.9em; width: auto !important;}
+#events-news-create-event .form-item-from-time select, 
+#events-news-update-event .form-item-from-time select{ width:58%;}
+
+#events-news-create-event .form-item-to-time, 
+#events-news-update-event .form-item-to-time{float: left; margin-right: 1.7em; width:16%;}
+#events-news-create-event .form-item-to-time label, 
+#events-news-update-event .form-item-to-time label{line-height: 30px; margin-bottom: 0; margin-right: 0.9em; width: auto !important;}
+#events-news-create-event .form-item-to-time select, 
+#events-news-update-event .form-item-to-time select{ width:58%;}
+
+
+#events-news-create-event #edit-venue, 
+#events-news-update-event #edit-venue{clear:both; padding:0; margin:0;}
+
+#events-news-create-event #edit-venue label, 
+#events-news-update-event #edit-venue label{ float:left; width:100%;}
+
+#events-news-create-event .form-item-location, 
+#events-news-update-event .form-item-location{float: left; margin-right: 0.3em; width: 39%;}
+
+#events-news-create-event .form-item-location label, 
+#events-news-update-event .form-item-location label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+
+#events-news-create-event .form-item-location input.form-text, 
+#events-news-update-event .form-item-location input.form-text{ width:76%;}
+
+#events-news-create-event .form-item-country, 
+#events-news-update-event .form-item-country{float: left; margin-right: 0.7em; width: 35%;}
+
+#events-news-create-event .form-item-country label, 
+#events-news-update-event .form-item-country label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+
+#events-news-create-event .form-item-country select, 
+#events-news-update-event .form-item-country select{ width:75%;}
+
+#events-news-create-event .form-item-state, 
+#events-news-update-event .form-item-state{float: left; width: 30%; clear:both;}
+
+#events-news-create-event .form-item-state label, 
+#events-news-update-event .form-item-state label{line-height: 30px; margin-bottom: 0; margin-right: 0.5em; width: auto !important;}
+
+#events-news-create-event .form-item-state select, 
+#events-news-update-event .form-item-state select{ width:75%;}
+
+#events-news-create-event .form-item-files-photo, 
+#events-news-update-event .form-item-files-photo{ clear:both; padding:10px 0 0 0;}
+
+#events-news-create-event .form-item-description-value, 
+#events-news-update-event .form-item-description-value{ margin-bottom:10px;}
+
+#events-news-create-event #edit-description-format, 
+#events-news-update-event #edit-description-format{ border-top:1px solid #ccc; margin-top:10px; margin-bottom:10px;}
+
+#events-news-create-event .form-item-organized-by, 
+#events-news-update-event .form-item-organized-by{ float:left; width:20%;}
+
+#events-news-create-event #attachments-ajax-wrapper, 
+#events-news-update-event #attachments-ajax-wrapper{ float:left; margin-right: 2em;}
+
+#events-news-create-event .form-item-registration, 
+#events-news-update-event .form-item-registration{ /*clear:both;*/ float: left; margin-top: 4px;}
+#edit-cancel-skills a, #edit-cancel-skills a {
+  cursor: pointer;
+  padding: 4px 17px;
+  margin-bottom: 1em;
+  margin-right: 1em; /* LTR */
+  color: #5a5a5a;
+  text-align: center;
+  font-weight: normal;
+  font-size: 1.077em;
+  font-family: "Lucida Grande", Verdana, sans-serif;
+  border: 1px solid #e4e4e4;
+  border-bottom: 1px solid #b4b4b4;
+  border-left-color: #d2d2d2;
+  border-right-color: #d2d2d2;
+  background: url(images/buttons.png) 0 0 repeat-x;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border-radius: 20px;
+}
+#edit-cancel-skills a:hover, #edit-cancel-skills a:hover {
+  text-decoration: none;
+  color: #5a5a5a;
+}
+#events-news-create-event .submit_clear_but{ margin-bottom:1em;}
+/*------------ Create Event css End ------------*/
+
+/*------------ Create News css open ------------*/
+#events-news-create-news #edit-title, #events-news-update-news #edit-title{ margin:0; padding:0;}
+#events-news-create-news .form-item-news-title, #events-news-update-news .form-item-news-title{float: left; margin-right: 2em; width: 47%; padding:0;}
+#events-news-create-news .form-item-date, #events-news-update-news .form-item-date{float: left; margin-right: 0.7em; position: relative; width: 13%; padding:0;}
+#events-news-create-news .form-item-date img, #events-news-update-news .form-item-date img{position: absolute; right: 8px; top: 26px;}
+#events-news-create-news .form-item-date input.form-text, #events-news-update-news .form-item-date input.form-text{width: 92%;}
+
+#events-news-create-news .form-item-time, #events-news-update-news .form-item-time{float: left; width: 10%; padding:0;}
+#events-news-create-news .form-item-files-photo, #events-news-update-news .form-item-files-photo{ clear:both; margin:0;}
+#events-news-create-news .form-item-reported-by, #events-news-update-news .form-item-reported-by{float: left; margin-right: 1.7em; /*width: 25%;*/ padding-bottom:0;}
+#events-news-create-news .form-item-category, #events-news-update-news .form-item-category{float: left; margin-right: 1.7em; /*width: 25%;*/ padding-bottom:0;}
+#events-news-create-news #attachments-ajax-wrapper, #events-news-update-news #attachments-ajax-wrapper{ margin:0; padding-bottom:0;}
+#events-news-create-news #attachments-ajax-wrapper .form-item-attachments, #events-news-update-news #attachments-ajax-wrapper .form-item-attachments{ padding-bottom:0; margin:0;}
+#events-news-create-news .form-item-description-value, #events-news-update-news .form-item-description-value{ clear:both; padding-bottom:10px;}
+#events-news-create-news #edit-description-format, #events-news-update-news #edit-description-format{ border-top:1px solid #ccc; margin-top:10px;}
+#events-news-create-news .submit_clear_but, #events-news-update-news .submit_clear_but{ margin-bottom:1em;}
+/*------------ Create News css End ------------*/
+
+/*------------ Event Registrations css open ------------*/
+#events-news-event-registrations #event_registrations #edit-div{background:#f8f2e2; border: 1px solid #ccc; padding:0.6em 1em 1em; margin-bottom:2em;}
+#events-news-event-registrations .form-item-event-code{float: left; margin-right: 2em; width: 23%;} 
+#events-news-event-registrations .form-item-event-title{ float:left; margin-right: 2em; width:37%;}
+#events-news-event-registrations .form-item-to-date{margin-left: 5px;}
+#events-news-event-registrations .form-item-email{float: left; padding-top: 0px; width: 37%;}
+#events-news-event-registrations .form-item-name{clear: both; float: left; margin-right: 2em; width: 37%;}
+#events-news-event-registrations .form-item-status{ float:left;}
+/*------------ Event Registrations css End ------------*/
+
+.Event_Code{ float:right;}
+.Event_Code label{float: left; margin-right: 10px;}
+ul.view-list{ margin:0; padding:0;}
+ul.view-list li{ margin:0 0 10px 0; padding:0; list-style:none; float:left; list-style:none; width:100%;}
+ul.view-list li label{ float:left; margin:0 15px 0 0;}
+
+.EN-details-header{ padding:0 0; margin:0; float:left; width:100%; }
+.EN-details-header .date-time{background:#8263aa; color: #fff; float: left; font-size: 12px; line-height: 15px; margin-bottom: 7px; padding: 3px 10px;}
+.EN-details-header h1{margin:0 0 10px 0; padding:0; font-weight:bold; font-size:22px; line-height:27px; color:#9c2b3d; float:left; width:85%; clear:both;}
+.EN-details-header .EN-header-right{ float:right; }
+.EN-details-header .EN-header-right label{ float:left; margin-right:15px;}
+.EN-details-header .EN-header-right span{ font-weight:600;}
+
+.EN-details-content{ float:left; width:100%; word-break: break-word;}
+.EN-details-content img{ width:200px;}
+.EN-details-content ul.en-details-list{ margin:0 0 15px 0; padding:0; float:left; width:100%;}
+.EN-details-content ul.en-details-list li{ margin:0 10px 0 0; padding:0; list-style:none; font-size:12px; }
+.EN-details-content ul.en-details-list li label{ margin:0 5px 0 0; color:#5e5e5e; font-weight:600;}
+.EN-details-content ul.en-details-list li a{ margin-left:10px;}
+.EN-details-content .EN-content-img{ float:right; margin:0 0 1em 1em; width:200px;}
+
+.tp-view-header{ padding:0 0; margin:0; float:left; width:100%; }
+.tp-view-header h1{margin:0 0 10px 0; padding:0; font-weight:bold; font-size:22px; line-height:27px; color:#9c2b3d; float:left; width:85%;}
+.tp-view-header .tp-header-right{ float:right; }
+.tp-view-header .tp-header-right label{ float:left; margin-right:15px;}
+.tp-view-header .tp-header-right span{ font-weight:600;}
+
+.tp-view-content{ float:left; width:100%; word-break: break-word;}
+.tp-view-content ul{ margin:0 0 15px 0; padding:0; float:left; width:100%;}
+.tp-view-content ul li{ margin:0 10px 0 0; padding:0; list-style:none; font-size:12px; }
+.tp-view-content ul li label{ margin:0 5px 0 0; color:#5e5e5e; font-weight:600; float:left;}
+.tp-view-content ul li a{ margin-left:10px;}
+.bk-to-list{/*background:url(../images/back-to-icon.png) no-repeat left 4px;*/ padding:0 0 0 18px; font-size:15px; margin:2em 0 2em; clear:both;}
+.bk-to-list:hover{/*background:url(../images/back-to-icon.png) no-repeat left -29px;*/}
+.bk-to-list a{ color:#222;}
+.bk-to-list a:hover{ color:#663398; text-decoration:none;}
+.tp-view-content .tp-content-img{ float:right; margin:0 0 1em 1em;}
+
+.video-sec{ text-align:center; background:#e4e4e4; padding:20px 20px 13px !important; margin:0 !important;}
+
+/*------------ Audit Logs css open ------------*/
+#audit-logs-list #logs_list #edit-div{background:#f8f2e2; border: 1px solid #ccc; padding:0.6em 1em 1em;}
+#audit-logs-list .form-item-name{float: left; margin-right: 2em; width: 44.3%;}
+#audit-logs-list .form-item-username{float: left; width: 44.3%;}
+#audit-logs-list .form-item-role{clear: both; float: left; margin-right: 2em;}
+#audit-logs-list .form-item-action{float: left; margin-right: 2em;}
+#audit-logs-list .form-item-associated{float: left; margin-right: 2em; width: 32%;}
+#audit-logs-list .form-item-from-date{padding-top: 0;}
+#audit-logs-list .form-item-to-date{padding-left: 8px; padding-top: 0;}
+#audit-logs-list .form-item-to-date img, #audit-logs-list .form-item-from-date img{ top:7px;}
+/*------------ Audit Logs css End ------------*/
+
+/*------------ Parent Specializations Edit css open ------------*/
+#career-display-parrents ul.action-links{ margin:0; padding:0;}
+
+#career-add-parrent fieldset{ border:none; padding:0;}
+#career-add-parrent fieldset .fieldset-wrapper{ padding:0;}
+#career-add-parrent .form-item-title{float: left; padding: 0; width: 40%;}
+#career-add-parrent .form-item-files-company-logo{clear: both; padding: 0;}
+#career-add-parrent .form-item-description-value{padding: 0 0 15px;}
+#career-add-parrent #edit-description-format{border: 1px solid #ccc; margin: 10px 0 15px; padding:10px;}
+#career-add-parrent #edit-submit{ margin-bottom:2em;}
+/*------------ Parent Specializations Edit css End ------------*/
+
+/*------------ Child Specializations Add Edit css open ------------*/
+#career-add-child fieldset{ border:none; padding:0;}
+#career-add-child fieldset .fieldset-wrapper{ padding:0;}
+#career-add-child fieldset .form-item-specialization-parrent{float: left; margin-right: 2em;}
+#career-add-child .form-item-title{float: left; padding: 0; width: 40%; clear:both;}
+#career-add-child .form-item-files-company-logo{clear: both; padding: 0;}
+#career-add-child .form-item-description-value{padding: 0 0 15px;}
+#career-add-child #edit-description-format{border: 1px solid #ccc; margin: 10px 0 15px; padding:10px;}
+#career-add-child #edit-submit{ margin-bottom:2em;}
+/*------------ Child Specializations Add Edit css End ------------*/
+
+/*------------ Sub Parent Specializations Add Edit css open ------------*/
+#career-add-subparrent fieldset{ border:none; padding:0;}
+#career-add-subparrent fieldset .fieldset-wrapper{ padding:0;}
+#career-add-subparrent fieldset .form-item-specialization-parrent{float: left; margin-right: 2em;}
+#career-add-subparrent .form-item-title{float: left; padding: 0; width: 40%; clear:both;}
+#career-add-subparrent .form-item-files-company-logo{clear: both; padding: 0;}
+#career-add-subparrent .form-item-description-value{padding: 0 0 15px;}
+#career-add-subparrent #edit-description-format{border: 1px solid #ccc; margin: 10px 0 15px; padding:10px;}
+#career-add-subparrent #edit-submit{ margin-bottom:2em;}
+/*------------ Sub Parent Specializations Add Edit css End ------------*/
+
+/*------------ Restrict by IP css open ------------*/
+#restrict-by-ip-general-settings #edit-restrict-by-ip-header{margin: 0.3em 0 0.5em; width: 30%;}
+#restrict-by-ip-login-settings #edit-restrict-by-ip-error-page, #restrict-by-ip-login-settings #edit-restrict-by-ip-login-range{margin: 0.3em 0 0.4em; width: 30%;}
+
+#restrict-by-ip-role-settings a:hover{ text-decoration:none; color:#222;}
+#restrict-by-ip-role-settings #edit-restrict-by-ip-role-administrator, 
+#restrict-by-ip-role-settings #edit-restrict-by-ip-role-faculty, 
+#restrict-by-ip-role-settings #edit-restrict-by-ip-role-employer, 
+#restrict-by-ip-role-settings #edit-restrict-by-ip-role-student{margin: 0.3em 0 0.4em; width: 30%;}
+/*------------ Restrict by IP css End ------------*/
+
+#system-ip-blocking-form #edit-ip{margin: 0.3em 0 0.4em; width: 30%;}
+#user-admin-settings #edit-anonymous{margin: 0.3em 0 0.4em; width: 30%;}
+
+/*------------ Myaccount css open ------------*/
+#faculty-updateaccount h1{ font-weight:normal; margin-bottom:1em;}
+.myaccount{ border:1px solid #e0e0e0; background:#f1f1f1; padding:10px 15px;}
+.myaccount .myaccount-tit{ padding:0; float:left; width:100%; margin:0 0 0px 0;}
+.myaccount .myaccount-tit h2{ margin:0; padding:0; font-weight:normal; margin:0px 0 10px; padding:0 0 5px 0; border-bottom:1px solid #ccc; color:#222;  font-size:20px; line-height:25px;}
+.myaccount .myaccount-tit h2 span{color: #222; font-size:15px; font-weight: normal;}
+.myaccount .myaccount-tit a{ float:right; color:#663398; margin:0 10px 0 0;}
+
+.createbutton a{background:#999999; color: #fff !important; display: block; font-size: 14px;  padding:7px 10px; text-align: center; border-radius:6px; margin:10px 0 0 0;}
+.createbutton a:hover{ text-decoration:none; background-color:#b0b0b0; color: #fff;}
+
+.myaccount-cont{ padding:0; overflow:hidden; width:100%;}
+
+.upload_photo{padding: 0 2em 0 0; width:11%; float:left;}
+.upload_photo img{ width:140px;}
+.myacount_content{padding: 0 0 0 10px; width: 80%; float:left;}
+.myacount_content ul.employer-list{ margin:0; padding:0;}
+.myacount_content ul.employer-list li{ margin:0 0 10px 0; padding:0; float:left; width:100%; list-style:none;}
+.myacount_content ul.employer-list li label{ margin:0 10px 0 0; float:left; width:15%; font-weight:normal; text-align:left; font-family:ProximaNovaLight,Arial,sans-serif; font-weight:normal; font-size:110%; color: #444;}
+.myacount_content ul.employer-list li span{ float:left; width:70%; word-break: break-word;}
+.myacount_content ul.employer-list li .employer-cont{ float:left; width:65%; font-family:ProximaNovaLight,Arial,sans-serif; font-weight:normal; font-size:120%;}
+
+/*------------ Edit Profile css open ------------*/
+#faculty-editaccount-form{border:1px solid #e0e0e0; background:#f1f1f1; padding:10px 15px;}
+#faculty-editaccount-form #edit-title{ padding:0; float:left; width:100%; margin:0 0 0px 0;}
+#faculty-editaccount-form #edit-title h2{ margin:0; padding:0; font-weight:normal; margin:0px 0 10px; padding:0 0 5px 0; border-bottom:1px solid #ccc; color:#222;  font-size:20px; line-height:25px;}
+#faculty-editaccount-form .form-item-application-id{float: left; margin-right: 1.7em; width: 11%;}
+#faculty-editaccount-form .form-item-name{float: left; margin-right: 1.7em; width: 35%;}
+#faculty-editaccount-form .form-item-username{float: left; width:28%;}
+#faculty-editaccount-form .form-item-ldap-value{clear: both; float: left; margin-right: 1.7em; width:27%;}
+#faculty-editaccount-form .form-item-ldap-type{float: left; margin-right: 1.7em; width:27%;}
+#faculty-editaccount-form .form-item-role{float: left; width:22.9%;}
+#faculty-editaccount-form .form-item-email{clear: both; float: left; margin-right: 1.7em; width: 30%;}
+#faculty-editaccount-form .form-item-dob{float: left; margin-right: 1.7em; position: relative; width: 10%;}
+#faculty-editaccount-form .form-item-dob img{position: absolute; right: 8px; top: 34px;}
+#faculty-editaccount-form .faculty-pic{ clear:both;}
+#faculty-editaccount-form .faculty-pic img{ width:100px;}
+#faculty-editaccount-form .form-item-files-photo{float: left; clear:both; margin-right:0.7em}
+#faculty-editaccount-form .form-item-mobile{clear: both; float: left; margin-right: 1.7em; width: 30%;} 
+#faculty-editaccount-form .form-item-telephone{float: left; margin-right: 1.7em; width:29.5%;}
+#faculty-editaccount-form .form-item-nationality{float: left; margin-right: 1.7em; width:20%; clear:both;}
+#faculty-editaccount-form .form-item-country{float: left; margin-right: 1.7em; width: 18%;}
+#faculty-editaccount-form .form-item-state{float: left; width:19.3%;}
+#faculty-editaccount-form .form-item-department{clear: both; float: left; margin-right: 1.7em; width: 24.2%;}
+#faculty-editaccount-form .form-item-physical-department{float: left; width: 35%;}
+#faculty-editaccount-form .form-item-additional-info{ clear:both; width: 73%;}
+/*------------ Edit Profile css End ------------*/
+#faculty-myaccount-form{border:1px solid #e0e0e0; background:#f1f1f1; padding:10px 15px;}
+#faculty-myaccount-form #edit-title{ padding:0; float:left; width:100%; margin:0 0 0px 0;}
+#faculty-myaccount-form #edit-title h2{ margin:0; padding:0; font-weight:normal; margin:0px 0 10px; padding:0 0 5px 0; border-bottom:1px solid #ccc; color:#222;  font-size:20px; line-height:25px;}
+#faculty-myaccount-form .form-item-application-id{float: left; margin-right: 1.7em; width: 12%;}
+#faculty-myaccount-form .form-item-name{float: left; margin-right: 1.7em; width: 35%;}
+#faculty-myaccount-form .form-item-username{float: left; width:29%;}
+#faculty-myaccount-form .form-item-ldap-value{clear: both; float: left; margin-right: 1.7em; width:27%;}
+#faculty-myaccount-form .form-item-ldap-type{float: left; margin-right: 1.7em; width:27%;}
+#faculty-myaccount-form .form-item-role{float: left; width:22.9%;}
+#faculty-myaccount-form .form-item-email{clear: both; float: left; margin-right: 1.7em; width: 30%;}
+#faculty-myaccount-form .form-item-dob{float: left; margin-right: 1.7em; position: relative; width: 10%;}
+#faculty-myaccount-form .form-item-dob img{position: absolute; right: 8px; top: 34px;}
+#faculty-myaccount-form .form-item-files-photo{float: left; clear:both;}
+#faculty-myaccount-form .form-item-mobile{clear: both; float: left; margin-right: 1.7em; width: 30%;} 
+#faculty-myaccount-form .form-item-telephone{float: left; margin-right: 1.7em; width:29.5%;}
+#faculty-myaccount-form .form-item-nationality{float: left; margin-right: 1.7em; width:20%; clear:both;}
+#faculty-myaccount-form .form-item-country{float: left; margin-right: 1.7em; width: 18%;}
+#faculty-myaccount-form .form-item-state{float: left; width:19.3%;}
+#faculty-myaccount-form .form-item-department{clear: both; float: left; margin-right: 1.7em; width: 24.2%;}
+#faculty-myaccount-form .form-item-physical-department{float: left; width: 35%;}
+#faculty-myaccount-form .form-item-additional-info{ clear:both; width: 73%;}
+/*------------------------------------ Myaccount css End ------------------------------------*/
+
+/*------------------------------------ Employer Summary Report - Student Summary Report - Job Summary Report css Open ------------------------------------*/
+#summary-reports fieldset{ border:none; padding:0.5em 0 0 0; margin:0;}
+#summary-reports #edit-daterange .form-item-from, #summary-reports #edit-daterange .form-item-to{ width:16%; padding:0;}
+#summary-reports #edit-daterange .form-item-from input.form-text{width: 71%;}
+#summary-reports #edit-daterange .form-item-from img, #summary-reports #edit-daterange .form-item-to img{top: 6px;}
+
+#summary-reports .form-item-summary-report-radios h2{font-size: 17px; margin: 1em 0 0.5em;}
+#summary-reports #edit-summary-report-radios{ float:left; width:100%; margin-bottom:0.3em; margin-left: 1em;}
+#summary-reports #edit-summary-report-radios .form-item-summary-report-radios{ float:left; width:52%;}
+#summary-reports .form-item-summary-industry{float: left; margin-left: 4em; margin-right:1.7em;}
+
+#summary-reports #subparrent-list-wrapper{margin: 0 0 0 4em; width: 98%; clear:both;}
+#summary-reports #subparrent-list-wrapper .form-item-industry{ width:33%; float:left; clear:both;}
+
+#summary-reports #subparrent-list-wrapper .form-item-min-salary{clear: both; float: left; margin-right: 1em; width: 12%;}
+#summary-reports #subparrent-list-wrapper .form-item-min-salary label{float: left; line-height: 26px; margin-right: 0.5em;}
+#summary-reports #subparrent-list-wrapper .form-item-min-salary input.form-text{float: left; width: 70%;}
+
+#summary-reports #subparrent-list-wrapper .form-item-max-salary{float: left; width: 12%;}
+#summary-reports #subparrent-list-wrapper .form-item-max-salary label{float: left; margin-right: 0.5em;}
+#summary-reports #subparrent-list-wrapper .form-item-max-salary input.form-text{float: left; width: 69%;}
+
+#summary-reports #edit-salary .form-item-min-salary, 
+#summary-reports #edit-salary .form-item-max-salary{float: left; margin-right: 1em; padding-top: 0.5em; width: 22%;}
+#summary-reports #edit-salary .form-item-min-salary label, 
+#summary-reports #edit-salary .form-item-max-salary label{float: left; margin-right: 0.8em;}
+#summary-reports #edit-salary .form-item-min-salary input.form-text, 
+#summary-reports #edit-salary .form-item-max-salary input.form-text{float: left; width: 74%;}
+
+#summary-reports #subparrent-list-wrapper .form-item-jobtype{ width:30%;}
+
+#summary-reports #subparrent-list-wrapper .form-item-job-country{float: left; margin-right:0.7em; width: 25%;}
+#summary-reports #subparrent-list-wrapper .form-item-job-country label{float: left; margin-right: 0.8em;}
+#summary-reports #subparrent-list-wrapper .form-item-job-country select{float: left; width: 78%;}
+
+#summary-reports #subparrent-list-wrapper .form-item-job-state{float: left; width: 25%;}
+#summary-reports #subparrent-list-wrapper .form-item-job-state label{float: left; margin-right: 0.8em;}
+#summary-reports #subparrent-list-wrapper .form-item-job-state select{float: left; width: 75%;}
+
+#summary-reports #subparrent-list-wrapper .form-item-job-specializations{float: left; margin-right: 1em; width: 35%;}
+#summary-reports #subparrent-list-wrapper .form-item-job-specializations label{float: left; margin-right: 0.5em;}
+#summary-reports #subparrent-list-wrapper .form-item-job-specializations select{width: 75%;}
+#summary-reports #subparrent-list-wrapper .form-item-sub-parent{float: left; margin: 0 1em 0 0 !important; width: 23%;}
+#summary-reports #subparrent-list-wrapper .form-item-sub-parent select{ width:97%;}	
+#summary-reports #subparrent-list-wrapper .form-item-childs{float: left; margin: 0 !important;}
+
+#summary-reports #edit-submit{ margin-bottom:2em; margin-top:2em; clear:both; float:left;}
+
+#summary-reports #edit-table{ clear:both; height:150px; }
+#summary-reports #edit-table legend{ width:100%;}
+#summary-reports #edit-table legend .fieldset-legend{width:100%;}
+#summary-reports #edit-table .result{ /*float:left;*/ width:7%;}
+#summary-reports #edit-table .print-down{ float: right;}
+#summary-reports #edit-table .print-down a{ margin:0 5px;}
+#summary-reports #edit-table .reslt-cont{border-top: 1px solid #ccc; /*float: left;*/ font-size: 15px; margin: 10px 0 0; padding:3em 0 0; text-align: center; width: 100%;}
+
+#summary-reports fieldset .fieldset-legend{ position:relative;}
+
+/*---------- Employer Detail Report css open ----------*/
+#detail-reports fieldset{ border:none; padding:2.3em 0 0 0;}
+#detail-reports fieldset .fieldset-legend{ padding-left:0; position:relative;}
+
+.employer-detail-report{background: #f8f2e2; border: 1px solid #ccc; margin: 0 0 3em; overflow: hidden; padding: 10px 15px;}
+ul.employer-detail-tabs{ margin:0; padding:0;}
+ul.employer-detail-tabs li{ margin:0 11px 0 0; padding:0; list-style:none; float:left; width:18%; }
+ul.employer-detail-tabs li:last-child{ margin:0;}
+ul.employer-detail-tabs li a{ background:#dbdedc;color: #222; display: block; font-size: 13px; font-weight: 600; line-height: 20px;
+ padding: 8px 10px; text-align: center; min-height:40px;}
+ul.employer-detail-tabs li a.active{color:#fff; background:#999; }
+ul.employer-detail-tabs li a:hover{ color:#fff; background:#999; text-decoration:none;}
+
+#detail-reports #edit-print-report legend .fieldset-legend a{color:#663398; margin:0 5px; font-size:13px; cursor:pointer;}
+#detail-reports #edit-print-report legend .fieldset-legend a:hover{color:#222; text-decoration:underline;}
+
+#detail-reports #edit-daterange{padding:0.3em 0 0 0; margin: 1em 0 0 0;}
+#detail-reports #edit-daterange .form-item-from, 
+#detail-reports #edit-daterange .form-item-to{ width:19%; padding:0;}
+#detail-reports #edit-daterange .form-item-to img{top: 7px; right:33px;}
+#detail-reports #edit-daterange .form-item-from img{top: 7px; right:16px;}
+
+
+#detail-reports .form-item-summary-report-select{float: left; margin-right: 1.7em; width: 30%;}
+#detail-reports .form-item-matric-number{float: left; margin-right: 1.7em; width: 30%; padding:0;}
+#detail-reports .form-item-name{float: left; width: 33%;}
+#detail-reports .form-item-gender{float: left; margin-right: 1em; padding:0;}
+#detail-reports .form-checkboxes .form-item, #detail-reports .form-radios .form-item{ width:auto;}
+#detail-reports .form-item-qualification{float: left; margin-right: 1.7em; width: 12%; padding:0;}
+#detail-reports .form-item-qualification-level{float: left; padding-top:1.6em; width: 52.5%;}
+#detail-reports #edit-submit{clear: both; float: left; margin-bottom: 2em; margin-top: 1em;}
+
+.employer-detail-report .form-item-status{ clear:both; width:10%; padding:0;}
+.employer-detail-report .form-submit{clear: both; float: left; margin-bottom: 2em;}
+/*---------- Employer Detail Report css End ----------*/
+
+/*---------- Job Detail Reports css open ----------*/
+.job-detail-report{background: #f8f2e2; border: 1px solid #ccc; margin: 0 0 3em; overflow: hidden; padding: 10px 15px;}
+#detail-reports .form-item-positionapplied{float: left; margin-right: 1.7em; width: 25%; padding:0;}
+#detail-reports .form-item-job-type{ float:left; clear:both; padding:0;}
+#detail-reports .form-item-job-type .form-type-checkbox{ margin-right:1em; float:left;}
+#detail-reports .form-item-employer{clear: both; float: left; margin-right: 1.7em; width: 29%; padding:0;}
+#detail-reports .form-item-industry{float: left; margin-right: 1.7em; width: 40%; padding:0;}
+#detail-reports .form-item-job-country{clear: both; float: left; margin-right: 1.7em; width: 18%; padding:0;}
+#detail-reports .form-item-job-state{ float:left; width:13%; margin-right: 1.7em; padding:0;}
+
+#detail-reports #edit-salary{clear: both; float: left; margin-right: 1.7em; margin-bottom:0.1em; width:52%; padding:0.2em 0 0 0;}
+#detail-reports #edit-salary .fieldset-wrapper{ padding:0;}
+#detail-reports #edit-salary legend{margin-bottom: 0.2em;}
+#detail-reports #edit-salary legend .fieldset-legend span{ font-size:11px; font-weight:normal;}
+#detail-reports #edit-salary .form-item-min-salary{float: left; margin-right: 1em; width:31%; padding:0;}
+#detail-reports #edit-salary .form-item-min-salary label{float: left; line-height: 27px; margin-right: 0.5em;}
+#detail-reports #edit-salary .form-item-min-salary input.form-text{float: left; width: 78%;}
+
+#detail-reports #edit-salary .form-item-max-salary{float: left; width: 31%; padding:0;}
+#detail-reports #edit-salary .form-item-max-salary label{float: left; line-height: 27px; margin-right: 0.5em;}
+#detail-reports #edit-salary .form-item-max-salary input.form-text{float: left; width: 75%;}
+
+#detail-reports .form-item-closing-date{float: left; position: relative; width: 15%; clear:both; padding:0;}
+#detail-reports .form-item-closing-date img{position: absolute; right:3px; top: 26px;}
+
+#detail-reports #edit-print-report{clear: both; margin: 0 0 0.8em; padding:0; }
+#detail-reports #edit-print-report legend{ float:right;}
+#detail-reports #edit-print-report legend .fieldset-legend a{color:#663398; margin:0 5px; font-size:13px; cursor:pointer;}
+#detail-reports #edit-print-report legend .fieldset-legend a:hover{color:#222; text-decoration:underline;}
+/*---------- Job Detail Reports css End ----------*/
+
+/*---------- Student Detail Report css open ----------*/
+.student-detail-report{ clear:both;}
+.student-detail-report .form-item-student-name{float: left; margin-right: 1.7em; width: 30%; padding:0;}
+.student-detail-report .form-item-gender{ }
+.student-detail-report .form-item-year-of-study-from{float: left; margin-right: 1.7em; width: 10%; clear:both; padding:0;}
+.student-detail-report .form-item-year-of-study-to{float: left; margin-right: 1.7em; padding:1.6em 0 0;}
+.student-detail-report .form-item-qualification{ clear:both;}
+.student-detail-report .form-item-Kulliyyah{clear: both; float: left; margin-right: 1.7em; width: 25%; padding:0;}
+.student-detail-report .form-item-status{ float:left; width:20%; padding:0;}
+.student-detail-report .sticky-table{ clear:both;}
+.student-detail-report .form-item-test-result{float: left; margin-right: 1.7em; width: 43%; padding:0;}
+.student-detail-report .form-submit{clear: both; float: left; margin-bottom: 2em;}
+
+.student-detail-report{background: #f8f2e2; border: 1px solid #ccc; margin: 0 0 3em; overflow: hidden; padding: 10px 15px;}
+ul.student-detail-tabs{ margin:0; padding:0;}
+ul.student-detail-tabs li{ margin:0 6px 0 0; padding:0; list-style:none; float:left; width:19.9%;}
+ul.student-detail-tabs li:last-child{ margin:0;}
+ul.student-detail-tabs li{width:22%;}
+ul.student-detail-tabs li + li{width:18%;}
+ul.student-detail-tabs li + li + li{width:23%;}
+ul.student-detail-tabs li + li + li + li{width:15%;}
+ul.student-detail-tabs li + li + li + li + li{width:19%;}
+
+ul.student-detail-tabs li a{ background:#dbdedc;color: #222; display: block; font-size: 13px; font-weight: 600; line-height: 20px;
+ padding:8px 4px; text-align: center; min-height:40px;}
+ul.student-detail-tabs li a.active{color:#fff; background:#999; }
+ul.student-detail-tabs li a:hover{ color:#fff; background:#999; text-decoration:none;}
+/*---------- Student Detail Report css End ----------*/
+
+/*------------------------------------ Employer Summary Report - Student Summary Report - Job Summary Report css End ------------------------------------*/
+
+.edit, .delete{ margin:0 0.5em;}

@@ -1,0 +1,11 @@
+name = Audit Logs 
+description = Logging db insert, update delete
+package = Audit Logs
+core = 7.x
+php = 5.0; 
+files[] = audit_logs.module
+version = "7.x-1.41"
+core = "7.x"
+project = "IIUM"
+datestamp = "1327704952"
+

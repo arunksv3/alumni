@@ -1,0 +1,11 @@
+name = Events & News 
+description = Manage Events and News
+package = Events_News
+core = 7.x
+php = 5.0; 
+files[] = events_news.module
+version = "7.x-1.41"
+core = "7.x"
+project = "IIUM"
+datestamp = "1327704952"
+

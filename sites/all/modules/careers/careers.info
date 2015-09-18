@@ -1,0 +1,12 @@
+name = Careers 
+description = Posting the careers
+package = Careers
+core = 7.x
+php = 5.0; 
+files[] = careers.module
+Information added by drupal.org packaging script on 2014-01-27
+version = "7.x-1.41"
+core = "7.x"
+project = "IIUM"
+datestamp = "1327704952"
+

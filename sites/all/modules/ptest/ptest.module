@@ -1,0 +1,376 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function ptest_menu() {    
+    $items = array();     
+    // psychometrics page content
+    $items['psychometrics'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Psychometrics', //page title        
+        'page callback' => array('psychometrics_page'), //put the name of the form here        
+        'file' => 'psychometrics_page.inc',
+        'access callback' => TRUE,
+    );       
+    // psychometrics tests
+    $items['student/psychometrics'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Psychometrics', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics'), //put the name of the form here
+        'access callback' => 'is_user_loggedin',
+        'file' => 'psychometrics.inc'
+    );   
+    // demographic form 
+    $items['student/psychometrics/demographic_information/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title callback' => 'title_name', //dynamic page title
+        'title arguments' => array(3),         
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics_demographic'), //put the name of the form here
+        'access callback' => 'is_user_loggedin',
+        'file' => 'psychometrics_demographic.inc'
+    ); 
+    // psychometrics test based on sections
+    $items['student/psychometrics/%/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title callback' => 'title_name', //dynamic page title
+        'title arguments' => array(3), 
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics_test', 3), //put the name of the form here
+        'access callback' => 'is_user_loggedin',
+        'file' => 'psychometric_test.inc'
+    );  
+    // psychometrics front end individual result page
+    $items['student/psychometrics_result/%/%'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title callback' => 'title_name', //dynamic page title
+        'title arguments' => array(2),       
+        'page callback' => array('psychometrics_result'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array(2,3),
+        'access callback' => 'is_user_loggedin', 
+        'file' => 'psychometrics_result.inc'
+    );
+    // psychometrics admin individual result page
+    $items['admin/config/content/psychometrics/%/%'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title callback' => 'title_name', //dynamic page title
+        'title arguments' => array(2),       
+        'page callback' => array('psychometrics_result'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array(4,5),
+        'access callback' => 'is_user_loggedin', 
+        'file' => 'psychometrics_result.inc'
+    );
+    // psychometrics front end result page
+    $items['student/psychometrics/results'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'IIUM STUDENT CAREER PROFILING RESULTS',   
+        'page callback' => array('psychometricsresults'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+         'page arguments' => array(''),
+        'file' => 'psychometricsresults.inc',
+        'access callback' => 'is_user_loggedin',
+    );
+    // psychometrics admin result page
+    $items['admin/config/content/psychometrics/results/%'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'IIUM STUDENT CAREER PROFILING RESULTS',   
+        'page callback' => array('psychometricsresults'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+        'page arguments' => array(5),
+        'file' => 'psychometricsresults.inc',
+        'access callback' => 'is_user_loggedin',
+    );
+    // psychometrics studen inforamtion
+    $items['admin/config/content/psychometrics'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'Psychometrics',   
+        'description' => 'Allows the user to configure the options for questions based on sections to list in psychometric test',
+        'page callback' => array('psychometrics_admin'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+        'file' => 'psychometrics_admin.inc',
+        'access callback' => 'is_admin',
+    );
+    // psychometrics sections
+    $items['admin/config/content/psychometrics/sections'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'Psychometrics Sections',           
+        'page callback' => array('psychometrics_sections'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+        'file' => 'psychometrics_sections.inc',
+        'access callback' => 'is_admin',
+    );    
+    // Add psychometrics section
+    $items['admin/config/content/psychometrics/sections/add_sec/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Add section', //dynamic page title          
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics_add_sec', 6), //put the name of the form here
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_add_sec.inc'
+    );
+    // view psychometrics section
+    $items['admin/config/content/psychometrics/view_sec/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'View Section', //dynamic page title                  
+        'page callback' => array('psychometrics_view_sec'), //put the name of the form here
+        'page arguments' => array(5),
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_view_sec.inc'
+    ); 
+    // psychometrics domains
+    $items['admin/config/content/psychometrics/domains'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'Psychometrics Sections',           
+        'page callback' => array('psychometrics_domains'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+        'file' => 'psychometrics_domains.inc',
+        'access callback' => 'is_admin',
+    ); 
+    // Add psychometrics domain
+    $items['admin/config/content/psychometrics/domains/add_dom/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Add Domain', //dynamic page title          
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics_add_dom', 6), //put the name of the form here
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_add_dom.inc'
+    );
+    // view psychometrics domain
+    $items['admin/config/content/psychometrics/view_dom/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'View Domain', //dynamic page title                  
+        'page callback' => array('psychometrics_view_dom'), //put the name of the form here
+        'page arguments' => array(5),
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_view_dom.inc'
+    );
+    // psychometrics scale
+    $items['admin/config/content/psychometrics/scales'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'Psychometrics Scales',           
+        'page callback' => array('psychometrics_scales'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+        'file' => 'psychometrics_scales.inc',
+        'access callback' => 'is_admin',
+    ); 
+    // Add psychometrics scale
+    $items['admin/config/content/psychometrics/scales/add_scale/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Add Scale', //dynamic page title          
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics_add_scale', 6), //put the name of the form here
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_add_scale.inc'
+    );
+    // view psychometrics scale
+    $items['admin/config/content/psychometrics/view_scale/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'View Scale', //dynamic page title                  
+        'page callback' => array('psychometrics_view_scale'), //put the name of the form here
+        'page arguments' => array(5),
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_view_scale.inc'
+    );
+    // psychometrics questions
+    $items['admin/config/content/psychometrics/questions'] = array( //this creates a URL that will call this form at "psychometrics_result"
+        'title' => 'Psychometrics Questions',           
+        'page callback' => array('psychometrics_questions'), //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form        
+        'file' => 'psychometrics_questions.inc',
+        'access callback' => 'is_admin',
+    ); 
+    // Add psychometrics question
+    $items['admin/config/content/psychometrics/questions/add_qst/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Add Scale', //dynamic page title          
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('psychometrics_add_qst', 6), //put the name of the form here
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_add_qst.inc'
+    );
+    // view psychometrics question
+    $items['admin/config/content/psychometrics/view_qst/%'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'View Scale', //dynamic page title                  
+        'page callback' => array('psychometrics_view_qst'), //put the name of the form here
+        'page arguments' => array(5),
+        'access callback' => 'is_admin',        
+        'file' => 'psychometrics_view_qst.inc'
+    );
+    
+    return $items;
+}
+
+
+/* Get section title based on section name */
+function title_name($id){ 
+    $secret_key = variable_get('IIUM_Encryption_Key', NULL);
+    $id = (int)decrypt($id, $secret_key); 
+    /* query to fetch psychometrics sections */
+    $query = db_select('psychometric_sections')
+        ->fields('psychometric_sections', array('title'))
+        ->condition('delete_status', '0', '=')
+        ->condition('id', $id, '=')
+        ->execute();    
+    return $query->fetchColumn('0');     
+}
+
+
+/* Reverse scoring method */
+function reverse_scoring(){
+    return array(
+            '1'=>'5',
+            '2'=>'4',
+            '3'=>'3',
+            '4'=>'2',
+            '5'=>'1'
+        );
+}
+
+/* calculate points based on questions */
+function calculate_points($qid,$ans){
+    $point = "";
+    $pq = db_select('psychometric_questions','pq');    
+    $pq->fields('pq',array('id','delete_status','reverse_score'));
+    $pq->condition('delete_status', '0', '=');
+    $pq->condition('id', $qid, '=');
+    $pq_query = $pq->execute();
+    $result = $pq_query->fetchAssoc();
+    $rev_scoring_arr = reverse_scoring();    
+    if($result['reverse_score'] == '0')
+        $point = $rev_scoring_arr[$ans];
+    else
+        $point = $ans;
+    return $point;
+}
+
+/* Get domian name based on id*/
+function get_domain_name($domid){
+    $pd = db_select('psychometric_domains','pd');    
+    $pd->fields('pd',array('id','title'));
+    $pd->condition('id', $domid, '=');
+    $pd_query = $pd->execute();
+    return $pd_query->fetchColumn('1');
+}
+
+/* Get domian name based on id*/
+function get_section_name($secid){
+    $ps = db_select('psychometric_sections','ps');    
+    $ps->fields('ps',array('id','title'));
+    $ps->condition('id', $secid, '=');
+    $ps_query = $ps->execute();
+    return $ps_query->fetchColumn('1');
+}
+
+/* db query to list psychometric questions based on section id */
+function psychometric_questions($secid){
+    $pq = db_select('psychometric_questions','pq');    
+    $pq->fields('pq');
+    $pq->condition('delete_status', '0', '=');
+    $pq->condition('secid', $secid, '=');
+    $pq->orderBy('qnum','asc');
+    return $pq->execute();
+}
+
+/* Check if user already attend the test */
+function psychometric_test_check($secid, $userid){
+    return $pi_query = db_select('psychometric_info','pid')
+            ->fields('pid', array('id','uid','mode'))
+            ->condition('pid.uid', $userid, '=')
+            ->condition('pid.secid', $secid, '=')
+            ->orderBy('id', 'DESC')
+            ->execute();
+}
+
+/**
+ * Check to see if a user has logged in to access.
+ * @return
+ *   TRUE if the user object has the access, FALSE if it does not.
+ */
+function is_user_loggedin() { 
+    global $user;   
+    $std_role_info = user_role_load_by_name('student');
+    if($user->uid!=1){
+        if ($user->uid > 0 && in_array($std_role_info->name, $user->roles)) {      
+            return TRUE;
+        }
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/**
+ * Check to see if a user has is admin.
+ * @return
+ *   TRUE if the user object has the access, FALSE if it does not.
+ */
+function is_admin() { 
+    global $user;    
+    if ($user->uid == 1) {           
+        return TRUE;
+    }
+    return FALSE;
+}
+
+/* All sections links */
+function get_sections_links(){
+    global $user;
+    $secret_key = variable_get('IIUM_Encryption_Key', NULL); 
+        
+    /* query to fetch psychometrics std_info */
+    $std_query = db_select('psychometric_std_info')
+        ->fields('psychometric_std_info')
+        ->condition('uid', $user->uid, '=')
+        ->execute();
+    $std_info = $std_query->fetchAssoc();
+    
+    /* query to fetch psychometrics sections */
+    $query = db_select('psychometric_sections')
+        ->fields('psychometric_sections')
+        ->condition('delete_status', '0', '=')
+        ->execute();
+    $result = $query->fetchAll();
+    
+    $custom_heading = "
+            <h1>OVERVIEW</h1>
+            <p>This profiling aims to understand individual personality, career interest, career aspirations and career decision making which might assist to enhance employability after graduation. </p>
+            <h1>Instruction</h1>
+            <p>There is no right or wrong answer since it is just an individual differences and uniqueness. Therefore, you may give the best responses which reflect the true you. </p>";
+
+    $sections = '<ul>';
+    
+    foreach ($result as $value) {      
+        if(!empty($std_info) || $value->id=='1')
+            $sections .= '<li>'.l($value->title, 'student/psychometrics/'. str_replace(' ', '_', strtolower($value->title)).'/'.encrypt($value->id,$secret_key)).'</li>';
+        else
+            $sections .= '<li>'.l($value->title, 'javascript:onclick=alert("Please fill one time Demographic information form with your basic data before you take the test");', array('external' => TRUE)).'</li>';        
+    }
+    
+    $sections .= '</ul>';
+    
+    return $custom_heading . $sections;
+}
+
+/* Kulliyyah options */
+function kulliyyah(){
+    return array(
+            '0'=>'AIKOL',
+            '1'=>'KENMS',
+            '2'=>'IRKHS',
+            '3'=>'KICT',
+            '4'=>'KAED',
+            '5'=>'ENGIN',
+            '6'=>'KOED',
+            '7'=>'KLM',
+            '8'=>'Others',
+        );
+}
+
+/* student_level_of_study options */
+function student_level_of_study(){
+    return array(
+            '0'=>'1st Year',
+            '1'=>'2nd Year',
+            '2'=>'3rd year',
+            '3'=>'4th Year',
+            '4'=>'Pre-Sessional / CELPAD',           
+        );
+}
+
+
+/* admin url */
+function admin_uri(){
+    global $base_url;
+    return $base_url.'/admin/config/content/psychometrics/';
+}
+
+/* admin header links */
+function admin_header_links(){
+    $uri = admin_uri(); 
+    $links = '<ul class="tabs secondary">
+                <li>'.l('Sections', $uri.'sections').'</li>
+                <li>'.l('Domains', $uri.'domains').'</li>
+                <li>'.l('Scales', $uri.'scales').'</li>
+                <li>'.l('Questions', $uri.'questions').'</li>
+                <li>'.l('Students Information',$uri).'</li>                
+            </ul>';    
+    return $links;
+}
+
+function gender_status(){
+    return array('0' => 'Male', '1' => 'Female');
+}

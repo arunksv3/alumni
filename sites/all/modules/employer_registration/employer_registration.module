@@ -1,0 +1,3236 @@
+<?php
+/**
+ * Implements hook_menu().
+ */
+function employer_registration_menu() {
+    $items = array();    
+    // Employer registration screen
+    $items['employer/register'] = array( //this creates a URL that will call this form at "employer/register"
+        'title' => 'Employer Registration', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('employer_registration_form'), //put the name of the form here
+        'access callback' => 'anonymous_user',        
+    );   
+    // My account screen
+    $items['employer/account'] = array(   
+        'title' => 'My Account',        
+        'page callback' => array('employer_registration_account'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),       
+    );
+    // Change password screen 
+    $items['employer/change-password'] = array(   
+        'title' => 'Change Password',  
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_change_password_form'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),          
+    ); 
+    // Edit screen for employer registration
+    $items['employer/edit'] = array(   
+        'title' => 'Company Information',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_profile_form'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),           
+    );
+    // Employer portfolio screen 
+    $items['employer/portfolio'] = array(   
+        'title' => 'Company Portfolio',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_portfolio'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),         
+    );
+    // Employer gallery screen 
+    $items['employer/gallery'] = array(   
+        'title' => 'Company Photos',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_gallery'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('employer'),       
+    );
+    // Employers page
+    $items['employers'] = array(   
+        'title' => 'Employers',        
+        'page callback' => array('employer_registration_employers'),
+        'access callback' => TRUE,          
+    );
+    // Employers view page
+    $items['employers/%/%'] = array(   
+        'title' => 'Employers',        
+        'page callback' => array('employer_registration_employers_view'),
+        'page arguments' => array(2),
+        'access callback' => TRUE,          
+    );
+    // Employers jobs view page
+    $items['employers/%/jobs/%'] = array(   
+        'title' => 'Job Post',        
+        'page callback' => array('employer_registration_employers_jobs_view'),
+        'page arguments' => array(1,3),
+        'access callback' => TRUE,          
+    );
+    // View all companies    
+    $items['companies/q/%'] = array(
+        'title' => 'Employer Directory',   
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_all_companies',2),
+        'access callback' => TRUE,
+    );
+    // View all companies    
+    $items['jobsearch'] = array(
+        'title' => 'Advance Job Search',   
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_job_search','',''),
+        'access callback' => TRUE,
+    );
+    // View all companies    
+    $items['jobsearch/%/%'] = array(
+        'title' => 'Advance Job Search',   
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('employer_registration_job_search',1,2),
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+
+/**
+ * @file
+ * A employer registration module that displays registaration form for employers.
+ */
+function employer_registration_form($form, &$form_state){ 
+    global $user;
+    
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') .'/js/jquery.validate.js');    
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') .'/js/jqueryformvalidation.js');
+    drupal_add_js(drupal_get_path('module', 'employer_registration') .'/js/custom_validations.js');
+    $theme_path = drupal_get_path('theme', 'bootstrap_business');
+      
+    $company_banner = "";
+    $employer_registration = ($user->uid > 0 ? FALSE : TRUE);
+    $account = user_load($user->uid);    
+    if (array_search("administrator", $account->roles)) {
+        $q = $_GET['q'];
+        $q_arry = explode('/', $q);           
+        $user_uid = $q_arry['1'];
+    }else{
+        $user_uid = $user->uid;
+    }
+    
+    if($user_uid!=0){
+        $user_result = userdetails($user_uid);
+        extract($user_result);        
+        $employer_result = employerdetails($user_uid);
+        (!empty($employer_result) ? extract($employer_result) : '' );        
+        if(isset($nature_bussiness)){
+            $array = explode('|', $nature_bussiness);
+            $nature_bussiness = array();
+            foreach($array as $key=>$value){
+                $nature_bussiness[$value] = $value;
+            }
+        }
+    }else{        
+        $nid = 42;
+        $node = node_load($nid);
+        if($node!=""){
+            $nodeView = node_view($node, 'full');
+            $message = drupal_render($nodeView['body']);
+            $message.= '<div class="mandatory"><span>*</span> Indicates Mandatory</div>';        
+            $form['cutomtext'] = array(
+                '#type' => 'item',
+                '#markup' => $message,
+            );  
+        }
+    }  
+    
+    if (array_search("administrator", $account->roles)) 
+        $suffix = "'#suffix' => '</div>'";
+    else
+        $suffix = '';
+       
+    $form['company_details'] = array(
+        '#type' => 'item',
+        '#markup' => '<h2>Company Details <span>- Specify the details of the company</span></h2>',
+        '#prefix' => '<div>',
+    );    
+    $form['company_organization'] = array(
+        '#title' => 'Name of the Company / Organization',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($company_organization) ? $company_organization : ''),       
+    );
+    $form['company_registration_number'] = array(
+        '#title' => 'Company Registration Number',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#minlength' => 3,
+        '#default_value' => (isset($company_registration_number) ? $company_registration_number : ''),       
+    );
+    $form['address'] = array(
+        '#type' => 'fieldset',      
+    ); 
+    $form['address']['street'] = array(
+        '#title' => 'Street',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($street) ? $street : ''),
+        '#maxlength' => 50
+    );
+    $form['address']['city'] = array(
+        '#title' => 'City',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($city) ? $city : ''),
+        '#maxlength' => 50
+    );
+    $form['address']['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#options' => array(''=>'Select') + countries_list(),
+        '#required' => TRUE,
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_registration_state_list_ajax',
+            'wrapper' => 'state-list-wrapper',
+        ),
+        '#default_value' => (isset($country) ? $country : ''),
+    );
+    
+    // Wrapper for state dropdown list
+    $form['address']['wrapper'] = array(
+        '#prefix' => '<div id="state-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    
+    if ((isset($form_state['values']['country']) && $form_state['values']['country'] != "") || ($user_uid!=0)) {
+        if(!isset($form_state['values']['country'])){
+            $cid = $country;
+        }else{
+            $cid = $form_state['values']['country'];
+        }
+        $state_list = db_select('states_list')
+                ->fields('states_list')
+                ->condition('cid', $cid, '=')
+                ->execute()
+                ->fetchAll();
+        $state_list_arr[''] = 'Select';
+        foreach ($state_list as $value):
+            $state_list_arr[$value->id] = $value->name;
+        endforeach;
+        if(count($state_list) > 0){
+            // Province dropdown list
+            $form['address']['wrapper']['state'] = array(
+                '#type' => 'select',
+                '#title' => t('State'),
+                '#options' => $state_list_arr,
+                '#required' => TRUE,
+                '#default_value' => (isset($state) ? $state : ''),
+            );
+        }
+    }
+    
+    $form['address']['zipcode'] = array(
+        '#title' => 'Zip code',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($zipcode) ? $zipcode : ''),
+        '#maxlength' => 5
+    );
+    $form['company_size'] = array(
+        '#title' => 'Company Size',        
+        '#type' => 'textfield',        
+        '#required' => TRUE,
+        '#default_value' => (isset($company_size) ? $company_size : ''), 
+    ); 
+    $form['website'] = array(
+        '#title' => 'Website (if any)',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($website) ? $website : ''),  
+    );    
+    $form['nature_bussiness'] = array(
+        '#type' => 'checkboxes',
+        '#title' => t('Nature of the Business / (Industry Type)'),
+        '#options' => nature_bussiness_arr(),
+        '#attributes' => array(
+            'name' => 'nature_bussiness[]'
+        ),        
+        '#required' => TRUE,
+        '#value' => (isset($nature_bussiness) ? $nature_bussiness : ''), 
+    ); 
+    $form['other'] = array(
+        '#title' => 'Please specify nature of the business',        
+        '#type' => 'textfield',
+        '#prefix' => '<div class="other-field" style="display:none">',
+        '#suffix' => '</div>', 
+        '#default_value' => (isset($other) ? $other : ''), 
+    );   
+    $form['intro_company_organisation'] = array(
+        '#title' => 'Brief Introduction of your company /Organization',        
+        '#type' => 'textarea',  
+        '#required' => TRUE,
+        '#default_value' => (isset($intro_company_organisation) ? $intro_company_organisation : ''),   
+    );
+    $form['company_logo'] = array(
+        '#title' => 'Upload Company Logo <span title="This field is required." class="form-required">*</span>',        
+        '#type' => 'file',
+        '#description' => 'Allowed extensions (.png, .jpeg, .gif)',        
+        '#prefix' => '<div class="form-item form-type-file form-item-files-company-logo">',
+        '#suffix' => (isset($company_logo) ? '<img src = "'.file_create_url($company_logo).'" >' : '').'</div>',
+    );
+    $form['company_banner'] = array(
+        '#title' => 'Upload Company banner',        
+        '#type' => 'file',
+        '#description' => 'banner size 940 * 246',
+        '#prefix' => '<div class="form-item form-type-file form-item-files-company-banner">',
+        '#suffix' => (!$employer_registration ? ($company_banner!="" ? '<img src = "'.file_create_url($company_banner).'" height = "100px" width = "100px" >' : '<img src = "' . file_create_url($theme_path . '/images/comp-ban.jpg') . '" >') : '').'</div>',        
+    );    
+    $form['contact'] = array(
+        '#type' => 'fieldset', 
+        '#title' => t('<h2>Contact Person <span>- Specify the details of contact person on whom this account is been created</span></h2>'),      
+    ); 
+    $form['contact']['federal_title'] = array(
+        '#title' => 'Federal/State title',        
+        '#type' => 'select',
+        '#options' => array(''=>'Select') + comp_titles(),
+        '#required' => TRUE,
+        '#default_value' => (isset($federal_title) ? $federal_title : ''),       
+    );
+    $form['contact']['p_title'] = array(
+        '#type' => 'select',
+        '#title' => t('Title'),
+        '#options' => array(
+            '' => t('Select'),
+            'Dr' => t('Dr.'),
+            'Mr' => t('Mr.'),
+            'Mrs' => t('Mrs.'),
+            'Ms' => t('Ms.'),
+        ),
+        '#required' => TRUE,
+        '#default_value' => (isset($p_title) ? $p_title : ''),  
+    ); 
+    // To make these fields required
+    $form['contact']['firstname'] = array(
+        '#type' => 'textfield',
+        '#title' => t('First name'),
+        '#required' => TRUE, // Added
+        '#default_value' => (isset($firstname) ? $firstname : ''),  
+    );
+    $form['contact']['lastname'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Last name'),
+        '#required' => TRUE, // Added
+        '#default_value' => (isset($lastname) ? $lastname : ''),  
+    );
+    $form['designation'] = array(
+        '#title' => 'Designation',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($designation) ? $designation : ''), 
+        '#maxlength' => 30,
+    );
+    
+    if (!array_search("administrator", $account->roles)) {
+        $form['email'] = array(
+            '#title' => 'Email Address',        
+            '#type' => 'textfield',
+            '#required' => TRUE,
+            '#default_value' => (isset($mail) ? $mail : ''),  
+            '#disabled' => (isset($mail) ? TRUE : FALSE),
+            '#description' => 'This will be your Username & Further point of communication',           
+        );
+    }
+    
+    $form['telephone'] = array(
+        '#title' => 'Telephone (Office)',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#default_value' => (isset($telephone) ? $telephone : ''),  
+        '#maxlength' => 14
+    );
+    $form['fax'] = array(
+        '#title' => 'Fax',        
+        '#type' => 'textfield',
+        '#default_value' => (isset($fax) ? $fax : ''),    
+        '#suffix' => '</div>',
+        '#maxlength' => 14
+    );
+    
+    if (!array_search("administrator", $account->roles)) {       
+        $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' => t('Register'),      
+        );
+    }
+    
+    $form['#attributes'] = array('enctype' => 'multipart/form-data', 'id'=>'employer-registration-form');
+    
+    return $form;        
+}
+
+/**
+ * Validate handler for employer_registration_form_validate().
+ */
+function employer_registration_form_validate($form, &$form_state) {   
+    extract($form_state['input']);
+    
+    // user info for email validation    
+    $user_query = db_select('users')
+           ->fields('users')
+           ->condition('mail', $email, '=')            
+           ->execute();    
+    $user_result = $user_query->fetchAssoc();        
+    
+    // file extension validation
+    $file_logo = $_FILES["files"]["name"]['company_logo'];
+    $file_banner = $_FILES["files"]["name"]['company_banner'];
+    $allowed =  array('gif','png' ,'jpg', 'jpeg');
+    if($file_logo!=""){
+        $logoext = pathinfo($file_logo, PATHINFO_EXTENSION);        
+        if(!in_array($logoext, $allowed) ) {
+            form_set_error('company_logo', t('Invalid file extension for company logo'));
+        }
+    }else
+        form_set_error('company_logo', t('Please upload company logo'));
+    if($file_banner!=""){        
+        $logobanner = pathinfo($file_banner, PATHINFO_EXTENSION);        
+        if(!in_array($logobanner, $allowed) ) {
+            form_set_error('company_banner', t('Invalid file extension for company banner'));
+        }
+    }
+    if(!empty($user_result))
+        form_set_error('email', t('Email address already exists'));
+    
+}
+
+/**
+ * Adds a submit handler/function to our form to send a successful
+ * completion message to the screen.
+ */
+function employer_registration_form_submit($form, &$form_state) {     
+    extract($form_state['input']);
+    if($state == "")
+        $state = "0";   
+    $nature_bussiness = implode('|', $nature_bussiness);
+    
+     // user role by name
+    $user_role = user_role_load_by_name('employer'); 
+
+    // retrieving last userid from users table
+    $user_result = db_select('users')
+        ->fields('users',array('uid'))
+        ->orderBy('uid', 'DESC')
+        ->execute();    
+    $result = $user_result->fetchAssoc();
+    $recent_uid = $result['uid']+1;
+
+    // inserting values to users table
+    $new_user = array(
+            'uid' => $recent_uid,
+            'name' => $email,
+            'pass' => user_password(),
+            'mail' => $email,
+            'signature_format' => 'filtered_html',
+            'init' => $email,
+            'created' => time(),
+       );
+    // $account returns user object
+    $account = user_save(null, $new_user);
+    
+    // inserting new role to users_roles
+    $uid = db_insert('users_roles')
+       ->fields(array('uid','rid'))
+       ->values(array(
+            'uid' => $recent_uid,
+            'rid' => $user_role->rid,            
+       ))
+       ->execute();
+    
+  
+    
+    $company_logo_name = $_FILES["files"]["name"]['company_logo'];
+    $company_banner_name = $_FILES["files"]["name"]['company_banner'];
+    
+    // Move files to destination folder
+    $company_logo_temp = $_FILES["files"]["tmp_name"]['company_logo'];
+    $company_banner_temp = $_FILES["files"]["tmp_name"]['company_banner'];    
+    $dest_comp_logo = variable_get('IIUM_employer_logo_path', NULL).time().'_'.$company_logo_name;
+    move_uploaded_file($company_logo_temp, $dest_comp_logo);
+    
+    $dest_comp_banner = "";
+    if($company_banner_name!=""){        
+        $dest_comp_banner = variable_get('IIUM_employer_banner_path', NULL).time().'_'.$company_banner_name;
+        move_uploaded_file($company_banner_temp, $dest_comp_banner);
+    }    
+
+    // Set operation.
+    $op = 'register_pending_approval';
+    // Send an email.
+    //_user_mail_notify($op, $account);
+
+    // inserting values to employer_registration table
+    $eid = db_insert('employer_registration')
+        ->fields(array(
+            'uid' => $recent_uid,
+           // 'federal_title' => $federal_title,
+            'company_organization' => $company_organization,
+            'company_registration_number' => $company_registration_number,
+            'street' => $street,
+            'city' => $city,
+            'state' => $state,
+            'country' => $country,
+            'zipcode' => $zipcode,
+	    'p_title' => $p_title,
+            'firstname' => $firstname,
+            'lastname' => $lastname,
+            'designation' => $designation,
+            'telephone' => $telephone,
+            'fax' => $fax,
+	    'website' => $website,
+            'company_logo_name' => $company_logo_name,
+            'company_banner_name' => $company_banner_name,
+            'company_logo' => $dest_comp_logo,
+            'company_banner' => $dest_comp_banner,
+	    'company_size' => $company_size,        
+            'nature_bussiness' => $nature_bussiness,
+            'other' => $other,
+            'intro_company_organisation' => $intro_company_organisation,
+        ))
+        ->execute();
+    
+    audit_log('New employer registered', 'User ID: '.$recent_uid);  
+    
+    drupal_set_message(t('Thank you for registering with IIUM. Your account is currently pending approval by the site administrator.
+    In the meantime, a welcome message with further instructions has been sent to your e-mail address.'));    
+}
+
+
+/* Altered form for user_login and user profile forms */
+function employer_registration_form_alter(&$form, &$form_state, $form_id) { 
+    $path = current_path();
+    $faculty = false;
+    $student = false;
+    $employer = false;
+    if(isset($form['#user']->roles) && is_array($form['#user']->roles)){
+        foreach($form['#user']->roles as $key => $role){
+            if($role == 'faculty' || $role == 'faculty_admin')
+                $faculty = true;
+            if($role == 'student')
+                $student = true;
+            if($role == 'employer')
+                $employer = true;
+            if($role == 'faculty')
+                $faculty_user = true;
+            if($role == 'faculty_admin')
+                $faculty_admin = true;
+        }
+    }
+    
+    if($form_id == 'user_register_form'){
+        $form['account']['roles'][6]['#disabled'] = TRUE;
+        $form['account']['roles'][4]['#disabled'] = TRUE;
+        $form['account']['roles'][11]['#disabled'] = TRUE;
+        if(strpos($path,'create')==false)
+            $form['account']['roles'][5]['#disabled'] = TRUE;
+    }
+    
+    if($form_id == 'user_profile_form'){
+        $roles = array_map('check_plain', user_roles(TRUE));
+        // The disabled checkbox subelement for the 'authenticated user' role
+        // must be generated separately and added to the checkboxes element,
+        // because of a limitation in Form API not supporting a single disabled
+        // checkbox within a set of checkboxes.
+        // @todo This should be solved more elegantly. See issue #119038.
+        $checkbox_authenticated = array(
+            '#type' => 'checkbox',
+            '#title' => $roles[DRUPAL_AUTHENTICATED_RID],
+            '#default_value' => TRUE,
+            '#disabled' => TRUE,
+        );
+        unset($roles[DRUPAL_AUTHENTICATED_RID]);
+
+        $checkbox_student = array(
+            '#type' => 'checkbox',
+            '#title' => $roles['6'],
+            '#default_value' => $student,
+            '#disabled' => TRUE,
+        );
+        unset($roles['6']);
+        
+        if(strpos($path,'create')==false){
+            $checkbox_employer = array(
+                '#type' => 'checkbox',
+                '#title' => $roles['5'],                
+                '#disabled' => TRUE,
+                '#default_value' => $employer,
+            );
+            unset($roles['5']);
+        }
+        
+        $checkbox_faculty = array(
+            '#type' => 'checkbox',
+            '#title' => $roles['4'],
+            '#default_value' => $faculty_user,
+            '#disabled' => TRUE,
+        );
+        unset($roles['4']);
+        
+        $checkbox_faculty_admin = array(
+            '#type' => 'checkbox',
+            '#title' => $roles['11'],
+            '#default_value' => $faculty_admin,
+            '#disabled' => TRUE,
+        );
+        unset($roles['11']);
+
+        $form['account']['roles'] = array(
+            '#type' => 'checkboxes',
+            '#title' => t('Roles'),
+            '#default_value' => (!$register && isset($account->roles) ? array_keys($account->roles) : array()),
+            '#options' => $roles,
+            '#access' => $roles && user_access('administer permissions'),
+             DRUPAL_AUTHENTICATED_RID => $checkbox_authenticated,
+            '6' => $checkbox_student,
+            '5' => $checkbox_employer,
+            '4' => $checkbox_faculty,
+            '11' => $checkbox_faculty_admin,
+        );
+    }
+        
+    if($faculty == true){   
+        $form = faculty_form($form, $form_state);  
+        $form['account']['name']['#access'] = FALSE;
+        $form['account']['pass']['#access'] = FALSE;
+        $form['contact']['#access'] = FALSE;
+        $form['account']['mail']['#access'] = FALSE;
+        $form['#submit'][] = 'faculty_profile_form_submit';      
+    }
+    
+    else if($student == true){
+        $form = student_form($form, $form_state);  
+        $form['account']['name']['#access'] = FALSE;
+        $form['account']['pass']['#access'] = FALSE;
+        $form['contact']['#access'] = FALSE;
+        $form['account']['mail']['#access'] = FALSE;
+        $form['#submit'][] = 'student_profile_form_submit';
+    }
+    
+    else if($employer == true){
+        if(!isset($_GET['pass-reset-token'])){
+            $form['account']['mail']['#access'] = FALSE;            
+            $form = employer_registration_form($form, $form_state); 
+            $form['#submit'][] = 'employer_registration_profile_form_submit';  
+        }else{
+            $form['contact']['#access'] = FALSE;
+            $form['account']['mail']['#disabled'] = TRUE;
+        }
+   
+    }else if($form_id == 'user_login'){         
+        drupal_set_title('User Login');
+        
+        // Custom notes
+        $message = '<div class="login-note">
+                <span>Student / Faculty?</span> Login with username and password same as IIUM email account.<br>
+                <span>Employer?</span> Login with your registered Username (email address) and password.</div>';        
+        $form['cutomtext'] = array(
+            '#type' => 'item',
+            '#markup' => $message ,   
+            '#weight' => 0,
+        );
+        
+        // Options for login types
+        $form['login_option'] = array(
+            '#type' => 'radios',
+            '#title' => t('Login Type'), 
+            '#options' => array(t('Student/Faculty'), t('Employer')),
+            '#required' => TRUE,
+            '#default_value' => (isset($form_state['input']['login_option']) ? $form_state['input']['login_option'] : ''),
+            '#weight' => 1,
+        );
+
+        // Username field
+        $form['name'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Username'),
+            '#size' => 60,
+            '#required' => TRUE,
+            '#weight' => 2,
+        );
+
+        // Password field.
+        $form['pass'] = array(
+            '#type' => 'password',
+            '#title' => t('Password'),
+            '#size' => 60,          
+            '#required' => TRUE,
+            '#weight' => 3,
+        );
+
+        $form['#submit'] = user_login_form_submit($form, $form_state);         
+        
+    }else if($form_id == 'user_pass'){
+        if($form_state['input']['op'])
+            $form['#validate'] = employer_registration_user_pass_validate($form, $form_state);         
+    }
+    
+    return $form;        
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function employer_registration_user_login(&$edit, $account) {
+    global $user;
+    // Don't redirect on password reset.
+    $current_menu_item = menu_get_item();
+    if ($current_menu_item['path'] == 'user/reset/%/%/%') {
+        return;
+    }
+    
+    // Redirect employer to profile page after the login.
+    if($user->uid!=1 && $_GET['destination']==""){ 
+        if (in_array('employer', $user->roles))
+            $_GET['destination'] = 'employer/account';
+	
+	if (in_array('faculty_admin', $user->roles)){
+            $_GET['destination'] = 'admin/config/people/faculty/account';
+        }
+         
+        if (in_array('faculty', $user->roles)){
+            $_GET['destination'] = 'faculty/account';
+        }
+
+        // Redirect student to profile page after the login.
+        if (in_array('student', $user->roles)){
+            $portfolio_query = db_select('student_details')
+                ->fields('student_details')
+                ->condition('uid', $user->uid, '=')            
+                ->execute();    
+            $count = $portfolio_query->rowCount(); 
+            if($count>0)
+                $_GET['destination'] = 'student/account';
+            else 
+                $_GET['destination'] = 'student/updatedetails';
+        }
+    }
+}
+
+/* user login form submission */
+function user_login_form_submit(&$form, &$form_state) {    
+    if(!empty($form_state['input'])){            
+        extract($form_state['input']);
+        if($login_option == '1'){
+            if($uid = user_authenticate(trim($name), $pass)) {            
+                $form_state['uid'] = $uid;
+                user_login_submit($form, $form_state);                
+            }else{
+                $form_state['values'] = $form_state['input'];
+                user_login_final_validate($form, $form_state);                
+            }
+        }else{
+            $form['#validate'] = array(); 
+            $form['#submit'] = array();       
+            //if($name=='acsd'){
+		$un = user_load_by_name(array("name" => $name));
+        	if(!empty($un)){
+                    $user = user_load($un->uid);
+                    $roles = $user->roles;
+                    //if(isset($roles['6'])){
+                    	$form_state['uid'] = $un->uid;
+                    	user_login_submit($form, $form_state);
+                   /* }else{
+                        drupal_set_message('Invalid login credentials','error');
+                    }*/
+                }else{
+                    drupal_set_message('Invalid login credentials','error');
+                }
+	    /*}else{
+                if($name!="" & $pass!=""){                                
+                    $server = variable_get('LDAP_SERVER_NAME', NULL); 
+                    $rootdn = str_replace('xxxx', $name, variable_get('LDAP_UNAME', NULL));                 
+                    $rootpw = $pass;
+
+                    $ds = ldap_connect($server); // must be a valid LDAP server!
+                    ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+                    ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+                    $bind =  @ldap_bind($ds, $rootdn, $rootpw); 
+
+                    if ($bind) {                                              
+                        $filter = "(cn=*)";
+                        $sr = ldap_search($ds, $rootdn, $filter);  
+                        $count = ldap_count_entries($ds, $sr);
+
+                        if($count > 0){
+                            $info = ldap_get_entries($ds, $sr); 
+                            $givenname  = $info[0]["givenname"][0];
+                            $sn   = $info[0]["sn"][0];
+                            $orcldefaultprofilegroup = $info[0]["orcldefaultprofilegroup"][0];
+                            $mail = $info[0]["mail"][0];
+                            $cn   = $info[0]["cn"][0];
+                            $uid  = $info[0]["uid"][0];
+                            $dn   = $info[0]["dn"]; 
+                            
+                            $arr = explode(',', $orcldefaultprofilegroup);            
+                            $cn_arr = explode('=', $arr['0']);
+                            $cn_value = $cn_arr['1'];
+                            $user_type_arr = explode('_', $cn_value);   
+                            $type = $user_type_arr['2']; 
+                            
+                            // roles 
+                            $std = user_role_load_by_name('student');
+                            $faculty_user = user_role_load_by_name('faculty');
+                            $faculty_admin = user_role_load_by_name('faculty_admin');
+
+                            if($cn_value=="iium_staff_adm"){
+                                $role_name = $faculty_admin->name;
+                                $role_id = $faculty_admin->rid;
+                            }else if($cn_value=="iium_staff_acad"){
+                                $role_name = $faculty_user->name;
+                                $role_id = $faculty_user->rid;    
+                            }else if($cn_value=="iium_stud_ug" || $cn_value=="iium_stud_pg") {
+                                $role_name = $std->name;
+                                $role_id = $std->rid;    
+                            }else{
+                                $role_name = '';
+                                $role_id = '';    
+                            }
+                            
+                            if($role_name !="" && $role_id != ''){
+                                $un = db_select('users','u');
+                                $un->innerJoin('users_roles','ur', 'u.uid=ur.uid');                   
+                                $un->fields('u', array('uid','name','mail'));
+                                $un->fields('ur', array('uid','rid')) ;                                 
+                                $un->condition('u.name', trim($uid), '=');
+                                $un->condition('u.mail', trim($mail), '=');                        
+                                $un = $un->execute()->fetchAssoc();
+
+                                if( (empty($un)) ) { // user does not exists in IIUM 
+                                    // Create a user
+                                    $details = array(
+                                        'name'                  => $uid,
+                                        'mail'                  => $mail,
+                                        'access'                => 0,
+                                        'status'                => 1,  
+                                        'roles' => array(
+                                            2 => 'authenticated',
+                                            $role_id => $role_name,
+                                         ),
+                                         'signature_format' => 'filtered_html',
+                                         'init' => $mail,
+                                         'created' => time(),
+                                    );
+                                    $u = user_save( null, $details ); // Creation du user   
+
+                                    // ldap user information 
+                                    $eid = db_insert('ldap_user_info')           
+                                    ->fields(array(
+                                        'uid' => $u->uid, 
+                                        'givenname' => $givenname,
+                                        'sn' => $sn,
+                                        'orcldefaultprofilegroup' => $orcldefaultprofilegroup,
+                                        'cn' => $cn,                                
+                                        'dn' => $dn, 
+                                        'type' => $type,
+                                        'created' => time(),
+                                    ))
+                                    ->execute(); 
+                                    
+                                    audit_log('New ldap user created', $u->uid); 
+                                    $userid = $u->uid;                            
+                                }else{
+                                    // UPDATE a user
+                                    $uid = db_update('users')           
+                                       ->fields(array(                                    
+                                           'name' => $uid,
+                                           'mail' => $mail,                                    
+                                           'init' => $mail,                                     
+                                       ))
+                                       ->condition('uid', $un['uid'], '=')
+                                       ->execute();
+
+                                    $eid = db_update('ldap_user_info')           
+                                        ->fields(array(                                    
+                                            'givenname' => $givenname,
+                                            'sn' => $sn,
+                                            'orcldefaultprofilegroup' => $orcldefaultprofilegroup,
+                                            'cn' => $cn,                                
+                                            'dn' => $dn,  
+                                            'type' => $type,                                    
+                                        ))
+                                        ->condition('uid', $un['uid'], '=')
+                                        ->execute(); 
+                                    
+                                    $userid = $un['uid'];
+                                }
+                                
+                                // student info from oracle 
+                                $oci_uname = variable_get('oci_username', NULL); 
+                                $oci_pass = variable_get('oci_password', NULL); 
+                                $oci_host = variable_get('oci_connection_string', NULL); 
+                                $conn = oci_connect($oci_uname, $oci_pass, $oci_host);
+
+                                if (!$conn) {
+                                    $e = oci_error();
+                                    trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+                                }
+                                
+                                if($cn_value=="iium_stud_ug" || $cn_value=="iium_stud_pg") {                                    
+                                    // student personal information 
+                                    $stinfo = oci_parse($conn, "SELECT * FROM UIA.CP_STUDINFO_VW where MATRIC_NO = '".$cn."'");
+                                    oci_execute($stinfo);                        
+                                    $stdinfoRes = oci_fetch_array($stinfo, OCI_ASSOC+OCI_RETURN_NULLS);
+
+                                    if(!empty($stdinfoRes)){
+                                        // check record exists in our db before inserting 
+                                        $stdinfo = db_select('stdinfo')
+                                            ->fields('stdinfo')
+                                            ->condition('matric_no', $cn, '=')            
+                                            ->execute();    
+                                        $stdinfo_count = $stdinfo->rowCount(); 
+
+                                        if($stdinfo_count > 0){
+                                            // updating a record into stdinfo
+                                            $stdid = db_update('stdinfo') 
+                                                ->fields(array(
+                                                    'name' => $stdinfoRes['NAME'],
+                                                    'matric_no' => $stdinfoRes['MATRIC_NO'],
+                                                    'ic_no' => $stdinfoRes['IC_NO'],
+                                                    'program' => $stdinfoRes['PROGRAM'],
+                                                    'prev_prog' => $stdinfoRes['PREV_PROG'], 
+                                                    'intend_prog' => $stdinfoRes['INTEND_PROG'],
+                                                    'ctzship' => $stdinfoRes['CTZSHIP'], 
+                                                    'birth_date' => $stdinfoRes['BIRTH_DATE'],
+                                                    'origin_code' => $stdinfoRes['ORIGIN_CODE'], 
+                                                    'bumi' => $stdinfoRes['BUMI'],
+                                                    'st_rsdc' => $stdinfoRes['ST_RSDC'],
+                                                    'gender' => $stdinfoRes['GENDER'],
+                                                    'contact_phone' => $stdinfoRes['CONTACT_PHONE'], 
+                                                    'contact_mobile' => $stdinfoRes['CONTACT_MOBILE'],
+                                                    'post_add1' => $stdinfoRes['POST_ADD1'], 
+                                                    'post_add2' => $stdinfoRes['POST_ADD2'],
+                                                    'post_add3' => $stdinfoRes['POST_ADD3'], 
+                                                    'add1' => $stdinfoRes['ADD1'], 
+                                                    'add2' => $stdinfoRes['ADD2'], 
+                                                    'add3' => $stdinfoRes['ADD3'], 
+                                                    'year' => $stdinfoRes['YEAR'], 
+                                                    'status' => $stdinfoRes['STATUS'], 
+                                                    'alt_email' => $stdinfoRes['ALT_EMAIL'],
+                                                    ))
+                                                ->condition('matric_no', $cn, '=')  
+                                                ->execute();
+                                        }else{
+                                            // inserting a record into stdinfo
+                                            $stdid = db_insert('stdinfo')           
+                                               ->fields(array(
+                                                    'uid' => $userid,   
+                                                    'name' => $stdinfoRes['NAME'],
+                                                    'matric_no' => $stdinfoRes['MATRIC_NO'],
+                                                    'ic_no' => $stdinfoRes['IC_NO'],
+                                                    'program' => $stdinfoRes['PROGRAM'],
+                                                    'prev_prog' => $stdinfoRes['PREV_PROG'], 
+                                                    'intend_prog' => $stdinfoRes['INTEND_PROG'],
+                                                    'ctzship' => $stdinfoRes['CTZSHIP'], 
+                                                    'birth_date' => $stdinfoRes['BIRTH_DATE'],
+                                                    'origin_code' => $stdinfoRes['ORIGIN_CODE'], 
+                                                    'bumi' => $stdinfoRes['BUMI'],
+                                                    'st_rsdc' => $stdinfoRes['ST_RSDC'],
+                                                    'gender' => $stdinfoRes['GENDER'],
+                                                    'contact_phone' => $stdinfoRes['CONTACT_PHONE'], 
+                                                    'contact_mobile' => $stdinfoRes['CONTACT_MOBILE'],
+                                                    'post_add1' => $stdinfoRes['POST_ADD1'], 
+                                                    'post_add2' => $stdinfoRes['POST_ADD2'],
+                                                    'post_add3' => $stdinfoRes['POST_ADD3'], 
+                                                    'add1' => $stdinfoRes['ADD1'], 
+                                                    'add2' => $stdinfoRes['ADD2'], 
+                                                    'add3' => $stdinfoRes['ADD3'], 
+                                                    'year' => $stdinfoRes['YEAR'], 
+                                                    'status' => $stdinfoRes['STATUS'], 
+                                                    'alt_email' => $stdinfoRes['ALT_EMAIL'],                                   
+                                               ))
+                                               ->execute();
+                                            
+                                            audit_log('New Student information saved', $userid); 
+                                        }
+
+                                        // max stdid of questions based on section 
+                                        $maxquery = db_select('stdinfo');
+                                        $maxquery->condition('matric_no', $cn, '=');
+                                        $maxquery->addExpression('MAX(id)');
+                                        $stdid = $maxquery->execute()->fetchField(); 
+
+                                        // student program information 
+                                        $stpg = oci_parse($conn, "SELECT * FROM UIA.CP_STUDPROGRAM_VW where PROGRAM_CODE = '".$stdinfoRes['PROGRAM']."'");
+                                        oci_execute($stpg);
+                                        $stpgRes = oci_fetch_array($stpg, OCI_ASSOC+OCI_RETURN_NULLS);
+
+                                        // check record exists in our db before inserting 
+                                        $stdprogram = db_select('stdprogram')
+                                            ->fields('stdprogram')
+                                            ->condition('program_code', $stpgRes['PROGRAM_CODE'], '=')            
+                                            ->execute();    
+                                        $stdprogram_count = $stdprogram->rowCount(); 
+
+                                        if($stdprogram_count > 0){
+                                            // updating a record into stdinfo
+                                            $update = db_update('stdprogram') 
+                                                ->fields(array(              
+                                                        'program_code' => $stpgRes['PROGRAM_CODE'],
+                                                        'program_desc' => $stpgRes['PROGRAM_DESC'],
+                                                        'kuly_code' => $stpgRes['KULY_CODE'],
+                                                        'program_level' => $stpgRes['PROGRAM_LEVEL'], 
+                                                        'program_in_bm' => $stpgRes['PROGRAM_IN_BM'],                                            
+                                                    ))
+                                                ->condition('program_code', $stpgRes['PROGRAM_CODE'], '=')  
+                                                ->execute();
+                                        }else{
+                                            // inserting a record into stdinfo
+                                            $insert = db_insert('stdprogram')           
+                                               ->fields(array(    
+                                                    'stdid' => $stdid, 
+                                                    'program_code' => $stpgRes['PROGRAM_CODE'],
+                                                    'program_desc' => $stpgRes['PROGRAM_DESC'],
+                                                    'kuly_code' => $stpgRes['KULY_CODE'],
+                                                    'program_level' => $stpgRes['PROGRAM_LEVEL'], 
+                                                    'program_in_bm' => $stpgRes['PROGRAM_IN_BM'],                                              
+                                                ))
+                                               ->execute();
+                                            
+                                            audit_log('Student program information saved', $stdid); 
+                                        }
+
+                                        // student course information 
+                                        $stky = oci_parse($conn, "SELECT * FROM UIA.CP_KULYNAME_VW where KULY_CODE = '".$stpgRes['KULY_CODE']."'");
+                                        oci_execute($stky);
+                                        $stkyRes = oci_fetch_array($stky, OCI_ASSOC+OCI_RETURN_NULLS);
+
+                                        // check record exists in our db before inserting 
+                                        $stdkulyname = db_select('kulyname')
+                                            ->fields('kulyname')
+                                            ->condition('kuly_code', $stkyRes['KULY_CODE'], '=')            
+                                            ->execute();    
+                                        $stdkulyname_count = $stdkulyname->rowCount(); 
+
+                                        if($stdkulyname_count > 0){
+                                            // updating a record into stdinfo
+                                            $update = db_update('kulyname') 
+                                                ->fields(array(              
+                                                        'kuly_code' => $stkyRes['KULY_CODE'],
+                                                        'kuly_desc' => $stkyRes['KULY_DESC'],
+                                                        'kuly_prefix' => $stkyRes['KULY_PREFIX'],
+                                                        'branch_code' => $stkyRes['BRANCH_CODE'], 
+                                                        'kuly_in_malay' => $stkyRes['KULY_IN_MALAY'],                                            
+                                                    ))
+                                                ->condition('kuly_code', $stkyRes['KULY_CODE'], '=')   
+                                                ->execute();
+                                        }else{
+                                            // inserting a record into stdinfo
+                                            $insert = db_insert('kulyname')           
+                                               ->fields(array(    
+                                                    'stdid' => $stdid, 
+                                                    'kuly_code' => $stkyRes['KULY_CODE'],
+                                                    'kuly_desc' => $stkyRes['KULY_DESC'],
+                                                    'kuly_prefix' => $stkyRes['KULY_PREFIX'],
+                                                    'branch_code' => $stkyRes['BRANCH_CODE'], 
+                                                    'kuly_in_malay' => $stkyRes['KULY_IN_MALAY'],                                              
+                                                ))
+                                               ->execute();
+                                            
+                                            audit_log('Student kuly information saved', $stdid); 
+                                        } 
+
+                                        // student results information 
+                                        $stresults = oci_parse($conn, "SELECT * FROM UIA.CP_STUDRESULT_VW where MATRIC_NO = '".$cn."'");
+                                        oci_execute($stresults);  
+
+                                        // check record exists in our db before inserting 
+                                        $stdresult = db_select('stdresult')
+                                            ->fields('stdresult')
+                                            ->condition('matric_no', $stdinfoRes['MATRIC_NO'], '=')            
+                                            ->execute();    
+                                        $stdresult_count = $stdresult->rowCount();
+
+                                        if($stdresult_count == 0){
+                                            while ($row = oci_fetch_array($stresults, OCI_ASSOC+OCI_RETURN_NULLS)) {                                                               		     // inserting a record into stdinfo
+                                                $insert = db_insert('stdresult')           
+                                                   ->fields(array(    
+                                                        'stdid' => $stdid, 
+                                                        'matric_no' => $row['MATRIC_NO'],
+                                                        'semester' => $row['SEMESTER'],
+                                                        'sessi' => $row['SESSI'],
+                                                        'gpa' => $row['GPA'], 
+                                                        'cgpa' => $row['CGPA'],                                             
+                                                    ))
+                                                   ->execute();
+                                            }
+                                            audit_log('Student semester results information saved', $stdid);
+                                        }
+                                    }                                    
+                                }
+                                // load user
+                                $form_state['uid'] = $userid;
+                                user_login_submit($form, $form_state);
+                                ldap_close($ds);                                  
+                            }else{
+                                drupal_set_message('We have identified that this particular user do not have an existing LDAP group. Please contact IIUM admin to assign the group','error');
+                            }                                                  
+                        }else{
+                            drupal_set_message('Sorry, unrecognized username or password','error');
+                        }                  
+                    }else{
+                        drupal_set_message('Sorry, unrecognized username or password','error');
+                    }                           
+                }
+            }*/
+        }
+    }
+}
+
+// Profile view screen
+function employer_registration_account() {
+    global $user;
+    global $base_url;
+    print magnific_popup_jslibraries();
+    $comp_titles = comp_titles();
+    
+    if(isset($_GET['msg'])){
+        if($_GET['msg'] == '2')            
+            drupal_set_message(t('Your password has been changed.'));
+        else
+            drupal_set_message('The changes have been saved.');
+    }   
+    
+    if ($user->uid != 0) { 
+        // user information        
+        $user_result = userdetails($user->uid);
+        extract($user_result);
+
+        // Employer information
+        $employer_result = employerdetails($user->uid);
+        extract($employer_result);
+        
+        // explode array keys form db
+        $array = explode('|', $nature_bussiness);
+        $nature_bussiness = array();
+        foreach($array as $key=>$value){
+            $nature_bussiness[$value] = $value;
+        }
+        // instersect array that match with keys
+        $nature_bussiness = array_intersect_key(nature_bussiness_arr(), $nature_bussiness);
+        // implode array with comma
+        $nature_bussiness = implode(',<br>', $nature_bussiness);                
+        $output = array(
+            'title' => array(
+                '#type' => 'markup',
+                '#markup' => '
+                        <h1>Welcome, ' . $comp_titles[$federal_title] . ' ' . $p_title .' '. $firstname . ' ' . $lastname . '!!</h1>
+                        <div class="myaccount">
+                        <div class="myaccount-tit"><h2>Change Passsword <span>- you can set the password here</span></h2><a href="' . $base_url . '/employer/change-password">Edit</a></div>
+                        <div class="myaccount-cont">
+                            <div class="row">
+                                <div class="col-md-2">&nbsp;</div>
+                                <div class="col-md-10 p-l-none">
+                                    <ul class="employer-list">
+                                        <li><label>Password</label>XXXXXXXX</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>                            
+                        <div class="myaccount-tit"><h2>Company Information <span>- you can set company information here</span></h2><a href="' . $base_url . '/employer/edit">Edit</a></div>
+                        <div class="myaccount-cont">
+                            <div class="row">
+                                <div class="col-md-2">' . ($company_logo != "" ? '<img src = "' . file_create_url($company_logo) . '" >' : '') . '</div>
+                                <div class="col-md-10 p-l-none">
+                                    <ul class="employer-list">                                        
+                                        <li><label>Name of the Company /  Organization:</label> <div class="employer-cont">' . $company_organization . '</div></li>
+                                        <li><label>Street:</label> <div class="employer-cont">' . $street . '</div></li>
+                                        <li><label>City:</label> <div class="employer-cont">' . $city . '</div></li>
+                                        '.($state!="0"? '<li><label>State:</label> <div class="employer-cont">' . get_state_name($state) . '</div></li>' : '').'                                        
+                                        '.($country!="0"? '<li><label>Country:</label> <div class="employer-cont">' . get_country_name($country) . '</div></li>' : '').'                                                                                
+                                        <li><label>Zip code:</label> <div class="employer-cont">' . $zipcode . '</div></li>
+                                        <li><label>Contact Person:</label> <div class="employer-cont">' . $comp_titles[$federal_title] . ' ' . $p_title . ' ' . $firstname . ' ' . $lastname . '</div></li>
+                                        <li><label>Designation:</label> <div class="employer-cont">' . $designation . '</div></li>
+                                        <li><label>Telephone (Office):</label> <div class="employer-cont">' . $telephone . '</div></li>
+                                        <li><label>Fax:</label> <div class="employer-cont">' . $fax . '</div></li>
+                                        <li><label>Website:</label> <div class="employer-cont">' . $website . '</div></li>
+                                        <li><label>Email:</label> <div class="employer-cont">' . $mail . '</div></li>
+                                        <li><label>Company Banner:</label> <div class="employer-cont">' . ($company_banner != "" ? '<a class="popup-link" href="'. file_create_url($company_banner) .'">view</a><img src = "' . file_create_url($company_banner) . '" height="100px" width="100px">' : '<img src = "' . file_create_url(path_to_theme() . '/images/comp-ban.jpg') . '" >') . '</div></li>
+                                        <li><label>Nature of the Business:</label> <div class="employer-cont">' . $nature_bussiness . ($other != "" ? ": ".$other : '') . '</div></li>
+                                        <li><label>Brief Introduction of your company /Organization:</label> <div class="employer-cont">' . $intro_company_organisation . '</div></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>                            
+                    </div>',
+            ),
+        );
+        return $output;
+    } else {
+        drupal_goto('user');
+    }
+}
+
+/**
+ * Profile edit screen
+ */
+function employer_registration_profile_form($form, &$form_state) {
+    global $user;
+    if ($user->uid != 0) {
+        $form = employer_registration_form($form, $form_state);        
+        $form['submit'] = array(
+            '#type' => 'submit',
+            '#value' => t('Save'),
+        );        
+        $form['#attributes'] = array('enctype' => 'multipart/form-data');
+        return $form;
+    } else {
+        drupal_goto('user');
+    }
+}
+
+/**
+ *  Adds a submit handler/function to profile screen
+ */
+function employer_registration_profile_form_submit($form, &$form_state) { 
+    global $user;
+    $state = "";
+    
+    $account = user_load($user->uid);    
+    if (array_search("administrator", $account->roles)) {
+        $q = $_GET['q'];
+        $q_arry = explode('/', $q);           
+        $user_uid = $q_arry['1'];
+    }else{
+        $user_uid = $user->uid;
+    }
+    
+    extract($form_state['input']);    
+    extract($_FILES['files']['name']);
+    if($state == "")
+        $state = "0";
+    $nature_bussiness = implode('|', $nature_bussiness);
+    
+    $employer_result = employerdetails($user_uid);   
+    
+    $company_logo_name = $company_logo;
+    $company_banner_name = $company_banner;    
+    
+    // Move files to destination folder
+    if($company_logo != $employer_result['company_logo_name'] && $company_logo!=""){
+        $company_logo_temp = $_FILES["files"]["tmp_name"]['company_logo'];        
+        $dest_comp_logo = variable_get('IIUM_employer_logo_path', NULL).time().'_'.$company_logo;        
+        move_uploaded_file($company_logo_temp, $dest_comp_logo);
+        unlink($employer_result['company_logo']);
+    }else{
+        $dest_comp_logo = $employer_result['company_logo'];
+        $company_logo_name = $employer_result['company_logo_name'];            
+    }
+    
+    if($company_banner != $employer_result['company_banner_name'] && $company_banner!=""){
+        $company_banner_temp = $_FILES["files"]["tmp_name"]['company_banner'];
+        $dest_comp_banner = variable_get('IIUM_employer_banner_path', NULL).time().'_'.$company_banner;
+        move_uploaded_file($company_banner_temp, $dest_comp_banner);
+        if(file_exists($employer_result['company_banner']))
+            unlink($employer_result['company_banner']);
+    }else{
+        $dest_comp_banner = $employer_result['company_banner'];
+        $company_banner_name = $employer_result['company_banner_name'];   
+    }
+        
+    $e_update = db_update('employer_registration') 
+        ->fields(array(        
+                'federal_title' => $federal_title,
+                'company_organization' => $company_organization,
+                'street' => $street,
+                'city' => $city,
+                'state' => $state,
+                'country' => $country,
+                'zipcode' => $zipcode,
+                'p_title' => $p_title,
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'designation' => $designation,
+                'telephone' => $telephone,
+                'fax' => $fax,
+                'website' => $website,
+                'company_logo' => $dest_comp_logo,
+                'company_banner' => $dest_comp_banner,
+                'company_logo_name' => $company_logo_name,
+                'company_banner_name' => $company_banner_name,
+                'company_size' => $company_size, 
+                'nature_bussiness' => $nature_bussiness,
+                'other' => $other,
+                'intro_company_organisation' => $intro_company_organisation,
+            ))
+        ->condition('uid', $user_uid, '=')
+        ->execute();
+    
+        audit_log('Employer profile inforamtion updated', $user_uid); 
+    
+    if (!array_search("administrator", $account->roles)) {        
+        drupal_goto('employer/account', array('query' => array('msg' => '1')));
+    }
+}
+
+/**
+ * Password change form.
+ */
+function employer_registration_change_password_form($form, &$form_state) { 
+    // Sanity check
+    if (user_is_anonymous()) {
+        drupal_goto('user');
+    }
+     
+    // Get the currently logged in user object.
+    $form['#account'] = $GLOBALS['user'];
+
+    // Textfield cor current password confirmation.
+    $form['current_pass'] = array(
+        '#type' => 'password',
+        '#title' => t('Current password'),
+        '#size' => 25,
+        '#required' => TRUE
+    );
+
+    // Password confirm field.
+    $form['account']['pass'] = array(
+        '#type' => 'password_confirm',        
+        '#size' => 25,          
+        '#required' => TRUE
+    );
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),
+        '#prefix' => '<div class="chng-pwd-btn">',
+        '#sufix' => '</div>'
+    );
+
+    return $form;
+}
+
+/**
+ * Validate handler for change_password_form().
+ */
+function employer_registration_change_password_form_validate(&$form, &$form_state) {  
+    // Make sure the password functions are present.
+    require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+
+    // Make sure the provided current password is valid for this account.
+    if (!user_check_password($form_state['values']['current_pass'], $form['#account'])) {
+      form_set_error('current_pass', t('The current password you provided is incorrect.'));
+    }
+}
+
+/**
+ * Submit handler for change_password_form().
+ */
+function employer_registration_change_password_form_submit(&$form, &$form_state) {
+    global $user;
+    // Set up the edit array to pass to user_save()
+    $edit = array('pass' => $form_state['values']['pass']);
+
+    // Save the account with the new password.
+    user_save($form['#account'], $edit);
+
+    $account = user_load($user->uid); 
+    if (!array_search("administrator", $account->roles)) {        
+        drupal_goto('employer/account', array('query' => array('msg' => '2')));
+    }    
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function employer_registration_block_info() {
+    return array(
+        'employers' => array(
+            'info' => t('Employers Profile List')
+        ),
+        'employers_jobs_list' => array(
+            'info' => t('Employers jobs List')
+        ),
+        'employers_job_search_home_page' => array(
+            'info' => t('Employers jobs Search')
+        ),
+        'popular_industries' => array(
+            'info' => t('Popular Industries')
+        )
+    );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function employer_registration_block_view($delta = '') {
+    $block = array();
+    if ($delta == 'employers') {
+        $block['subject'] = t('Employers');
+        $block['content'] = employer_registration_employers_block();
+    }
+    if ($delta == 'employers_jobs_list') {
+        $block['subject'] = t('JOB VACANCIES');
+        $block['content'] = employer_registration_employers_jobs_list_block();
+    }
+    if ($delta == 'employers_job_search_home_page') {
+        $block['subject'] = t('SEARCH GRADUATE JOBS');
+        $block['content'] = drupal_get_form('employers_job_search_home_page_list_block');
+    }
+    if ($delta == 'popular_industries') {
+        $block['subject'] = t('Popular Industries');
+        $block['content'] = employers_popular_industries();
+    }
+    return $block;
+}
+
+// Employers profile list home page block
+function employer_registration_employers_block(){
+    $key = variable_get('IIUM_Encryption_Key', NULL); 
+    $customtext = '<span class="text-content"><span>View Employer Profile</span></span>';
+    $message  = '<section class="sidebar clearfix" id="sidebar-second"><div class="listing employers">';
+    $message .= '<ul>';  
+    $query = employers_jobs_query('6');    
+    while($row = $query->fetchAssoc($query)){            
+        extract(employerdetails($row['uid']));            
+        $employer_title = remove_words($company_organization);            
+        $variables = array(
+            'path' => $company_logo, 
+            'alt' => $company_logo_name,
+            'title' => $company_logo_name,
+            'width' => '150',
+            'height' => '150',            
+        );
+        $image_tag = theme('image', $variables).$customtext;        
+        $imglink =  l($image_tag, "employers/$employer_title/".encrypt($uid,$key), array('html'=>TRUE));
+        $message .= '<li>'.$imglink.'<span>'.limit_words($company_organization,3).'</span>'.'</li>';
+    }    
+    $message .= '</ul><div class="view-more">'.l('View More', "employers").'</div></div></section>';
+    $output = array(
+        'title' => array(
+            '#type' => 'markup',
+            '#markup' => $message,
+        ),
+    );
+    return $output;
+}
+
+//Employers profile list home page block
+function employer_registration_employers_jobs_list_block(){
+    $key = variable_get('IIUM_Encryption_Key', NULL); 
+    global $base_url;
+    
+    $lisjobs = "";
+    $textmessage = '<section class="sidebar clearfix" id="sidebar-first">
+                    <div class="listing job-vacncies"><ul>';    
+    $employer_jobs = db_select('employer_jobs')
+        ->fields('employer_jobs')    
+        ->orderBy('id', 'DESC')
+        ->condition('delete_status', '0', '=')
+        ->range(0,12)
+        ->execute();    
+    $query = $employer_jobs;     
+    while($row = $query->fetchAssoc($query)){
+        $lisjobs .= '<li>'.l($row['job_title'], 'employers/'.encrypt($row['uid'],$key).'/jobs/'.encrypt($row['id'],$key)).'</li>';        
+    }
+    
+    $textmessage .= $lisjobs.'
+                    </ul>
+                    <div class="view-more"><a href="'.$base_url.'/jobsearch">View More</a></div>
+                    </div></section>';
+    
+    return $textmessage;
+}
+
+function employers_job_search_home_page_list_block($form, &$form_state){
+    
+    /* inline javascript */
+    drupal_add_js(' 
+        function updateKeyword(val){ 
+            if(val==0)
+                document.getElementsByName("keyword")[0].placeholder = "Enter Job Title";            
+            else
+                document.getElementsByName("keyword")[0].placeholder = "Enter Company Name";
+        }', 'inline');
+    
+    $form['custom_keyword'] = array(
+        '#type' => 'fieldset', 
+    );
+    
+    $form['custom_keyword']['keyword'] = array(        
+        '#type' => 'textfield',
+        '#attributes' => array('placeholder' => t('Enter Job Title'), 'class' => array('jobtitlefeild'))        
+    );
+    
+    $form['custom_keyword']['job_title'] = array(
+        '#type' => 'radios',
+        '#title' => t('Search In'), 
+        '#options' => array(t('Job Title'), t('Company Name')),
+        '#attributes' => array('onclick' => "updateKeyword(this.value)"),       
+        '#default_value' => 0,       
+    ); 
+    
+    $category_parrents = db_select('specializations_p')
+            ->fields('specializations_p')
+            ->execute()
+            ->fetchAll();
+    $display_category_parrents[''] = 'All Specializations';
+    foreach ($category_parrents as $category_parrent_name):
+        $display_category_parrents[$category_parrent_name->sid] = $category_parrent_name->name;
+    endforeach;
+    
+    $form['specializations'] = array(
+        '#type' => 'select',
+        '#options' => $display_category_parrents,
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_registration_subparrent_list_ajax',
+            'wrapper' => 'subparrent-list-wrapper',
+        ),
+    );
+    
+    // Wrapper for sub parent dropdown list
+    $form['wrapper'] = array(
+        '#prefix' => '<div id="subparrent-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    
+    if (isset($form_state['values']['specializations']) && $form_state['values']['specializations'] != "") {
+        $category_subparrents = db_select('specializations_sp')
+                ->fields('specializations_sp')
+                ->condition('spid', $form_state['values']['specializations'], '=')
+                ->execute()
+                ->fetchAll();
+        $display_category_subparrents[''] = 'All';
+        foreach ($category_subparrents as $category_subparrent_name):
+            $display_category_subparrents[$category_subparrent_name->sid] = $category_subparrent_name->name;
+        endforeach;
+        // Province dropdown list
+        $form['wrapper']['sub_parent'] = array(
+            '#type' => 'select',
+            '#options' => $display_category_subparrents,
+            '#ajax' => array(
+                'event' => 'change',
+                'callback' => 'employer_registration_child_list_ajax',
+                'wrapper' => 'child-list-wrapper',
+            ),
+        );
+    }
+    
+    // Wrapper for child dropdown list
+    $form['wrapper_child'] = array(
+        '#prefix' => '<div id="child-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    
+    if (isset($form_state['values']['sub_parent']) && $form_state['values']['sub_parent'] != "") {
+        $category_childs = db_select('specializations_c')
+                ->fields('specializations_c')
+                ->condition('cid', $form_state['values']['sub_parent'], '=')
+                ->execute()
+                ->fetchAll();
+        $display_category_childs[''] = 'All';
+        foreach ($category_childs as $category_child_name):
+            $display_category_childs[$category_child_name->sid] = $category_child_name->name;
+        endforeach;
+        // Province dropdown list
+        $form['wrapper_child']['childs'] = array(
+            '#type' => 'select',
+            '#options' => $display_category_childs,
+        );
+    }
+
+    $form['position_offered'] = array(             
+        '#type' => 'select',        
+        '#options' => array_replace(positionoffered(), array('' => 'All Positions')),
+    );
+    
+    $form['country'] = array(
+        '#type' => 'select',
+        '#options' => array(''=>'All Industry Locations') + countries_list(),        
+    );
+    
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Search'),   
+        '#submit' => array('employer_registration_job_search_submit'),
+    );
+    
+    $form['#action'] = 'jobsearch';
+    
+    return $form;
+}
+
+/* Popular Industries block */
+function employers_popular_industries(){
+    $encryption_key = variable_get('IIUM_Encryption_Key', NULL);
+    $natureArr = nature_bussiness_arr();
+
+    $query = db_select('employer_jobs', 'e_jb');
+    $query->join('employer_registration', 'e_rg', 'e_jb.uid = e_rg.uid'); 
+    $query->fields('e_rg', array('nature_bussiness'));  
+    $query->fields('e_jb', array('id','jobid','uid'));  
+    $query->groupBy('e_jb.id');                        
+    $query->range(0, '5');
+    $employer_query = $query->execute();    
+    $nature_bussinessArr = $employer_query->fetchAll(); 
+
+    foreach($nature_bussinessArr as $key => $bussiness){
+        $nature_bussiness .= $bussiness->nature_bussiness;
+    }                        
+    $nature_bussinessArr = explode('|', $nature_bussiness);
+    $noNullValuesArr = array_filter($nature_bussinessArr);                        
+    $result = array_count_values($noNullValuesArr);
+    arsort($result);    
+    $i = 1;
+    $list = '<ul>';
+    foreach($result as $key => $value){ 
+        if($i < 6){
+            $list .= '<li>'.l($natureArr[$key],'jobsearch/nb/'.encrypt($key,$encryption_key)).'</li>';
+        }
+        $i++;
+    }
+    $list .= '</ul>';
+    return $list;
+}
+
+/* Employer portfolio */
+function employer_registration_portfolio(){ 
+    if (user_is_anonymous())
+        drupal_goto('user');    
+    
+    global $user;
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') .'/js/jquery.validate.js');    
+    drupal_add_js(drupal_get_path('module', 'employer_registration') .'/js/custom_validations.js');
+    
+    // Result of employer portfolio
+    $portfolio_result = employerportfolio($user->uid);
+    (!empty($portfolio_result) ? extract($portfolio_result) : '' );    
+    
+    $message = '<h2>Portfolio Content<span> - Manage content for your Company Portfolio using below editors</span></h2>';
+         
+    $form['cutomtext'] = array(
+        '#type' => 'item',
+        '#markup' => $message ,       
+    ); 
+    
+    $form['overview_title'] = array(
+        '#title' => 'Title',        
+        '#type' => 'textfield',
+        '#required' => TRUE,
+        '#attributes' =>array('placeholder' => t('Company Overview')),        
+        '#default_value' => (isset($overview_title) ? $overview_title : ''),       
+    );    
+    $form['overview_desc'] = array(
+        '#title' => 'Description',        
+        '#type' => 'text_format',       
+        '#format' => filter_default_format(),
+        '#required' => TRUE,
+        '#rows'=>'10',
+        '#default_value' => (isset($overview_desc) ? $overview_desc : ''),        
+    );
+    $form['why_join_us_title'] = array(
+        '#title' => 'Title',        
+        '#type' => 'textfield', 
+        '#required' => TRUE,        
+        '#attributes' =>array('placeholder' => t('Why Join Us?')),
+        '#default_value' => (isset($why_join_us_title) ? $why_join_us_title : ''),       
+    );
+    $form['why_join_us_desc'] = array(
+        '#title' => 'Description',        
+        '#type' => 'text_format',       
+        '#format' => filter_default_format(),
+        '#required' => TRUE,     
+        '#rows'=>'10',
+        '#default_value' => (isset($why_join_us_desc) ? $why_join_us_desc : ''), 
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),      
+    );
+    
+    return $form;
+}
+
+/* Employer portfolio form submission */
+function employer_registration_portfolio_submit(&$form, &$form_state){
+    global $user; 
+    extract($form_state['input']);
+    $overview_desc = $overview_desc['value'];
+    $why_join_us_desc = $why_join_us_desc['value'];
+    
+    // Count of employer portfolio
+    $portfolio_query = db_select('employer_portfolio')
+        ->fields('employer_portfolio')
+        ->condition('uid', $user->uid, '=')            
+        ->execute();    
+    $count = $portfolio_query->rowCount();        
+    
+    if($count > 0){
+        // updating a record into employer_portfolio
+        $e_update = db_update('employer_portfolio') 
+            ->fields(array(              
+                    'overview_title' => $overview_title,
+                    'overview_desc' => $overview_desc, 
+                    'why_join_us_title' => $why_join_us_title,
+                    'why_join_us_desc' => $why_join_us_desc, 
+                ))
+            ->condition('uid', $user->uid, '=')
+            ->execute();
+        
+        audit_log('Employer portfolio inforamtion updated', $user->uid); 
+    }else{
+        // inserting a record into employer_portfolio
+        $eid = db_insert('employer_portfolio')           
+           ->fields(array(
+                'uid' => $user->uid,                
+                'overview_title' => $overview_title,
+                'overview_desc' => $overview_desc, 
+                'why_join_us_title' => $why_join_us_title,
+                'why_join_us_desc' => $why_join_us_desc, 
+           ))
+           ->execute();
+        
+        audit_log('Employer portfolio inforamtion stored', $user->uid); 
+    }
+    
+    drupal_set_message('Portfolio has been updated successfully');    
+}
+
+/* Employer gallery method */
+function employer_registration_gallery(){
+    if (user_is_anonymous())
+        drupal_goto('user');
+    
+    global $user;
+    print magnific_popup_jslibraries(); 
+    $key = variable_get('IIUM_Encryption_Key', NULL);
+    
+    // delete the record based on gallery id
+    if(isset($_GET) && isset($_GET['del'])){
+        $q = (int)decrypt($_GET['del'],$key);
+        // query to retreive and unlink the image
+        $portfolio_query = db_select('employer_gallery')
+            ->fields('employer_gallery')
+            ->condition('gid', $q)            
+            ->execute();        
+        $fileinfo = $portfolio_query->fetchAssoc($portfolio_query);
+        // query to delete the record
+        $image_del = db_delete('employer_gallery')
+            ->condition('gid', $q)
+            ->execute();
+        if($image_del){
+            unlink($fileinfo['file_uri']);
+            drupal_set_message('Image deleted successfully'); 
+        }
+        
+        audit_log('Employer gallery deleted', $user->uid); 
+    }
+    
+    // Records of employer gallery
+    $portfolio_query = db_select('employer_gallery')
+        ->fields('employer_gallery')
+        ->condition('uid', $user->uid, '=')            
+        ->execute();    
+    
+    $reslut = array();
+    $header = array(
+        array('data' => t('Title')), 
+        array('data' => t('Image')),
+        array('data' => t('Options')),
+    );
+    while($row = $portfolio_query->fetchAssoc()){                  
+         $reslut[] = array($row['title'], '<img src = "' . file_create_url($row['file_uri']) . '" hieight="150px" width="150px">', '<div class="options"><a class="popup-link" href="'.file_create_url($row['file_uri']).'" >View</a> <a href="?del='.encrypt($row['gid'],$key).'" onclick="return del();">Delete</a></div>');
+    }
+    
+    $form['heading'] = array(
+        '#type' => 'item',
+        '#markup' => '<div class="gal-sec"><h2>Gallery<span> - You would be able to upload 5 company photos to your portfolio</span></h2>',       
+    );
+    
+    $form['title'] = array(
+        '#title' => 'Title',        
+        '#type' => 'textfield',  
+        '#required' => TRUE
+    );
+    
+    $form['employer_gallery'] = array(
+        '#title' => 'Upload gallery images',        
+        '#type' => 'file',
+        '#description' => 'Allowed extensions (.png, .jpeg, .gif)',
+    );
+    
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),      
+    );
+    
+    $form['footer'] = array(
+        '#type' => 'item',
+        '#markup' => '</div>',       
+    );
+    
+    $form['table'] = array(
+        '#theme' => 'table',
+        '#header' => $header,
+        '#rows' => $reslut,
+        '#empty' => t('No Records Found!')
+    );
+    
+    $form['#attributes'] = array('enctype' => 'multipart/form-data', 'id' => 'employer-registration-gallery');
+     
+    return $form;    
+}
+
+/* Employer gallery form validation */
+function employer_registration_gallery_validate($form, &$form_state) {
+    // file extension validation
+    $filename = $_FILES["files"]["name"]['employer_gallery'];    
+    $allowed =  array('gif','png' ,'jpg', 'jpeg');
+    if($filename!=""){
+        $fileext = pathinfo($filename, PATHINFO_EXTENSION);        
+        if(!in_array($fileext, $allowed) ) {
+            form_set_error('employer_gallery', t('Invalid file extension'));
+        }
+    }else
+        form_set_error('employer_gallery', t('Upload gallery images field is required.'));    
+}
+
+/* Employer gallery form submission */
+function employer_registration_gallery_submit($form, &$form_state){
+    global $user;
+    
+    // Records of employer gallery
+    $portfolio_query = db_select('employer_gallery')
+        ->fields('employer_gallery')
+        ->condition('uid', $user->uid, '=')            
+        ->execute(); 
+    $count = $portfolio_query->rowCount(); 
+    
+    if($count<5){
+        // Move uploaded file to destination folder
+        $filename = $_FILES["files"]["name"]['employer_gallery'];
+        $filename_temp = $_FILES["files"]["tmp_name"]['employer_gallery'];        
+        $dest_filename = variable_get('IIUM_employer_gallery_path', NULL).time().'_'.$filename;        
+        $file = move_uploaded_file($filename_temp, $dest_filename);
+        extract($_POST);
+
+        if($file){
+            // inserting a record into employer_gallery
+            $eid = db_insert('employer_gallery')           
+               ->fields(array(
+                    'uid' => $user->uid,                
+                    'title' => $title,
+                    'filename' => $filename,                 
+                    'file_uri' => $dest_filename, 
+               ))
+               ->execute();
+            drupal_set_message('Image uploaded successfully'); 
+            
+            audit_log('Employer uploaded gallery images', $user->uid); 
+        }
+    }else
+        drupal_set_message('You can\'t upload more than 5 company photos to your portfolio','error'); 
+}
+
+/* Employers public screen */
+function employer_registration_employers(){
+    $nid = 5;   
+    $lisjobs = "";
+    $message = "<div class='row'>";
+    $customtext = '<span class="text-content"><span>View Employer Profile</span></span>';
+    
+    $node = node_load($nid);    
+    $key = variable_get('IIUM_Encryption_Key', NULL);     
+    if($node!=""){
+        $nodeView = node_view($node, 'full');
+        $message .= '<div class="col-md-6">'.drupal_render($nodeView['body']);
+    } 
+    
+    $jobs_query = $employer_jobs = db_select('employer_jobs')
+        ->fields('employer_jobs')    
+        ->condition('delete_status', '0', '=')
+        ->orderBy('id', 'DESC')
+        ->range(0,'5')
+        ->execute();  
+    while($row = $jobs_query->fetchAssoc($jobs_query)){
+        $dateArr = explode(' ', $row['date_time']);
+        $date = '<span>'.dateformat($dateArr['0']).'</span>';
+        $lisjobs .= '<li>'.l($row['job_title'], 'employers/'.encrypt($row['uid'],$key).'/jobs/'.encrypt($row['id'],$key)).' '.$date.'</li>';
+    }
+    
+    $message .='<div class="latest-jobs">
+                    <h2>Latest jobs</h2>
+                    <ul>'.$lisjobs.'</ul>
+                    <div class="view-all-link">'.l('View All Jobs','jobsearch').'</div>
+                </div>
+                </div>
+                <div class="col-md-6"><ul class="employers-list">';
+    
+    $query = employers_jobs_query('6'); 
+    while($row = $query->fetchAssoc($query)){ 
+        extract(employerdetails($row['uid']));            
+        $employer_title = remove_words($company_organization);            
+        $variables = array(
+            'path' => $company_logo, 
+            'alt' => $company_logo_name,
+            'title' => $company_logo_name,
+            'width' => '150',
+            'height' => '150',            
+        );
+        $image_tag = theme('image', $variables).$customtext;        
+        $imglink =  l($image_tag, "employers/$employer_title/".encrypt($uid,$key), array('html'=>TRUE));                
+        $message .= '<li>'.$imglink.'<h2>'.$company_organization.'</h2></li>';        
+    }  
+    
+    $message .= '</ul><div class="employers-list-link">'.l('View Full Employer Directory','companies/q/all').'</div></div></div>';
+    
+    $output = array(
+        'title' => array(
+            '#type' => 'markup',
+            '#markup' => $message,
+        ),
+    );  
+    
+    return $output;
+}
+
+// Emplyers detail view screen
+function employer_registration_employers_view($uid){  
+    $key = variable_get('IIUM_Encryption_Key', NULL); 
+    $jid = "";
+    $uid = (int)decrypt($uid,$key);
+    $employer_portfolio = employerportfolio($uid);
+    $listjobs = list_jobs_employer($uid);
+    extract(employerdetails($uid));
+
+    //banner variables
+    $banner_vars = array(
+        'path' => $company_banner, 
+        'alt' => $company_banner_name,
+        'title' => $company_banner_name,                       
+    );
+
+    //logo variables
+    $logo_vars = array(
+        'path' => $company_logo, 
+        'alt' => $company_logo_name,
+        'title' => $company_logo_name,                       
+    );
+    
+    $output = array(
+        'title' => array(
+            '#type' => 'markup',
+            '#markup' => '<div class="row"><div class="col-md-9 employers-sec">'.
+                ($company_banner!="" ? '<div class="employer-banner">'. theme('image', $banner_vars) .'</div>' : '').'
+                <div class="box">
+                    <h2>Introduction</h2><p>'.$intro_company_organisation.' </p>
+                    '.($employer_portfolio['overview_title']!="" ? '<h2>'. $employer_portfolio['overview_title'] .'</h2>' : '').'
+                    '.$employer_portfolio['overview_desc'].'                      
+                    '.($employer_portfolio['why_join_us_title']!="" ? '<h2>'. $employer_portfolio['why_join_us_title'] .'</h2>' : '').'          
+                    '.$employer_portfolio['why_join_us_desc'].'
+                </div>    
+                '.($listjobs!="" ? '<div class="comp-jobs"><h2>Jobs from this company</h2>'. $listjobs .'</div>' : '').'
+                '.get_gallery_slideshow($uid).' </div>
+                '.company_snapshot($uid,$jid).'     
+            </div></div>',
+        ),
+    );    
+    return $output;
+}
+
+// employers jobs detail view screen
+function employer_registration_employers_jobs_view($uid,$jid){
+    
+    global $user;
+    $jobid = $jid; 
+    $userid =  $uid;
+    $key = variable_get('IIUM_Encryption_Key', NULL);    
+    $uid = (int)decrypt($uid,$key);
+    $jid = (int)decrypt($jid,$key);
+    $current_date = date('d-m-Y'); 
+    
+    $employer_portfolio = employerportfolio($uid);
+    $jobinfo = jobinfo($jid);
+    extract(employerdetails($uid));
+
+    $positionArr = positionoffered();      
+    $fields_study_arr = fields_of_study();     
+    $jobtypeArr = jobtype();
+       
+    /* Fetch Job types */
+    $jobtypes_all = "";
+    $jobs_types = explode(",", $jobinfo['jobs_type']);
+    foreach($jobs_types as $type):
+      $jobtypes_all .= $jobtypeArr[$type]."<br>";
+    endforeach;
+    
+    /* Fetch specialization records*/
+    $db_or = db_or();
+    $disp_specialization_records = "";
+    $specializations = explode(',', $jobinfo['specializations']);
+    $category_childs = db_select('specializations_c');
+    $category_childs->fields('specializations_c',array('name'));
+    foreach ($specializations as $specialization):
+        $db_or->condition('sid', $specialization, '=');
+    endforeach;
+    $category_childs->condition($db_or);
+    $specialization_records = $category_childs->execute()->fetchAll();
+    foreach ($specialization_records as $specialization_record):
+        $disp_specialization_records .= $specialization_record->name."<br>";
+    endforeach;
+    
+    /* Fetch level of awards records */
+    $db_or_level = db_or();
+    $disp_level_of_awards_record = "";
+    $level_of_awards = explode(',', $jobinfo['level_of_awards']);
+    $levelof_qualifcation = db_select('levelof_qualifcation');
+    $levelof_qualifcation->fields('levelof_qualifcation', array('name'));
+    foreach ($level_of_awards as $level_of_award):
+        $db_or_level->condition('id', $level_of_award, '=');
+    endforeach;
+    $levelof_qualifcation->condition($db_or_level);
+    $level_of_awards_records = $levelof_qualifcation->execute()->fetchAll();
+    foreach ($level_of_awards_records as $level_of_awards_record):
+        $disp_level_of_awards_record .= $level_of_awards_record->name . "<br>";
+    endforeach;
+
+    //banner variables
+    $banner_vars = array(
+        'path' => $company_banner, 
+        'alt' => $company_banner_name,
+        'title' => $company_banner_name,                       
+    );
+
+    $dateArr = explode(' ',$jobinfo['date_time']);
+    $applybefore_dateArr = explode(' ',$jobinfo['deadline_for_application']);
+    $close_dateArr = explode(' ',$jobinfo['close_of_this_job_post']);
+    $date = dateformat($dateArr['0']);
+    $closingDate = dateformat($close_dateArr['0']);
+    $applybefore_date = dateformat($applybefore_dateArr['0']);    
+    $deadlinedate = date("d-m-Y", strtotime($applybefore_dateArr['0']));
+
+    if(strtotime($current_date) <= strtotime($deadlinedate)){
+        if($user->uid!='0'){ 
+            if(in_array('student', $user->roles)){ 
+                $applynow = l('Apply Now', 'student/applynow/jid/'.$jobid.'/uid/'.$userid);
+            }else{
+                $applynow = "";
+            }
+        }else{
+            $applynow = l('Apply Now', 'user');
+        }
+    }else{
+        $applynow = "";
+    }
+
+    $output = array(
+        'title' => array(
+            '#type' => 'markup',
+            '#markup' => '<div class="row"> 
+                <div class="col-md-9 emloyer-sec">'.
+                ($company_banner!="" ? '<div class="employer-banner">'. theme('image', $banner_vars) .'</div>' : '').' 
+                <div class="job-details-sec"> 
+                    <div class="col-md-6 job-details-left">
+                        <div>
+                            <h1>Job Details</h1>
+                            <h2>Job Description: </h2><p>' . $jobinfo['job_description'] . '</p>
+                            <h2>Requirments: </h2><p>' . $jobinfo['requirments'] . '</p>
+                            </ul>
+                            <ul class="job-dtls">
+                                <li><label>Position Offered: </label><div class="job-right">' . $positionArr[$jobinfo['position_offered']] . '</div></li>
+                                <li><label>Job Type: </label><div class="job-right">' . $jobtypes_all . '</div></li>
+                                <li><label>Location: </label><div class="job-right">' . get_country_name($jobinfo['job_country']). ($jobinfo['job_state']!="0" ? ', '.get_state_name($jobinfo['job_state']): '') . '</div></li>
+                                <li><label>Specialization: </label><div class="job-right">' . $disp_specialization_records . '</div></li>
+                                <li><label>Number of Vacancies: </label><div class="job-right">' . $jobinfo['number_of_vacancies'] . '</div></li> 
+                                <li><label>Minimum Experience: </label><div class="job-right">' . $jobinfo['year_of_experience'] . ' years</div></li>
+                                <li><label>Salary (MYR): </label><div class="job-right">' . $jobinfo['salary'] . '</div></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h1>Desired Candidate Profile</h1>
+                            <ul class="job-dtls">
+                                <li><label>Fields of Study Required: </label><div class="job-right">' . $fields_study_arr[$jobinfo['fields_of_study_required']] . '</div></li>
+                                <li><label>Level of Awards (Qualification): </label><div class="job-right">' . $disp_level_of_awards_record . '</div></li>
+                                <li><label>Lanaguage Skills: </label><div class="job-right">' . $jobinfo['lanaguage_skills'] . '</div></li>
+                                <li><label>Other Skills: </label><div class="job-right">' . $jobinfo['other_skills'] . '</div></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h1>Applicable Method </h1>
+                            <ul class="job-dtls">
+                                ' . ($jobinfo['applicable_method_call'] != "" ? '<li><label>Call: </label><div class="job-right">' . $jobinfo['applicable_method_call'] . '</div></li>' : '') . '
+                                ' . ($jobinfo['applicable_method_email'] != "" ? '<li><label>Email: </label><div class="job-right">' . $jobinfo['applicable_method_email'] . '</div></li>' : '') . '
+                                ' . ($jobinfo['applicable_method_others'] != "" ? '<li><label>Others: </label><div class="job-right">' . $jobinfo['applicable_method_others'] . '</div></li>' : '') . '
+                            </ul>
+                        </div>
+                        ' . job_contact_info($jid) . '
+                    </div>
+                    <div class="col-md-6 company-in-rigth">                         
+                        <div>
+                            <h1>Company Introduction</h1><p>' . $intro_company_organisation . ' </p>
+                            ' . ($employer_portfolio["overview_title"] != "" ? '<h1>' . $employer_portfolio["overview_title"] . '</h1>' : "") . '
+                            <p>' . $employer_portfolio["overview_desc"] . '</p>
+                            ' . ($employer_portfolio["why_join_us_title"] != "" ? '<h1>' . $employer_portfolio["why_join_us_title"] . '</h1>' : "") . '
+                            <p>' . $employer_portfolio["why_join_us_desc"] . '</p> 
+                        </div>
+                    </div>
+                </div>
+                <div class="apply-sec">                            
+                    <div class="apply-cont">
+                        <h1>Apply Before: <span>'. $applybefore_date . '</span></h1>
+                        <div class="apply-link">
+                        <input value="Print" name="print" onclick="window.print()" type="button" />                        
+                        ' . $applynow . '
+                        </div>                        
+                    </div>
+                        <ul class="job-dtls">
+                           <li>Advertised On: ' . $date . '</li>
+                           <li>Job Post Closes On: ' . $closingDate . '</li>
+                        </ul>                  
+                </div>  
+            </div>
+             ' . company_snapshot($uid,$jid) .'               
+            </div>
+        </div>',
+        ),
+    );    
+    return $output;
+}
+
+function employer_registration_all_companies($form, &$form_state, $q){
+    $home = '';  
+    $output = '';
+    $rows = array();
+    global $base_url;
+    $companies_info = get_companies($q);  
+    $count = count($companies_info);    
+    $key = variable_get('IIUM_Encryption_Key', NULL);    
+    
+    $nid = 44;
+    $node = node_load($nid);           
+    if($node!=""){
+        $nodeView = node_view($node, 'full');
+        $node_content = '<div class="">'.drupal_render($nodeView['body']).'</div>';
+    }
+    
+    $form['nature_of_business'] = array(             
+        '#type' => 'select',
+        '#title' => t('Nature of Business'),
+        '#options' => array('Select') + nature_bussiness_arr(), 
+        '#attributes' => array('onchange' => "document.location='".$base_url."/companies/q/'+this.value;"),
+        '#value' => (isset($q) ? $q : ''), 
+    );
+    
+    $form['node_content'] = array(
+        '#type' => 'item',
+        '#markup' => $node_content,       
+    ); 
+    
+    $form['search'] = array(             
+        '#type' => 'select',
+        '#title' => t('Search By'),
+        '#options' => array('all'=>'Show All','hiring'=>'Hiring'), 
+        '#attributes' => array('onchange' => "document.location='".$base_url."/companies/q/'+this.value;"),
+        '#value' => (isset($q) ? $q : ''), 
+    );
+    
+    if($q == 'all')
+        $home = 'active';
+    
+    $output .= '<div><div class="jobsby_paging">
+               <a class="job_pagingitem left home '.$home.'" href="all">
+               <div class="home_ico"></div></a>';  
+    
+    $letters = range ('A', 'Z');  
+    array_push($letters, "0-9");
+    foreach($letters as $letter):           
+        if($q == $letter)
+            $active = 'active';
+        else
+            $active = '';
+        if($letter == '0-9')
+            $output .= '<a class="job_pagingitem left '.$active.'" href="num">' . $letter . '</a>';
+        else
+            $output .= '<a class="job_pagingitem left '.$active.'" href=' . $letter . '>' . $letter . '</a>';
+    endforeach;        
+
+    $output .= '</div><div>';  
+    
+    $header = array();
+    foreach($companies_info as $info):
+        if($q!="hiring"){
+            $list_jobs_query = db_select('employer_jobs')
+                ->fields('employer_jobs')    
+                ->condition('uid', $info->uid)
+                ->condition('deadline_for_application', date('Y-m-d'), '>=')
+                ->condition('delete_status', '0', '=')
+                ->execute();
+            $result = $list_jobs_query->fetchAll();
+            $jobcount = count($result);
+            if($jobcount > 0)
+                $hiring_link = l('Hiring','employers/'.  remove_words($info->company_organization).'/'.encrypt($info->uid,$key), array('attributes' => array('class' => array('hiring')))); 
+            else
+                $hiring_link = ''; 
+        }else
+            $hiring_link = l('Hiring','employers/'.  remove_words($info->company_organization).'/'.encrypt($info->uid,$key), array('attributes' => array('class' => array('hiring')))); 
+        
+        $view_profile_link = l('View Profile','employers/'.  remove_words($info->company_organization).'/'.encrypt($info->uid,$key), array('attributes' => array('class' => array('view-comp-profile'))));        
+        $rows[] = array($info->company_organization,$hiring_link,$view_profile_link);      
+    endforeach;
+    
+    // pagination script starts    
+    $per_page = 10;
+    // Initialize the pager
+    $current_page = pager_default_initialize(count($rows), $per_page);    
+    // Split your list into page sized chunks
+    $chunks = array_chunk($rows, $per_page, TRUE);  
+    // Show the appropriate items from the list
+    @$output .= theme('table', array('header' => $header, 'rows' => $chunks[$current_page], 'empty' => t('No Records Found!')));
+    // Show the pager
+    $output .= theme('pager', array('quantity', $count));   
+    $output .= '</div></div>';   
+    
+    $form['cutomtext'] = array(
+        '#type' => 'item',
+        '#markup' => $output,       
+    ); 
+    
+    return $form;
+}
+
+// job search screen
+function employer_registration_job_search($form, &$form_state, $type, $qid){
+    $result = array();
+    $encryption_key = variable_get('IIUM_Encryption_Key', NULL);  
+    
+    /* inline javascript */
+    drupal_add_js(' 
+        jQuery(document).ready(function($) {        
+            $("#edit-nature-bussiness-64").click(function() {  
+                if(this.checked == true)
+                    $(".other-field").show();
+                else
+                    $(".other-field").hide();
+            });
+            if($("#edit-nature-bussiness-64:checked").length == 1)
+                $(".other-field").show();
+            else
+                $(".other-field").hide();
+            '.((isset($form_state['input']['specializations']) && $form_state['input']['specializations']!="" ? '$("#edit-specializations").change();' : '')).'
+            setTimeout(function(){ 
+                $("#edit-sub-parent").val('.(isset($form_state['input']['sub_parent']) && $form_state['input']['sub_parent']!=""?$form_state['input']['sub_parent']:'').');
+                $("#edit-sub-parent").change();   
+            }, 1500);
+            setTimeout(function(){             
+                $("#edit-childs").val('.(isset($form_state['input']['childs']) && $form_state['input']['childs']!=""?$form_state['input']['childs']:'').');
+            }, 4000);            
+            '.((isset($form_state['input']['country']) && $form_state['input']['country']!="" ? '$("#edit-country").change();' : '')).'                        
+        });
+        
+        function updateKeyword(val){ 
+            if(val==0)
+                document.getElementsByName("keyword")[0].placeholder = "Enter Job Title";            
+            else
+                document.getElementsByName("keyword")[0].placeholder = "Enter Company Name";
+        }
+        
+        function showSearchfileds(){
+            var advsearch = document.getElementById("adv-search").style.display;            
+            if(advsearch == "none")
+                document.getElementById("adv-search").style.display = "block";            
+            else
+                document.getElementById("adv-search").style.display = "none";            
+        }
+        
+        ', 'inline');
+    
+    /* build search query */
+    $query = db_select('employer_jobs', 'e_jb');
+    $query->join('employer_registration', 'e_rg', 'e_jb.uid = e_rg.uid');    
+    $query->fields('e_jb',array('id','uid','jobid','job_title','job_description','specializations','job_country','job_state','position_offered','deadline_for_application','delete_status'));
+    $query->fields('e_rg',array('eid','uid','company_organization','nature_bussiness'));
+    $query->condition('delete_status', '0', '=');
+    $query->orderBy('id', 'DESC');
+    
+    if(!empty($form_state['input'])){
+        //echo '<pre>'; print_r($form_state['input']);exit;
+        if($form_state['input']['keyword']!=""){
+            $title = $form_state['input']['job_title'];
+            $keyword = $form_state['input']['keyword'];
+            if($title == 0)
+                $query->condition('job_title', '%'. db_like(trim($keyword)) . '%', 'LIKE');
+            else
+                $query->condition('company_organization', '%'. db_like(trim($keyword)) . '%', 'LIKE');           
+        }        
+        if($form_state['input']['country']!=""){ 
+            $country = $form_state['input']['country'];
+            $query->condition('job_country', trim($country), '=');
+        }
+        if(isset($form_state['input']['state']) && $form_state['input']['state']!=""){ 
+            $state = $form_state['input']['state'];  
+            if($state['0']!="")
+                $query->condition('job_state', $state, 'IN');
+        }
+        //echo '<pre>'; print_r($form_state['input']); exit;  
+        if (isset($form_state['input']['specializations']) && $form_state['input']['specializations']!="") {
+            $specializations = $form_state['input']['specializations'];
+            $db_or = db_or();
+            $db_or->condition('specializations_parrent', db_like($specializations).',%','LIKE');
+            $db_or->condition('specializations_parrent', trim($specializations), '=');
+            $db_or->condition('specializations_parrent','%,' .db_like($specializations).',%','LIKE');
+            $db_or->condition('specializations_parrent','%,' .db_like($specializations),'LIKE');
+            $query->condition($db_or);
+        }
+        if (isset($form_state['input']['sub_parent']) && $form_state['input']['sub_parent']!="") {
+            $sub_parent = $form_state['input']['sub_parent'];
+            $db_or = db_or();
+            $db_or->condition('specializations_subparrent', db_like($sub_parent).',%','LIKE');
+            $db_or->condition('specializations_subparrent', trim($sub_parent),'=');
+            $db_or->condition('specializations_subparrent','%,' .db_like($sub_parent).',%','LIKE');
+            $db_or->condition('specializations_subparrent','%,' .db_like($sub_parent),'LIKE');
+            $query->condition($db_or);
+        } 
+        if($form_state['input']['childs']!=""){
+            $childs = $form_state['input']['childs'];
+            $db_or = db_or();
+            $db_or->condition('specializations', db_like(trim($childs)).',%','LIKE');
+            $db_or->condition('specializations', trim($childs), '=');
+            $db_or->condition('specializations','%,' .db_like(trim($childs)).',%','LIKE');
+            $db_or->condition('specializations','%,' .db_like(trim($childs)),'LIKE');
+            $query->condition($db_or);   
+        }        
+        if((isset($form_state['input']['min_salary']) || isset($form_state['input']['max_salary'])) && ($form_state['input']['min_salary']!="" || $form_state['input']['max_salary']!="")){ 
+            $min_salary = $form_state['input']['min_salary'];
+            $max_salary = $form_state['input']['max_salary'];  
+            $query->condition('year_of_experience', array($min_salary, $max_salary), 'BETWEEN');
+        }      
+        if((isset($form_state['input']['from_year']) || isset($form_state['input']['to_year'])) && ($form_state['input']['from_year']!="" || $form_state['input']['to_year']!="")){ 
+            $from_year = $form_state['input']['from_year'];
+            $to_year = $form_state['input']['to_year'];
+            $query->condition('year_of_experience', array($from_year, $to_year), 'BETWEEN');            
+        } 
+        if($form_state['input']['position_offered']!=""){ 
+            $position_offered = $form_state['input']['position_offered'];
+            $query->condition('position_offered', trim($position_offered), '=');
+        }        
+        if(isset($form_state['input']['job_type']) && $form_state['input']['job_type']!=""){ 
+            $job_type = $form_state['input']['job_type'];
+            foreach ($job_type as $value) {
+                if($value!=""){                       
+                    $db_or = db_or();
+                    $db_or->condition('jobs_type', db_like(trim($value)).',%','LIKE');
+                    $db_or->condition('jobs_type', trim($value), '=');
+                    $db_or->condition('jobs_type','%,' .db_like(trim($value)).',%','LIKE');
+                    $db_or->condition('jobs_type','%,' .db_like(trim($value)),'LIKE');
+                    $query->condition($db_or);                                 
+                }
+            }
+        }
+        if(isset($form_state['input']['nature_bussiness']) && $form_state['input']['nature_bussiness']!=""){ 
+            $nature_bussiness = $form_state['input']['nature_bussiness'];
+            foreach ($nature_bussiness as $value) {
+                if($value!=""){ 
+                    $db_or = db_or();
+                    $db_or->condition('nature_bussiness', db_like(trim($value)).'|%', 'LIKE');
+                    $db_or->condition('nature_bussiness', trim($value), '=');
+                    $db_or->condition('nature_bussiness', '%|' .db_like(trim($value)).'|%', 'LIKE');
+                    $db_or->condition('nature_bussiness', '%|' .db_like(trim($value)), 'LIKE');
+                    $query->condition($db_or);  
+                }
+            }
+        } 
+        if(isset($form_state['input']['other']) && $form_state['input']['other']!=""){   
+            $other = $form_state['input']['other'];
+            $query->condition('other', trim($other), '=');
+        }
+        if(isset($form_state['input']['job_posted_since']) && $form_state['input']['job_posted_since']!=""){ 
+            $job_posted = $form_state['input']['job_posted_since'];            
+            $current_date = date('Y-m-d h:m:s');
+            if($job_posted == 1){       
+                $date = date('Y-m-d h:m:s', strtotime('-1 day', strtotime($current_date)));                
+                $query->condition('date_time', array($date, $current_date), 'BETWEEN'); 
+            }else if($job_posted == 2){
+                $date = date('Y-m-d h:m:s', strtotime('-3 days', strtotime($current_date)));
+                $query->condition('date_time', array($date, $current_date), 'BETWEEN'); 
+            }else if($job_posted == 3){
+                $date = date('Y-m-d h:m:s', strtotime('-7 days', strtotime($current_date)));
+                $query->condition('date_time', array($date, $current_date), 'BETWEEN'); 
+            }else if($job_posted == 4){
+                $date = date('Y-m-d h:m:s', strtotime('-14 days', strtotime($current_date)));
+                $query->condition('date_time', array($date, $current_date), 'BETWEEN'); 
+            }
+        }
+        /*echo '<pre>'; 
+        print_r($form_state['input']); 
+        exit; */      
+    }else{  
+        if($type!="" && $qid!=""){
+            $encryption_key = variable_get('IIUM_Encryption_Key', NULL);
+            $qid = (int)decrypt($qid, $encryption_key); 
+            if($type == "nb"){
+                $db_or = db_or();
+                $db_or->condition('nature_bussiness', db_like(trim($qid)).'|%', 'LIKE');
+                $db_or->condition('nature_bussiness', trim($qid), '=');
+                $db_or->condition('nature_bussiness','%|' .db_like(trim($qid)).'|%', 'LIKE');
+                $db_or->condition('nature_bussiness','%|' .db_like(trim($qid)), 'LIKE');
+                $query->condition($db_or); 
+            }
+           else if($type == "psp"){
+                $db_or = db_or();
+                $db_or->condition('specializations_parrent', db_like($qid).',%','LIKE');
+                $db_or->condition('specializations_parrent', trim($qid), '=');
+                $db_or->condition('specializations_parrent','%,' .db_like($qid).',%','LIKE');
+                $db_or->condition('specializations_parrent','%,' .db_like($qid),'LIKE');
+                $query->condition($db_or); 
+                $form_state['input']['specializations']=$qid;
+            }
+            else{
+                $db_or = db_or();
+                $db_or->condition('specializations', db_like(trim($qid)).',%','LIKE');
+                $db_or->condition('specializations', trim($qid), '=');
+                $db_or->condition('specializations','%,' .db_like(trim($qid)).',%','LIKE');
+                $db_or->condition('specializations','%,' .db_like(trim($qid)),'LIKE');
+                $query->condition($db_or); 
+            }
+        }
+    }
+    
+    //print_r($query); exit;
+    $query = $query->execute();   
+    while ($row = $query->fetchAssoc($query)) {
+        //echo '<pre>'; print_r($row); 
+        $date = explode(' ', $row['deadline_for_application']);
+        $positionArr = positionoffered();
+        $location = get_country_name($row['job_country']). ($row['job_state']!="0" ? ', '.get_state_name($row['job_state']): '');
+        $employer = employer_name($row['uid']);
+        
+        /* Fetch specialization records*/
+        $db_or = db_or();
+        $disp_specialization_records = "";
+        $specializations = explode(',', $row['specializations']);
+        $category_childs = db_select('specializations_c');
+        $category_childs->fields('specializations_c', array('sid','name'));
+        foreach ($specializations as $specialization):
+            $db_or->condition('sid', $specialization, '=');
+        endforeach;
+        $category_childs->condition($db_or);
+        $specialization_records = $category_childs->execute()
+                ->fetchAll();
+
+        foreach ($specialization_records as $specialization_record):
+            $disp_specialization_records .= l($specialization_record->name,'jobsearch/sp/'.encrypt($specialization_record->sid,$encryption_key)).', ';
+        endforeach;        
+        
+        // explode array keys form db
+        $array = explode('|', $row['nature_bussiness']);
+        $nature_bussiness = array();
+        foreach($array as $key=>$value){            
+            $nature_bussiness[$value] = $value;
+        }
+        // instersect array that match with keys
+        $nature_bussiness = array_intersect_key(nature_bussiness_arr(), $nature_bussiness); 
+        $nature_bussiness_records = "";
+        // implode array with comma
+        //echo '<pre>';
+        foreach ($nature_bussiness as $key => $bussiness_value):
+            $nature_bussiness_records .= l($bussiness_value,'jobsearch/nb/'.encrypt($key,$encryption_key)).', ';        
+        endforeach;
+        //print_r($nature_bussiness_records);
+        //exit;        
+        
+        $jobtitle = l($row['job_title'], 'employers/'.encrypt($row['uid'],$encryption_key).'/jobs/'.encrypt($row['id'],$encryption_key));
+        $job_description = limit_words($row['job_description'],20);        
+        $content = '<div class="job-info">
+                        <h1>'.$jobtitle.'</h1>
+                        <p>'.$job_description.'</p>
+                        <div class="specialization">
+                            <span>Specialization: </span>'.$disp_specialization_records.'
+                        </div>
+                        <div class="industry-type">
+                            <span>Nature of Business: </span>'.$nature_bussiness_records.'
+                        </div>
+                    </div>';
+        
+        $result[] = array($row['jobid'], $content, l($employer['company_organization'], 'employers/'.remove_words($employer['company_organization']).'/'.encrypt($row['uid'],$encryption_key), array('attributes'=>array('class'=>'emp-link'))), $location, $positionArr[$row['position_offered']], dateformat($date[0]));
+    };//exit;
+    
+    /* Table header columns */
+    $header = array(
+        array('data' => t('Job Id')), 
+        array('data' => t('Job Title')), 
+        array('data' => t('Company Name')),
+        array('data' => t('Location')),
+        array('data' => t('Position')),
+        array('data' => t('Apply Before')),
+    );
+    
+    // pagination script starts    
+    $per_page = 10;
+    // Initialize the pager
+    $current_page = pager_default_initialize(count($result), $per_page);
+    // Split your list into page sized chunks
+    $chunks = array_chunk($result, $per_page, TRUE);
+    // Show the appropriate items from the list
+    @$output = theme('table', array('header' => $header, 'rows' => $chunks[$current_page], 'empty' => t('No Records Found!')));
+    // Show the pager
+    $output .= theme('pager', array('quantity',count($result)));  
+    
+    $form['header'] = array(
+        '#type' => 'item',    
+        '#markup' => '<div>',
+        '#attributes' => array(
+            'class' => 'job-search',
+        ), 
+    );
+    
+    $form['custom_keyword'] = array(
+        '#type' => 'fieldset', 
+    );
+    
+    $form['custom_keyword']['keyword'] = array(
+        '#title' => 'Keyword - <span>A word or phrase to match relevant jobs.</span>',        
+        '#type' => 'textfield',
+        '#attributes' => array('placeholder' => t('Enter Job Title')), 
+        '#default_value' => (isset($form_state['input']['keyword']) ? $form_state['input']['keyword'] : ''),
+    );
+    
+    $form['custom_keyword']['job_title'] = array(
+        '#type' => 'radios',
+        '#title' => t('Search within'), 
+        '#options' => array(t('Job Title'), t('Company Name')),
+        '#attributes' => array('onclick' => "updateKeyword(this.value)"),       
+        '#default_value' => (isset($form_state['input']['job_title']) ? $form_state['input']['job_title'] : '0'),       
+    );
+        
+    $form['link'] = array(
+        '#type' => 'item',  
+        '#markup' => l('Advanced Search', 'javascript:onclick=showSearchfileds();', array('external' => TRUE)),
+        '#prefix' => '<div class="adv-search">',
+        '#suffix' => '</div>'
+    ); 
+    
+    $category_parrents = db_select('specializations_p')
+            ->fields('specializations_p')
+            ->execute()
+            ->fetchAll();
+    $display_category_parrents[''] = 'All Specializations';
+    foreach ($category_parrents as $category_parrent_name):
+        $display_category_parrents[$category_parrent_name->sid] = $category_parrent_name->name;
+    endforeach;
+    
+    $form['specializations'] = array(
+        '#type' => 'select',
+        '#title' => t('Specialization <span>- What is your specific job function or expertise?</span>'),
+        '#options' => $display_category_parrents,
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_registration_subparrent_list_ajax',
+            'wrapper' => 'subparrent-list-wrapper',
+        ),
+        '#default_value' => (isset($form_state['input']['specializations']) ? $form_state['input']['specializations'] : ''),
+        '#prefix' => '<div id="adv-search" style="display:none">'
+    );
+    
+    // Wrapper for sub parent dropdown list
+    $form['wrapper'] = array(
+        '#prefix' => '<div id="subparrent-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    
+    if (isset($form_state['values']['specializations']) && $form_state['values']['specializations'] != "") {
+        $category_subparrents = db_select('specializations_sp')
+                ->fields('specializations_sp')
+                ->condition('spid', $form_state['values']['specializations'], '=')
+                ->execute()
+                ->fetchAll();
+        $display_category_subparrents[''] = 'All';
+        foreach ($category_subparrents as $category_subparrent_name):
+            $display_category_subparrents[$category_subparrent_name->sid] = $category_subparrent_name->name;
+        endforeach;
+        // Province dropdown list
+        $form['wrapper']['sub_parent'] = array(
+            '#type' => 'select',
+            '#options' => $display_category_subparrents,
+            '#ajax' => array(
+                'event' => 'change',
+                'callback' => 'employer_registration_child_list_ajax',
+                'wrapper' => 'child-list-wrapper',
+            ),
+            '#default_value' => (isset($form_state['input']['sub_parent']) ? $form_state['input']['sub_parent'] : ''),
+        );
+    }
+    
+    // Wrapper for child dropdown list
+    $form['wrapper_child'] = array(
+        '#prefix' => '<div id="child-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    
+    if (isset($form_state['values']['sub_parent']) && $form_state['values']['sub_parent'] != "") {
+        $category_childs = db_select('specializations_c')
+                ->fields('specializations_c')
+                ->condition('cid', $form_state['values']['sub_parent'], '=')
+                ->execute()
+                ->fetchAll();
+        $display_category_childs[''] = 'All';
+        foreach ($category_childs as $category_child_name):
+            $display_category_childs[$category_child_name->sid] = $category_child_name->name;
+        endforeach;
+        // Province dropdown list
+        $form['wrapper_child']['childs'] = array(
+            '#type' => 'select',
+            '#options' => $display_category_childs,
+            '#default_value' => (isset($form_state['input']['childs']) ? $form_state['input']['childs'] : ''),
+        );
+    }
+    
+    /*$form['location'] = array(             
+        '#type' => 'select',
+        '#title' => t('Location - <span>Where do you want to work?</span>'),
+        '#options' => worklocation(), 
+    );*/
+    
+    $form['country'] = array(
+        '#type' => 'select',
+        '#title' => t('Country'),
+        '#options' => array(''=>'Select') + countries_list(),
+        '#ajax' => array(
+            'event' => 'change',
+            'callback' => 'employer_registration_state_list_ajax',
+            'wrapper' => 'state-list-wrapper',
+        ),
+        '#default_value' => (isset($form_state['input']['country']) ? $form_state['input']['country'] : ''),
+    );
+    
+    // Wrapper for state dropdown list
+    $form['address']['wrapper'] = array(
+        '#prefix' => '<div id="state-list-wrapper">',
+        '#suffix' => '</div>',
+    );
+    
+    if ((isset($form_state['values']['country']) && $form_state['values']['country'] != "")) {        
+        $cid = $form_state['values']['country'];        
+        $state_list = db_select('states_list')
+                ->fields('states_list')
+                ->condition('cid', $cid, '=')
+                ->execute()
+                ->fetchAll();
+        $state_list_arr[''] = 'Select';
+        foreach ($state_list as $value):
+            $state_list_arr[$value->id] = $value->name;
+        endforeach;
+        if(count($state_list) > 0){
+            // Province dropdown list
+            $form['address']['wrapper']['state'] = array(
+                '#type' => 'select',
+                '#title' => t('State'),
+                '#multiple' => TRUE,
+                '#options' => $state_list_arr,
+                '#default_value' => (isset($form_state['input']['state']) ? $form_state['input']['state'] : ''),            
+            );
+        }
+    }
+    
+    $form['salary'] = array(
+        '#type' => 'fieldset', 
+        '#title' => t('Monthly Salary (MYR) <span>- Enter salary range you are looking for in digits, Ex: 5000 </span>'),       
+    );  
+    
+    $form['salary']['min_salary'] = array(             
+        '#type' => 'textfield',
+        '#title' => t('Min'),       
+    );
+    
+    $form['salary']['max_salary'] = array(             
+        '#type' => 'textfield',
+        '#title' => t('Max'),      
+    );
+    
+    $form['years'] = array(
+        '#type' => 'fieldset', 
+        '#title' => t('Years of Experience'), 
+    ); 
+    
+    $form['years']['from_year'] = array(             
+        '#type' => 'select',
+        '#title' => t('From'),
+        '#options' => yearofexperience(),        
+    );
+    
+    $form['years']['to_year'] = array(             
+        '#type' => 'select',
+        '#title' => t('To'),
+        '#options' => yearofexperience(),        
+    );
+    
+    $form['position_offered'] = array(             
+        '#type' => 'select',
+        '#title' => t('Position Level'),
+        '#options' => positionoffered(), 
+        '#default_value' => (isset($position_offered) ? $position_offered : ''),
+    );
+    
+    $form['job_type'] = array(             
+        '#type' => 'checkboxes',
+        '#title' => t('Job Type'),
+        '#options' => jobtype(), 
+    );
+    
+    $form['nature_bussiness'] = array(             
+        '#type' => 'checkboxes',
+        '#title' => t('Nature of Business'),
+        '#options' => nature_bussiness_arr(), 
+    );
+    
+    $form['other'] = array(
+        '#title' => 'Please specify nature of the business',        
+        '#type' => 'textfield',
+        '#prefix' => '<div class="other-field" style="display:none">',
+        '#suffix' => '</div>', 
+    );  
+    
+    $form['job_posted_since'] = array(
+        '#type' => 'radios',
+        '#title' => t('Job posted since'), 
+        '#options' => array(t('All'), t('1 day ago'), t('3 days ago'), t('7 days ago'), t('14 days ago')),               
+        '#default_value' => 0,   
+        '#suffix' => '</div>'
+    ); 
+    
+    $form['buttons'] = array(
+        '#type' => 'fieldset', 
+    );
+    
+    $form['buttons']['reset'] = array(
+        '#type' => 'button', 
+        '#button_type' => 'reset',
+        '#value' => t('Clear'),
+        '#attributes' => array(
+            'onclick' => 'this.form.reset(); return false;',
+        ), 
+    );
+    
+    $form['buttons']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Search'),   
+        '#submit' => array('employer_registration_job_search_submit'),
+    );
+    
+    $form['footer'] = array(
+        '#type' => 'item', 
+        '#markup' => '</div>',
+    );
+    
+    $form['cutomtext'] = array(
+        '#type' => 'item',
+        '#markup' => $output,
+    );
+    
+    // Return output
+    return $form;    
+}
+
+/**
+ * Function for handling ajax request
+ */
+function employer_registration_subparrent_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper'];
+}
+
+function employer_registration_state_list_ajax($form, $form_state) {
+  // Return the dropdown list including the wrapper
+  return $form['address']['wrapper'];
+}
+
+function employer_registration_child_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['wrapper_child'];
+}
+
+/**
+ * jobs search submission
+ */
+function employer_registration_job_search_submit($form, &$form_state) {      
+    $form_state['rebuild'] = TRUE;
+}
+
+// company snapshot 
+function company_snapshot($uid,$jid){
+    extract(employerdetails($uid));
+    $jobflyer = "";
+    
+    if($jid!=""){        
+        $jobinfo = jobinfo($jid);
+        
+        //job flyer variables
+        $job_flyer_vars = array(
+            'path' => $jobinfo['attachment_path'], 
+            'alt' => $jobinfo['attachment_name'],
+            'title' => $jobinfo['attachment_name'],                       
+        );
+
+        $jobflyer = ($jobinfo['attachment_path'] != "" ? '<div class="job-flyer"><h2>Job Flyer</h2>' . theme('image', $job_flyer_vars) . '</div>' : '');
+    }
+    
+    // explode array keys form db
+    $array = explode('|', $nature_bussiness);
+    $nature_bussiness = array();
+    foreach($array as $key=>$value){
+        $nature_bussiness[$value] = $value;
+    }
+    // instersect array that match with keys
+    $nature_bussiness = array_intersect_key(nature_bussiness_arr(), $nature_bussiness);
+    // implode array with comma
+    $nature_bussiness = implode(',<br>', $nature_bussiness); 
+    
+    $address = $street.', '.$city.', '.get_state_name($state).', '.get_country_name($country).'. Zip: '.$zipcode;
+    
+    $output = '<aside class="col-md-3">  
+                <div class="company-portfolio">
+                    <h1>Company Portfolio</h1>
+                    <ul>
+                       <li><label>Nature of Business:</label><div class="cp-right">'. $nature_bussiness . ($other != "" ? ": ".$other : '') .'</div></li>
+                       <li><label>Website:</label><div class="cp-right">'.l($website,addhttp($website), array('attributes' => array('target'=>'_blank'))).'</div></li>
+                       <li><label>Telephone No:</label><div class="cp-right">'.$telephone.'</div></li>
+                       <li><label>Company Size:</label><div class="cp-right">'.$company_size.'</div></li>
+                    </ul> 
+                    <div class="address"><h2>Address</h2><p>'.$address.'</p>
+                    </div>                   
+                </div> 
+                '. $jobflyer .'
+            </aside>';
+    return $output;
+}
+
+// Job info details
+function jobinfo($jid){
+    $employer_jobs_query = db_select('employer_jobs')
+        ->fields('employer_jobs')
+        ->condition('id', $jid, '=') 
+        ->condition('delete_status', '0', '=')
+        ->execute();    
+    return $employer_jobs_query->fetchAssoc();   
+}
+
+// Job contact info details
+function job_contact_info($jid){
+    $comp_titles = comp_titles();
+    
+    $j_contact_person_query = db_select('employer_jobs_contact_person')
+        ->fields('employer_jobs_contact_person')
+        ->condition('employer_jobid', $jid, '=')            
+        ->execute();    
+    $jobcontactinfo = $j_contact_person_query->fetchAssoc(); 
+    $contact_information_display = jobinfo($jobcontactinfo['employer_jobid']); 
+    
+    if($contact_information_display){
+        $output = '<div><h1>Contact Information</h1><ul class="job-dtls">
+                        <li><label>Name: </label><div class="job-right">'.$comp_titles[$jobcontactinfo['federal_title']].' '.$jobcontactinfo['p_title'].' '.$jobcontactinfo['firstname'].' '.$jobcontactinfo['lastname'].'</div></li>
+                        <li><label>Designation: </label><div class="job-right">'.$jobcontactinfo['designation'].'</div></li>
+                        <li><label>Street: </label><div class="job-right">'.$jobcontactinfo['street'].'</div></li>
+                        <li><label>City: </label><div class="job-right">'.$jobcontactinfo['city'].'</div></li>                    
+                        <li><label>State: </label><div class="job-right">'.get_state_name($jobcontactinfo['state']).'</div></li>
+                        <li><label>Country: </label><div class="job-right">'.get_country_name($jobcontactinfo['country']).'</div></li>
+                        <li><label>Zip Code: </label><div class="job-right">'.$jobcontactinfo['zipcode'].'</div></li>
+                        <li><label>Telephone: </label><div class="job-right">'.$jobcontactinfo['telephone'].'</div></li>
+                        <li><label>Fax: </label><div class="job-right">'.$jobcontactinfo['fax'].'</div></li>
+                        <li><label>Email: </label><div class="job-right">'.$jobcontactinfo['email'].'</div></li>
+                    </ul></div>';
+    }else
+        $output = "";
+    
+    return $output;
+}
+
+// employer gallery screens
+function get_gallery_slideshow($uid) {
+     
+    drupal_add_js('
+            jQuery(document).ready(function() { 
+                $(window).load(function() {
+                    $("#slideshow").fadeIn("slow");
+                    $(".carousel").carousel({
+                        interval: "5000",
+                        wrap: true
+                    });
+                    $(".carousel").bind("slide", function(e) {
+                        setTimeout(function () {
+                            var next_h = $(e.relatedTarget).outerHeight();
+                            $(".carousel").css("height", next_h);
+                        }, 10);
+                    });
+                });
+            });',
+        'inline');
+    
+    $gallery_query = get_employer_gallery_query($uid);
+    $gallerys = $gallery_query->fetchAll();
+    
+    if(!empty($gallerys)){
+        $output = '<div id="slideshow" class="carousel slide carousel-fade">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">';
+                $i = 0;
+                foreach ($gallerys as $gallery): 
+                    $active = ($i == 0 ? 'active' : '');
+                    $output .= '<li data-target="#slideshow" data-slide-to="'.$i.'" class="'.$active.'"></li>';
+                $i++;
+                endforeach;   
+        $output .= '</ol>        
+                <div class="carousel-inner">';
+
+                // Wrapper for slides 
+                $i = 0;
+                foreach ($gallerys as $gallery):  
+                    $vars = array(
+                        'path' => $gallery->file_uri, 
+                        'alt' => $gallery->filename,
+                        'title' => $gallery->filename,                                       
+                    );
+                    $active = ($i == 0 ? 'active' : '');
+                    // slider-item 
+                    $output .= '<div class="item '.$active.'"> 
+                        '.theme('image',$vars).'
+                        <div class="carousel-caption">
+                            <h4>'. $gallery->title .'</h4>                        
+                        </div>
+                    </div>';
+                $i++;
+                endforeach;
+
+        $output .= '</div>
+                <!-- Controls -->
+                <a class="left carousel-control" href="#slideshow" data-slide="prev">
+                    <span class="icon-prev"></span>
+                </a>
+                <a class="right carousel-control" href="#slideshow" data-slide="next">
+                    <span class="icon-next"></span>
+                </a>
+        </div>';
+    }else
+        $output = '';   
+    
+    return $output;
+}
+
+// List of jobs by employer
+function list_jobs_employer($uid){    
+    $result = array();
+    $key = variable_get('IIUM_Encryption_Key', NULL);
+    
+    $list_jobs_query = db_select('employer_jobs')
+        ->fields('employer_jobs')    
+        ->condition('uid', $uid)   
+        ->condition('delete_status', '0', '=')
+        ->orderBy('id', 'DESC')   
+        ->execute(); 
+    
+    while ($row = $list_jobs_query->fetchAssoc($list_jobs_query)) {
+        $date = explode(' ', $row['deadline_for_application']);
+        $positionArr = positionoffered();
+        $result[] = array($row['jobid'], l($row['job_title'], 'employers/'.encrypt($row['uid'],$key).'/jobs/'.encrypt($row['id'],$key)) , $positionArr[$row['position_offered']], get_country_name($row['job_country']). ($row['job_state']!="0" ? ', '.get_state_name($row['job_state']): ''), dateformat($date[0]));
+    };
+    
+    $header = array(
+        array('data' => t('Job Id')), 
+        array('data' => t('Job Title')), 
+        array('data' => t('Position')),
+        array('data' => t('Location')),
+        array('data' => t('Apply Before')),
+    );
+    
+    // pagination script starts    
+    $per_page = 10;
+    // Initialize the pager
+    $current_page = pager_default_initialize(count($result), $per_page);
+    // Split your list into page sized chunks
+    $chunks = array_chunk($result, $per_page, TRUE);
+    // Show the appropriate items from the list
+    @$output = theme('table', array('header' => $header, 'rows' => $chunks[$current_page], 'empty' => t('No Records Found!')));
+    // Show the pager
+    $output .= theme('pager', array('quantity',count($result)));    
+    // Return output
+    return $output;
+}
+
+// Implementation of hook_mail_alter()
+function employer_registration_mail_alter(&$message) {    
+    $admin = user_load(1);
+    $admArr = employerdetails($admin->uid);
+    $message['from'] = $admArr['firstname'].' '.$admArr['lastname'].' <'. $admin->mail .'>';
+    $message['headers']['From'] = $message['from'];    
+}
+
+// Get user details based on userid 
+function userdetails($user_uid){
+    $user_query = db_select('users')
+            ->fields('users')
+            ->condition('uid', $user_uid, '=')            
+            ->execute();    
+    return $user_query->fetchAssoc();   
+}
+
+// get companies
+function get_companies($q){ 
+    $employer_query = db_select('employer_registration', 'e_rg');
+    
+    if($q == 'hiring') {   
+        $employer_query->leftjoin('employer_jobs', 'ej', 'e_rg.uid = ej.uid');
+        $employer_query->fields('ej');
+    }
+    
+    $employer_query->join('users', 'u', 'e_rg.uid = u.uid');    
+    $employer_query->fields('u',array('uid','status'));
+    $employer_query->fields('e_rg',array('eid','uid','company_organization','nature_bussiness', 'intro_company_organisation'));
+    $employer_query->condition('status', '0', '!=');   
+    
+    if($q == 'hiring') { 
+        $employer_query->condition('deadline_for_application', date('Y-m-d'), '>=');
+        $employer_query->condition('delete_status', '0', '=');
+    }
+    
+    $employer_query->orderBy('eid', 'DESC');
+    
+    if($q != 'all' && $q != 'hiring'){  
+        if($q == 'num')
+            $employer_query->condition('company_organization', '^[0-9]', 'REGEXP');
+        else if(in_array($q, range('A', 'Z')))
+            $employer_query->condition('company_organization', db_like(trim($q)) . '%', 'LIKE');
+        else 
+            $employer_query->condition('nature_bussiness', '%'. db_like(trim($q)) . '%', 'LIKE');
+    }
+    
+    return $employer_query->execute()->fetchAll();      
+}
+
+// Get employer details based on userid 
+function employerdetails($user_uid){
+    $employer_query = db_select('employer_registration')
+        ->fields('employer_registration')
+        ->condition('uid', $user_uid, '=')            
+        ->execute();    
+    return $employer_query->fetchAssoc();      
+}
+
+// Get employer name based on userid
+function employer_name($user_uid){
+    $employer_query = db_select('employer_registration')
+        ->fields('employer_registration', array('company_organization'))
+        ->condition('uid', $user_uid, '=')            
+        ->execute();    
+    return $employer_query->fetchAssoc();     
+}
+
+// Get employer portfolio based on userid 
+function employerportfolio($user_uid){
+    $portfolio_query = db_select('employer_portfolio')
+        ->fields('employer_portfolio')
+        ->condition('uid', $user_uid, '=')            
+        ->execute();    
+    return $portfolio_query->fetchAssoc();    
+}
+
+// Get 5 latest job posted employers details
+function employers_jobs_query($limit){
+    $employer_jobs = db_select('employer_jobs')
+        ->fields('employer_jobs')
+        ->condition('delete_status', '0', '=')
+        ->orderBy('id', 'DESC')
+        ->groupBy('uid')
+        ->range(0,$limit)
+        ->execute();    
+    return $employer_jobs;    
+}
+
+// Get employer gallery query based on userid
+function get_employer_gallery_query($uid){
+    $employer_gallery = db_select('employer_gallery')
+        ->fields('employer_gallery')    
+        ->condition('uid', $uid, '=')
+        ->orderBy('uid', 'DESC')        
+        ->execute();    
+    return $employer_gallery; 
+}
+
+// Used to remove few word from company name
+function remove_words($company_title){
+    $company_title = explode('.', $company_title);    
+    $employer_title = str_replace('pvt', '', strtolower($company_title['0']));
+    return $employer_title = str_replace(' ', '-', trim($employer_title));
+}
+
+// js libraries used for popup
+function magnific_popup_jslibraries(){  
+    drupal_add_js(drupal_get_path('module', 'employer_registration') .'/js/jquery.min.js');
+    drupal_add_js(drupal_get_path('module', 'employer_registration') .'/js/jquery.magnific-popup.js');
+    drupal_add_css(drupal_get_path('module', 'employer_registration') .'/css/magnific-popup.css');
+    drupal_add_js(drupal_get_path('module', 'employer_registration') .'/js/custom_gallery.js');
+}
+
+// return "m-d-Y" date format 
+function dateformat($date){
+    if($date!="0000-00-00")
+        return date("d/m/Y", strtotime($date));
+    else
+        return '';
+}
+
+/* Nature of business array */
+function nature_bussiness_arr(){
+    return array(            
+            '1' => t('Accounting / Audit/Tax Services'),
+            '2' => t('Advertising / Marketing / Promotion/PR'),
+            '3' => t('Aerospace / Aviation / Airline'), 
+            '4' => t('Agriculture / Plantation / Poultry / Fisheries'),
+            '5' => t('Apparel'),
+            '6' => t('Architectural Services / Interior Designing'),   
+            '7' => t('Arts / Design / Fashion'),
+            '8' => t('Automobile / Automotive Ancillary / Vehicle'),
+            '9' => t('Banking / Financial Services'),  
+            '10' => t('Bio Technology / Pharmaceutical / Clinical research'),
+            '11' => t('Call Center / IT-Enabled Services / BPO'),
+            '12' => t('Chemical / Fertilizers / Pesticides'), 
+            '13' => t('Computer / Information Technology (Hardware)'),
+            '14' => t('Computer / Information Technology (Software)'),
+            '15' => t('Construction / Building / Engineering'),   
+            '16' => t('Consulting (Business & Management)'),
+            '17' => t('Consulting ( IT, Science, Engineering & Technical )'),
+            '18' => t('Consumer Products / FMCG'), 
+            '19' => t('Education'),
+            '20' => t('Electricals & Electronics'),
+            '21' => t('Entertainment / Media'), 
+            '22' => t('Environment / Health / Safety'),
+            '23' => t('Exhibitions / Event Management / MICE'),
+            '24' => t('Food & Beverage / Catering / Restaurant'),   
+            '25' => t('Gems / Jewellery'),
+            '26' => t('General & Wholesale Trading'),
+            '27' => t('Government / Defence / Agency / Statutory Body'), 
+            '28' => t('Grooming / Beauty / Fitness'),
+            '29' => t('Health care / Medical'),
+            '30' => t('Heavy Industrial / Machinery / Equipment'), 
+            '31' => t('Hotel / Hospitality'),
+            '32' => t('Human Resources Management / Consulting'),
+            '33' => t('Insurance / Takaful'),   
+            '34' => t('Journalism'),
+            '35' => t('Law / Legal'),
+            '36' => t('Library / Museum'), 
+            '37' => t('Manufacturing / Production'),
+            '38' => t('Marine / Aquaculture'),
+            '39' => t('Mining'), 
+            '40' => t('Non- Profit Organization / Social Services / NGO'),
+            '41' => t('Oil / Gas / Petroleum'),
+            '42' => t('Polymer / Plastic / Rubber / Tyres'),   
+            '43' => t('Printing / Publishing'),
+            '44' => t('Property / Real Estate'),
+            '45' => t('R&D'), 
+            '46' => t('Repair & Maintenance Services'),
+            '47' => t('Retail / Merchandise'),
+            '48' => t('Science & Technology'), 
+            '49' => t('Security / Law Enforcement'),
+            '50' => t('Semiconductor / Water Fabrication'),
+            '51' => t('Sports'),   
+            '52' => t('Telecommunication'), 
+            '58' => t('Textiles / Garment'),            
+            '60' => t('Transportation / Logistics'), 
+            '61' => t('Travel / Tourism'),
+            '62' => t('Utilities / Power'),
+            '63' => t('Wood / Fibre / Paper'),   
+            '64' => t('Others'), 
+        );
+}
+
+/* Limit words of a string */
+function limit_words($string, $word_limit) {
+    $words = explode(" ", $string);
+    return implode(" ", array_splice($words, 0, $word_limit));
+}
+
+/* Countries List */
+function countries_list(){
+    $countries = array();
+    $countries_list = db_select('countries_list')
+        ->fields('countries_list')              
+        ->execute()->fetchAll();                
+    foreach ($countries_list as $key => $value) {
+        $countries[$value->id] = $value->name;
+    }
+    return $countries;
+}
+
+/* get country_name */
+function get_country_name($id){
+    $country_name = db_select('countries_list')
+        ->fields('countries_list') 
+        ->condition('id', $id, '=') 
+        ->execute()->fetch();  
+    if(!empty($country_name))
+        return $country_name->name;
+    else
+        return '';
+}
+
+/* get states_name */
+function get_state_name($id){
+    $states_name = db_select('states_list')
+        ->fields('states_list') 
+        ->condition('id', $id, '=') 
+        ->execute()->fetch();     
+    if(!empty($states_name))
+        return $states_name->name;
+    else
+        return '';  
+}
+
+/**
+ * Check to see if a user is anonymous user.
+ *
+ * @param $role
+ *   The name of the role you're trying to find.
+ * @param $user
+ *   The user object for the user you're checking; defaults to the current user.
+ * @return
+ *   TRUE if the user object has the role, FALSE if it does not.
+ */
+function anonymous_user($user = NULL) {
+    if ($user == NULL) {
+        global $user;
+    }
+
+    if ($user->uid == '0') {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+// array to hold company titles
+function comp_titles(){
+    return array(
+        '1' => 'Tun', 
+        '2' => 'Tan Sri', 
+        '3' => 'Datuk', 
+        '4' => 'Dato', 
+    );
+}
+
+function addhttp($url) {
+    if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+        $url = "http://" . $url;
+    }
+    return $url;
+}
+
+/* alert user_pass form submission */
+function employer_registration_user_pass_validate($form, &$form_state){ 
+    $form_state['values'] = $form_state['input'];   
+    $name = trim($form_state['input']['name']); 
+    $user = user_load_by_name($name); 
+    $form_state['values']['account'] = $user;
+    if(!empty($user->uid)){
+        if(!in_array('employer', $user->roles)){              
+            form_set_error('user_pass_error', t('Please contact your IIUM Network admin for the new password'));
+        }else
+            user_pass_submit($form, $form_state);
+    }else
+        user_pass_validate($form, $form_state);
+}

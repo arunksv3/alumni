@@ -1,0 +1,5 @@
+name = Employer Registration 
+description = A Simple Employer Registration
+core = 7.x
+version = 7.x.1.0
+php = 5.3

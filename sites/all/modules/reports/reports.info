@@ -1,0 +1,7 @@
+name = Reports
+description = Interface for managing reports
+package = Reports
+core = 7.x
+version = 7.x.1.0
+php = 5.3
+

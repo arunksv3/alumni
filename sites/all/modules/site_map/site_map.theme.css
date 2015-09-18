@@ -1,0 +1,40 @@
+#site-map a{ color:#222;}
+#site-map a:hover{ color:#663398; text-decoration:none;}
+.site-map-box-front h2{font-family:MuseoSlab100; font-weight:600; font-size:22px; margin: 0 0 10px 0; padding:0; line-height:26px; color:#9c2b3d;}
+
+.site-map-menus{ clear:both;}
+.site-map-box-menu h2{font-family:MuseoSlab100; font-weight:600; font-size:22px; margin: 0 0 10px 0; padding:0; line-height:22px; color:#9c2b3d;}
+.site-map-box-menu{ float:left;width:33%;}
+
+
+#site-map .description {
+  margin-bottom: 0.5em;
+}
+
+#site-map .site-map-box {
+  margin-bottom: 1em;
+}
+
+#site-map .site-map-box ul {
+  padding-left: 1em;
+}
+
+
+#site-map .site-map-box ul ul {
+  margin: 0; padding-left: 2em;
+}
+
+/* Styles when RSS icons are displayed on the left. */
+#site-map .site-map-rss-left ul {
+  padding-left: 0;
+}
+#site-map .site-map-rss-left li {
+  background-image: none;
+  list-style-image: none;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+#site-map .site-map-rss-left ul li li {
+  padding-left: 1.5em;
+}

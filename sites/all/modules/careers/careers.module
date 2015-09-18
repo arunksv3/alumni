@@ -1,0 +1,128 @@
+<?php
+/**
+* Careers module
+* This module allows site administrators to crete careers 
+*/
+function careers_help($path, $arg) {
+  if ($path == 'admin/help#careers') {
+  return t('Creat specialization categories for job posting');
+  }
+}
+/**
+* Implement hook_menu().
+*/
+function careers_menu() {
+  $items = array();
+/*View screen for display all parent level specilizations in frontend section*/
+$items['careers'] = array(
+  'title' => 'Careers',
+  'description' => 'view all parent level specializations.',
+  'page callback' => array('career_front_parent_specializations'),
+  'file' => 'careers.front_display_parrents.inc',
+  'type' => MENU_NORMAL_ITEM,
+  'access callback' => TRUE, 
+);
+/*View screen for display all sub parent level and child level specilizations in frontend section*/
+$items['careers/%'] = array(
+  'title callback' => 'title_function',
+  'title arguments' => array(1), 
+  'description' => 'view all parent level specializations.',
+  'page callback' => array('career_front_subparent_specializations'),
+  'page arguments' => array(1),
+  'file' => 'careers.front_display_subparrents.inc',
+  'type' => MENU_NORMAL_ITEM,
+  'access callback' => TRUE, 
+  'menu_name'=>"menu-employer-menu",
+);
+ /*View screen for parrent level specilizations*/
+$items['admin/config/people/careers'] = array(
+  'title' => 'Parent Specializations',
+  'description' => 'view specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_display_parrents'),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_display_parrents.inc',
+  'type' => MENU_NORMAL_ITEM,
+);
+/*Add screen for parrent level specilizations*/
+$items['admin/config/people/careers/add'] = array(
+  'title' => 'Parent Specializations',
+  'description' => 'create specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_add_parrent',''),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_add_parrent.inc',
+  'type' => MENU_SUGGESTED_ITEM,
+);
+/*Edit screen for parrent level specilizations*/
+$items['admin/config/people/careers/%/edit'] = array(
+  'title' => 'Parent Specializations',
+  'description' => 'edit specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_add_parrent',4),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_add_parrent.inc',
+  'type' => MENU_SUGGESTED_ITEM,
+);
+/*View screen for sub parrent level specilizations*/
+$items['admin/config/people/careers/subparrent'] = array(
+  'title' => 'Sub Parent Specializations',
+  'description' => 'view specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_display_subparrents'),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_display_subparrents.inc',
+  'type' => MENU_NORMAL_ITEM,
+);
+/*Add screen for sub parrent level specilizations*/
+$items['admin/config/people/careers/subparrent/add'] = array(
+  'title' => 'Sub Parent Specializations',
+  'description' => 'create subparrent specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_add_subparrent',''),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_add_subparrent.inc',
+  'type' => MENU_SUGGESTED_ITEM,
+);
+/*Edit screen for parrent level specilizations*/
+$items['admin/config/people/careers/subparrent/%/edit'] = array(
+  'title' => 'Sub Parent Specializations',
+  'description' => 'edit specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_add_subparrent',5),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_add_subparrent.inc',
+  'type' => MENU_SUGGESTED_ITEM,
+);
+/*View screen for child level specilizations*/
+$items['admin/config/people/careers/subparrent/child'] = array(
+  'title' => 'Child Specializations',
+  'description' => 'view specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_display_childs'),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_display_childs.inc',
+  'type' => MENU_NORMAL_ITEM,
+);
+/*Add screen for sub parrent level specilizations*/
+$items['admin/config/people/careers/subparrent/child/add'] = array(
+  'title' => 'Child Specializations',
+  'description' => 'create subparrent specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_add_child',''),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_add_child.inc',
+  'type' => MENU_SUGGESTED_ITEM,
+);
+/*Edit screen for parrent level specilizations*/
+$items['admin/config/people/careers/subparrent/child/%/edit'] = array(
+  'title' => 'Child Specializations',
+  'description' => 'edit specialization records.',
+  'page callback' => 'drupal_get_form',
+  'page arguments' => array('career_add_child',6),
+  'access arguments' => array('administer users'),
+  'file' => 'careers.admin_add_child.inc',
+  'type' => MENU_SUGGESTED_ITEM,
+);
+ return $items;
+}

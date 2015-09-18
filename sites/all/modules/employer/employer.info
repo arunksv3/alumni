@@ -1,0 +1,12 @@
+name = Employer 
+description = Posting the jobs and managing jobs
+package = Employer
+core = 7.x
+php = 5.0; 
+files[] = employer.module
+Information added by drupal.org packaging script on 2014-01-27
+version = "7.x-1.41"
+core = "7.x"
+project = "IIUM"
+datestamp = "1327704952"
+

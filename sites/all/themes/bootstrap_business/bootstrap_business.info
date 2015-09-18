@@ -1,0 +1,42 @@
+name = Bootstrap Business
+description = An extremely flexible, responsive theme with a wealth of regions. Supported by <a href="http://www.morethanthemes.com/" target="_blank">More than (just) Themes</a>. If you like this theme, feel welcome to also check our other <a href="http://www.morethanthemes.com" target="_blank">Premium</a> and <a href="http://drupalizing.com" target="_blank">Free</a> Drupal themes.
+
+version = VERSION
+core = 7.x
+
+stylesheets[all][] = css/style.css
+stylesheets[all][] = color/colors.css
+stylesheets[all][] = css/local.css
+stylesheets[all][] = css/fonts-icon.css
+
+regions[preface_sidebar_left_block] = Preface sidebar left block
+regions[preface_mainpage_slider_block] = Preface mainpage slider block
+regions[sidebar_left_upper_block] = Sidebar left upper block
+regions[mainpage_content_block] = Main page content block 
+regions[sidebar_right_upper_block] = Sidebar right upper block
+regions[sidebar_left_lower_block] = Sidebar left lower block
+regions[postscript_below_mainpage_content_block] = Postscript below mainpage content block
+regions[sidebar_right_lower_block] = Sidebar right lower block
+regions[inner_page_sidebar_right_upper_block] = Inner page sidebar right upper block
+regions[inner_page_sidebar_right_lower_block] = Inner page sidebar right lower block
+regions[footer_first_block] = Footer first block
+regions[footer_second_block] = Footer second block
+regions[footer_third_block] = Footer third block
+regions[footer_fourth_block] = Footer fourth block
+regions[below_footer_links_block] = Below footer links
+regions[employer_sidebar_menu] = Employer Sidebar Menu
+regions[student_sidebar_menu] = Student Sidebar Menu
+regions[tips_sidebar_menu] = Tips Sidebar Menu
+regions[events_sidebar_menu] = Events Sidebar Menu
+regions[Reports_sidebar_menu] = Reports Sidebar Menu
+settings[breadcrumb_display]= 1
+settings[scrolltop_display]= 1
+settings[responsive_respond]= 0
+settings[bootstrap_css_cdn]= 3.2.0
+
+; Information added by Drupal.org packaging script on 2014-10-21
+version = "7.x-1.1"
+core = "7.x"
+project = "bootstrap_business"
+datestamp = "1413913868"
+

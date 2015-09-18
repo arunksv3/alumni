@@ -1,0 +1,302 @@
+<?php
+/**
+* Careers module
+* This module allows site administrators to crete careers 
+*/
+function reports_help($path, $arg) {
+  if ($path == 'admin/help#careers') {
+  return t('Displaying the student,employer and job summary reports');
+  }
+}
+/**
+ * Implements hook_menu().
+ */
+function reports_menu() {    
+    $items = array(); 
+       //for administrator student summary reports
+    $items['admin/config/people/reports'] = array(
+        'title' => 'Reports', //page title    
+        'access callback' => TRUE,
+    ); 
+     //for administrator student summary reports
+    $items['admin/config/people/reports/summary/studentreports'] = array(
+        'title' => 'Student Summary Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('summary_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_summary_reports'),
+        'file' => 'student.summary.inc',
+        'type' => MENU_NORMAL_ITEM,
+    ); 
+     //for administrator employer summary reports
+    $items['admin/config/people/reports/summary/employerreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Summary Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('summary_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_summary_reports'),
+        'file' => 'employer.summary.inc',
+        'type' => MENU_NORMAL_ITEM,
+    );  
+      //for administrator job summary reports
+    $items['admin/config/people/reports/summary/jobreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Job Summary Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('summary_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('job_summary_reports'),
+        'file' => 'job.summary.inc',
+        'type' => MENU_NORMAL_ITEM,
+    );  
+     //for administrator No.of employer registered reports
+    $items['admin/config/people/reports/detail/employerreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.detail.inc',
+         'type' => MENU_NORMAL_ITEM,
+    ); 
+     //for administrator No.of employer advertise job reports
+    $items['admin/config/people/reports/detail/employeradvertisejob'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.advertisejob.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    ); 
+      //for administrator No. of employers call for interview reports
+    $items['admin/config/people/reports/detail/employerinterviewreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.interviewreports.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    ); 
+      //for administrator Employers Preferences by reports
+    $items['admin/config/people/reports/detail/employerpreferencesreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.preferencesreports.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    ); 
+    
+    //for administrator No.of students registered in the portal reports
+    $items['admin/config/people/reports/detail/studentregisteredreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail.inc',
+         'type' => MENU_NORMAL_ITEM,
+    );  
+    // for administrator No.of students applied for jobs reports
+    $items['admin/config/people/reports/detail/studentappliedreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_applied.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    );  
+    // for administrator No.of students shortlisted for interview reports
+    $items['admin/config/people/reports/detail/studentinterviewreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_interview.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    );  
+    // for administrator No.of students employed reports
+    $items['admin/config/people/reports/detail/studentemployedreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_employed.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    ); 
+     // for administrator No.of students took psychometric test reports
+    $items['admin/config/people/reports/detail/studenpsychometrictestreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_psychometrictest.inc',
+        'type' =>MENU_SUGGESTED_ITEM
+    );  
+    // for administrator job detail reports
+    $items['admin/config/people/reports/detail/jobreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Job Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('job_detail_reports'),
+        'file' => 'job.detail.inc',
+        'type' => MENU_NORMAL_ITEM,
+    ); 
+    // student summary reports
+    $items['summary/studentreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Summary Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('summary_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_summary_reports'),
+        'file' => 'student.summary.inc'
+    );  
+     // employer summary reports
+    $items['summary/employerreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Summary Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('summary_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_summary_reports'),
+        'file' => 'employer.summary.inc'
+    );  
+     // job summary reports
+    $items['summary/jobreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Job Summary Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('summary_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('job_summary_reports'),
+        'file' => 'job.summary.inc'
+    ); 
+     //No.of employer registered reports
+    $items['detail/employerreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.detail.inc'
+    ); 
+     // No.of employer advertise job reports
+    $items['detail/employeradvertisejob'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.advertisejob.inc'
+    ); 
+      // No. of employers call for interview reports
+    $items['detail/employerinterviewreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.interviewreports.inc'
+    ); 
+      // Employers Preferences by reports
+    $items['detail/employerpreferencesreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Employer Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('employer_detail_reports'),
+        'file' => 'employer.preferencesreports.inc'
+    ); 
+    
+    //No.of students registered in the portal reports
+    $items['detail/studentregisteredreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail.inc'
+    );  
+    // No.of students applied for jobs reports
+    $items['detail/studentappliedreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_applied.inc'
+    );  
+    // No.of students shortlisted for interview reports
+    $items['detail/studentinterviewreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_interview.inc'
+    );  
+    // No.of students employed reports
+    $items['detail/studentemployedreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_employed.inc'
+    ); 
+     // No.of students took psychometric test reports
+    $items['detail/studenpsychometrictestreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Student Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('student_detail_reports'),
+        'file' => 'student.detail_psychometrictest.inc'
+    );  
+    // job detail reports
+    $items['detail/jobreports'] = array( //this creates a URL that will call this form at "psychometrics"
+        'title' => 'Job Detail Report', //page title
+        'page callback' => 'drupal_get_form', //this is the function that will be called when the page is accessed.  for a form, use drupal_get_form
+        'page arguments' => array('detail_reports'), //put the name of the form here
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('job_detail_reports'),
+        'file' => 'job.detail.inc'
+    ); 
+    /*Applicants latest Resume screen*/
+   $items['detail/latestresume/%'] = array(   
+    'title' => 'Resume',        
+    'page callback' => array('employer_latestresume'),
+    'page arguments'   => array(2),
+    'access callback' => 'user_access_permissions',
+    'access arguments' => array('student_detail_reports'),   
+    'file' => 'studentlatestresume.inc',
+   );
+    return $items;
+}
+function reports_permission() {
+   return array( 
+    'student_summary_reports' => array(
+        'description' => t('Student Summary Reports'),
+    ),
+    'student_detail_reports' => array(
+        'description' => t('Student Detail Reports'),
+    ),    
+    'employer_summary_reports' => array(
+        'description' => t('Employer Summary Reports'),
+    ),
+   'employer_detail_reports' => array(
+        'description' => t('Employer Detail Reports'),
+    ),   
+    'job_summary_reports' => array(
+        'description' => t('Job Summary Reports'),
+    ),
+    'job_detail_reports' => array(
+        'description' => t('Job Detail Reports'),
+    ),   
+   );
+}

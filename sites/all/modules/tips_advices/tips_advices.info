@@ -1,0 +1,5 @@
+name = Tips & Advice
+description = Interface for managing Tips & Advice
+core = 7.x
+php = 5.3
+configure = admin/config/people/tips_advices

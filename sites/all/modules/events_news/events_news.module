@@ -1,0 +1,807 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+function events_news_menu() {
+    
+    $items = array();
+        //for administrator
+    $items['admin/config/people/eventsandnews'] = array(
+        'title' => 'News&Events',
+        'access callback' => TRUE,
+    );    
+    $items['admin/config/people/eventsandnews/events'] = array(
+        'title' => 'View Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_events'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_events_news'),
+        'file' => 'events_news_events.inc'
+    );    
+    $items['admin/config/people/eventsandnews/addevent'] = array(
+        'title' => 'Create Event',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_create_event'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_events_news'),
+        'file' => 'events_news_create_event.inc'
+    );    
+    $items['admin/config/people/eventsandnews/editevent/%/edit'] = array(
+        'title' => 'Update Event',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_update_event',5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('update_events_news'),
+        'file' => 'events_news_update_event.inc'        
+    );    
+    $items['admin/config/people/deleteevent/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_event',4),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    );
+     $items['admin/config/people/deleteeventimage/%'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_eventimage',4),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    ); 
+    $items['admin/config/people/approveevent/%/%'] = array(
+        'title' => 'Approve Event',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_approve_event',4,5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_events_news'),               
+    ); 
+    $items['admin/config/people/eventsandnews/event_registrations'] = array(
+        'title' => 'Event Registrations',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_event_registrations'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'),
+        'file' => 'events_news_event_registrations.inc'
+    );
+    $items['admin/config/people/approvereguser/%/%'] = array(
+        'title' => 'Approve Event Registrations',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_approve_event_reg',4,5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'),               
+    );
+    $items['admin/config/people/deletereguser/%/%'] = array(
+        'title' => 'Delete Event Registrations',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_event_reg',4,5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'),               
+    );    
+    $items['admin/config/people/event/viewreguser/%'] = array(
+        'title' => 'View Event Registrations',
+        'page callback' => 'events_news_view_event_reg',
+        'page arguments' => array(5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'), 
+        'file' => 'events_news_view_event_reg.inc'
+    );
+    $items['admin/config/people/event/viewevent/%'] = array(
+        'title' => 'View Event',
+        'page callback' => 'events_news_view_event',
+        'page arguments' => array(5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'), 
+        'file' => 'events_news_view_event.inc'
+    );
+    $items['admin/config/people/event/viewnews/%'] = array(
+        'title' => 'View News',
+        'page callback' => 'events_news_view_news',
+        'page arguments' => array(5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'), 
+        'file' => 'events_news_view_news.inc'
+    );
+    
+    
+    //for other users
+    $items['eventsandnews/events'] = array(
+        'title' => 'View Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_events'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_events_news'),
+        'file' => 'events_news_events.inc'
+    );    
+    $items['eventsandnews/addevent'] = array(
+        'title' => 'Create Event',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_create_event'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_events_news'),
+        'file' => 'events_news_create_event.inc'
+    );    
+    $items['eventsandnews/editevent/%/edit'] = array(
+        'title' => 'Update Event',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_update_event',2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('update_events_news'),
+        'file' => 'events_news_update_event.inc'        
+    );    
+    $items['deleteevent/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_event',1),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    );
+     $items['deleteeventimage/%'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_eventimage',1),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    ); 
+    $items['approveevent/%/%'] = array(
+        'title' => 'Approve Event',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_approve_event',1,2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_events_news'),               
+    );
+    $items['approvereguser/%/%'] = array(
+        'title' => 'Approve Event Registrations',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_approve_event_reg',1,2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'),               
+    );
+    $items['eventsandnews/event_registrations'] = array(
+        'title' => 'Event Registrations',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_event_registrations'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'),
+        'file' => 'events_news_event_registrations.inc'
+    );
+    $items['deletereguser/%/%'] = array(
+        'title' => 'Delete Event Registrations',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_event_reg',1,2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'),               
+    );
+    $items['event/viewreguser/%'] = array(
+        'title' => 'View Event Registrations',
+        'page callback' => 'events_news_view_event_reg',
+        'page arguments' => array(2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'), 
+        'file' => 'events_news_view_event_reg.inc'
+    );
+    $items['event/viewevent/%'] = array(
+        'title' => 'View Event',
+        'page callback' => 'events_news_view_event',
+        'page arguments' => array(2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'), 
+        'file' => 'events_news_view_event.inc'
+    );
+    $items['event/viewnews/%'] = array(
+        'title' => 'View News',
+        'page callback' => 'events_news_view_news',
+        'page arguments' => array(2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_event_registrations'), 
+        'file' => 'events_news_view_news.inc'
+    );
+     
+    //for administrator
+    $items['admin/config/people/eventsandnews/news'] = array(
+        'title' => 'View News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_news'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_events_news'),
+        'file' => 'events_news_news.inc'
+    );    
+    $items['admin/config/people/eventsandnews/addnews'] = array(
+        'title' => 'Create News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_create_news'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_events_news'),
+        'file' => 'events_news_create_news.inc'
+    );    
+    $items['admin/config/people/eventsandnews/editnews/%/edit'] = array(
+        'title' => 'Update News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_update_news',5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('update_events_news'),
+        'file' => 'events_news_update_news.inc'        
+    );    
+    $items['admin/config/people/deletenews/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_news',4),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    );
+    $items['admin/config/people/deletenewsimage/%'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_newsimage',4),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    ); 
+    $items['admin/config/people/approvenews/%/%'] = array(
+        'title' => 'Approve News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_approve_news',4,5),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_events_news'),               
+    );
+    
+    
+    //for other users
+    $items['eventsandnews/news'] = array(
+        'title' => 'View News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_news'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('view_events_news'),
+        'file' => 'events_news_news.inc'
+    );    
+    $items['eventsandnews/addnews'] = array(
+        'title' => 'Create News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_create_news'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('add_events_news'),
+        'file' => 'events_news_create_news.inc'
+    );    
+    $items['eventsandnews/editnews/%/edit'] = array(
+        'title' => 'Update News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_update_news',2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('update_events_news'),
+        'file' => 'events_news_update_news.inc'        
+    );    
+    $items['deletenews/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_news',1),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    );
+    $items['deletenewsimage/%'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_delete_newsimage',1),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('delete_events_news'),
+    ); 
+    $items['approvenews/%/%'] = array(
+        'title' => 'Approve News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_approve_news',1,2),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('approve_events_news'),               
+    );
+    
+    $items['newsandevents'] = array(
+        'title' => 'News & Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_newsandevents'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('list_events_news'),
+        'file' => 'events_news_newsandevents.inc'
+    );    
+    $items['eventslist'] = array(
+        'title' => 'Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_events_list'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('list_events_news'),
+        'file' => 'events_news_events_list.inc'
+    );
+    
+    $items['event/%'] = array(
+        'title' => 'Events',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_event',1),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('list_events_news'),
+        'file' => 'events_news_event.inc'
+    );
+    
+    $items['newslist'] = array(
+        'title' => 'News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_news_list'),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('list_events_news'),
+        'file' => 'events_news_news_list.inc'
+    );
+    
+    $items['news/%'] = array(
+        'title' => 'News',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('events_news_news_details',1),
+        'access callback' => 'user_access_permissions',
+        'access arguments' => array('list_events_news'),
+        'file' => 'events_news_news_details.inc'
+    );
+    
+    return $items;
+}
+
+
+function events_news_permission() {
+  return array(
+    'add_events_news' => array(
+        'description' => t('Add Events & News'),
+    ),
+    'view_events_news' => array(        
+        'description' => t('View Events & News'),
+    ),
+      
+    'update_events_news' => array(
+        'description' => t('Update Events & News'),
+    ),
+    'delete_events_news' => array(
+        'description' => t('Delete Events & News'),
+    ),
+      
+    'approve_events_news' => array(
+        'description' => t('Approve Events & News'),
+    ), 
+      
+    'list_events_news' => array(
+        'description' => t('List Events & News'),
+    ), 
+      
+    'approve_event_registrations' => array(
+        'description' => t('Approve Event & Registrations'),
+    ),
+      
+  );
+}
+
+
+/*
+function user_access_permissions($permission, $user = NULL) {
+    if ($user == NULL) {
+        global $user;
+    }
+    if (user_access($permission, $user)) {
+        return TRUE;
+    }
+    return FALSE;
+}*/
+
+function event_state_list_ajax($form, $form_state) {
+    return $form['venue']['wrapper'];
+}
+
+function event_time(){
+    return array(
+        '00:00'=>'00:00','00:15'=>'00:15','00:30'=>'00:30','00:45'=>'00:45',
+        '01:00'=>'01:00','01:15'=>'01:15','01:30'=>'01:30','01:45'=>'01:45',
+        '02:00'=>'02:00','02:15'=>'02:15','02:30'=>'02:30','02:45'=>'02:45',
+        '03:00'=>'03:00','03:15'=>'03:15','03:30'=>'03:30','03:45'=>'03:45',
+        '04:00'=>'04:00','04:15'=>'04:15','04:30'=>'04:30','04:45'=>'04:45',
+        '05:00'=>'05:00','05:15'=>'05:15','05:30'=>'05:30','05:45'=>'05:45',
+        '06:00'=>'06:00','06:15'=>'06:15','06:30'=>'06:30','06:45'=>'06:45',
+        '07:00'=>'07:00','07:15'=>'07:15','07:30'=>'07:30','07:45'=>'07:45',
+        '08:00'=>'08:00','08:15'=>'08:15','08:30'=>'08:30','08:45'=>'08:45',
+        '09:00'=>'09:00','09:15'=>'09:15','09:30'=>'09:30','09:45'=>'09:45',
+        '10:00'=>'10:00','10:15'=>'10:15','10:30'=>'10:30','10:45'=>'10:45',
+        '11:00'=>'11:00','11:15'=>'11:15','11:30'=>'11:30','11:45'=>'11:45',
+        '12:00'=>'12:00','12:15'=>'12:15','12:30'=>'12:30','12:45'=>'12:45',
+        '13:00'=>'13:00','13:15'=>'13:15','13:30'=>'13:30','13:45'=>'13:45',
+        '14:00'=>'14:00','14:15'=>'14:15','14:30'=>'14:30','14:45'=>'14:45',
+        '15:00'=>'15:00','15:15'=>'15:15','15:30'=>'15:30','15:45'=>'15:45',
+        '16:00'=>'16:00','16:15'=>'16:15','16:30'=>'16:30','16:45'=>'16:45',
+        '17:00'=>'17:00','17:15'=>'17:15','17:30'=>'17:30','17:45'=>'17:45',
+        '18:00'=>'18:00','18:15'=>'18:15','18:30'=>'18:30','18:45'=>'18:45',
+        '19:00'=>'19:00','19:15'=>'19:15','19:30'=>'19:30','19:45'=>'19:45',
+        '20:00'=>'20:00','20:15'=>'20:15','20:30'=>'20:30','20:45'=>'20:45',
+        '21:00'=>'21:00','21:15'=>'21:15','21:30'=>'21:30','21:45'=>'21:45',
+        '22:00'=>'22:00','22:15'=>'22:15','22:30'=>'22:30','22:45'=>'22:45',
+        '23:00'=>'23:00','23:15'=>'23:15','23:30'=>'23:30','23:45'=>'23:45',
+    );
+}
+
+function events_news_delete_event($form, &$form_state, $eid) {
+    
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    $id=(int)decrypt($eid,$decrypting_key); 
+    db_delete('events')
+        ->condition('id', $id, '=')
+        ->execute();
+    audit_log('Event deleted', 'Event ID:'.sprintf("EV-%04d", $id));   
+    drupal_set_message('Event Deleted');
+    drupal_goto(get_admin_link().'eventsandnews/events'); 
+}
+
+function events_news_delete_news($form, &$form_state, $id) {
+    
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    $id=(int)decrypt($id,$decrypting_key); 
+    db_delete('news')
+        ->condition('id', $id, '=')
+        ->execute();
+    audit_log('News deleted', 'News ID:'.sprintf("NW-%04d", $id));   
+    drupal_set_message('News Deleted');
+    drupal_goto(get_admin_link().'eventsandnews/news'); 
+}
+
+function organized(){
+    return array('0'=>'IIUM staff','1'=>'Alumini career staff');
+}
+
+function reported(){
+    return array('0'=>'Alumini career staff','1'=>'Kulliyyah of Medicine');
+}
+
+function news_category(){
+    return array('0'=>'News','1'=>'Announcements','2'=>'Press Release');
+}
+
+function events_news_delete_eventimage($form, &$form_state, $id){
+    db_delete('event_attachments')
+        ->condition('id', $id, '=')
+        ->execute();
+    audit_log('Event attachment deleted', 'ID:'.$id);   
+}
+
+function events_news_delete_newsimage($form, &$form_state, $id){
+    db_delete('news_attachments')
+        ->condition('id', $id, '=')
+        ->execute();
+    audit_log('News attachment deleted', 'ID:'.$id);   
+}
+
+
+function events_news_approve_event($form, &$form_state, $eid,$status) {
+    global $base_url;
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    $eid=(int)decrypt($eid,$decrypting_key);
+    $status=(int)decrypt($status,$decrypting_key);
+
+    if($status==0)
+       $status = 1;
+    else 
+       $status = 0;
+    $params = array(
+        'status' => $status,
+    );
+    db_update('events')
+    ->fields($params)
+    ->condition('id', $eid, '=')
+    ->execute();
+    
+    $result = db_select('events')
+    ->fields('events')
+    ->condition('id', $eid, '=')
+    ->execute()->fetchAll();
+    $userid = $result[0]->uid;
+    
+    $subject = 'Event Approved';
+    $linkuserArr = user_load($userid);  
+    $usermail = (string) $linkuserArr->mail; // load user email to send a mail to it OR you can specify an email here to which the email will be sent 
+     //$message = 'Your registration for event has been approved';
+    $path = $base_url.'/'.drupal_get_path('theme', 'bootstrap_business'); 
+    $message = '<html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <title>IIUM Email</title>
+            </head>
+            <body style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:30px; margin:0; padding:0;">
+                <table width="600" border="0" cellspacing="0" cellpadding="0" style="margin:0 auto; border: 1px solid #ccc; padding:0 0 15px 0;">
+                    <tr>
+                      <td style="background:url(' . $path . '/images/header-bg.jpg) repeat-x left top;border-bottom: 5px solid #9c2b3d; padding: 15px 10px; text-align: center;"><img src="' . $path . '/images/logo.png" width="228" height="83" /></td>
+                    </tr>
+                     <tr>
+                        <td>Hi '.$linkuserArr->name.',</td>
+                    </tr>
+                    <tr>
+                        <td>The Event '.$result[0]->title.' has been reviewed and approved by Administrator, thanks for your valuable contribution.</td>
+                    </tr>
+                    <tr>
+                        <td>Regards, </br>
+                            IIUM Career Consuling Team
+                        </td>
+                    </tr>
+                </table>   
+            </body>
+            </html>';
+    events_news_mail('default_from', $usermail, $subject, $message);
+    audit_log('Event approved Event', 'ID:'.sprintf("EV-%04d", $eid));   
+    drupal_goto(get_admin_link().'eventsandnews/events');
+}
+
+function events_news_approve_news($form, &$form_state, $nid,$status) {
+    global $base_url;
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    $nid=(int)decrypt($nid,$decrypting_key);
+    $status=(int)decrypt($status,$decrypting_key);
+    if($status==0)
+       $status = 1;
+    else 
+       $status = 0;
+            
+    $params = array(
+        'status' => $status,
+    );
+    
+    db_update('news')
+    ->fields($params)
+    ->condition('id', $nid, '=')
+    ->execute();
+    
+    $result = db_select('news')
+    ->fields('news')
+    ->condition('id', $nid, '=')
+    ->execute()->fetchAll();
+    $userid = $result[0]->uid;
+    
+    $subject = 'News Approved';
+    $linkuserArr = user_load($userid);  
+    $usermail = (string) $linkuserArr->mail; // load user email to send a mail to it OR you can specify an email here to which the email will be sent 
+     //$message = 'Your registration for event has been approved';
+    $path = $base_url.'/'.drupal_get_path('theme', 'bootstrap_business'); 
+    $message = '<html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <title>IIUM Email</title>
+            </head>
+            <body style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:30px; margin:0; padding:0;">
+                <table width="600" border="0" cellspacing="0" cellpadding="0" style="margin:0 auto; border: 1px solid #ccc; padding:0 0 15px 0;">
+                    <tr>
+                      <td style="background:url(' . $path . '/images/header-bg.jpg) repeat-x left top;border-bottom: 5px solid #9c2b3d; padding: 15px 10px; text-align: center;"><img src="' . $path . '/images/logo.png" width="228" height="83" /></td>
+                    </tr>
+                     <tr>
+                        <td>Hi '.$linkuserArr->name.',</td>
+                    </tr>
+                    <tr>
+                        <td>The News '.$result[0]->title.' has been reviewed and approved by Administrator, thanks for your valuable contribution.</td>
+                    </tr>
+                    <tr>
+                        <td>Regards, </br>
+                            IIUM Career Consuling Team
+                        </td>
+                    </tr>
+                </table>   
+            </body>
+            </html>';
+    events_news_mail('default_from', $usermail, $subject, $message);
+    audit_log('News approved', 'News ID:'.sprintf("NW-%04d", $nid));   
+    drupal_goto(get_admin_link().'eventsandnews/news');
+}
+
+function get_admin_link(){
+    global $user;
+    foreach($user->roles as $key=>$val){
+        $role = $key;
+        $role1 = $val;
+    }
+    if($role == 3 || $role1 == 'faculty admin' || $role1 == 'faculty_admin')
+        $links_admin = 'admin/config/people/';
+    else
+        $links_admin = '';
+    return $links_admin;
+}
+
+function membership_type() {
+    return array(
+        0 => 'Student',
+        1 => 'Faculty',
+        2 => 'Employer',
+        3 => 'Non Member'
+    );
+}
+
+function events_news_approve_event_reg($form, &$form_state, $id,$status){
+    global $base_url;
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    $id=(int)decrypt($id,$decrypting_key);     
+    $params = array(
+        'status' => $status,
+    ); 
+    db_update('event_registrations')
+    ->fields($params)
+    ->condition('id', $id, '=')
+    ->execute();  
+    
+    $result = db_select('event_registrations')
+    ->fields('event_registrations')
+    ->condition('id', $id, '=')
+    ->execute()->fetchAll();
+//    $userid = $result[0]->uid;    
+//    $linkuserArr = user_load($userid);  
+    $usermail = $result[0]->email; // load user email to send a mail to it OR you can specify an email here to which the email will be sent 
+    $subject = 'Registration Approved';
+    //$message = 'Your registration for event has been approved';
+    $path = $base_url.'/'.drupal_get_path('theme', 'bootstrap_business'); 
+    $message = '<html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                <title>IIUM Email</title>
+            </head>
+            <body style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:30px; margin:0; padding:0;">
+                <table width="600" border="0" cellspacing="0" cellpadding="0" style="margin:0 auto; border: 1px solid #ccc; padding:0 0 15px 0;">
+                    <tr>
+                      <td style="background:url(' . $path . '/images/header-bg.jpg) repeat-x left top;border-bottom: 5px solid #9c2b3d; padding: 15px 10px; text-align: center;"><img src="' . $path . '/images/logo.png" width="228" height="83" /></td>
+                    </tr>
+                     <tr>
+                        <td>Hi '.$result[0]->name.',</td>
+                    </tr>
+                    <tr>
+                        <td>Your registration has been reviewed and approved by Administrator, thanks for your valuable contribution.</td>
+                    </tr>
+                    <tr>
+                        <td>Regards, </br>
+                            IIUM Career Consuling Team
+                        </td>
+                    </tr>
+                </table>   
+            </body>
+            </html>';
+    events_news_mail('default_from', $usermail, $subject, $message);
+    audit_log('Event registration approved', 'ID:'.sprintf("ER-%04d", $id));   
+    drupal_goto(get_admin_link().'eventsandnews/event_registrations');
+}
+
+function events_news_delete_event_reg($form, &$form_state, $id) {
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    $id=(int)decrypt($id,$decrypting_key);     
+      
+    db_delete('event_registrations')
+    ->condition('id', $id, '=')
+    ->execute();   
+    audit_log('Event registration deleted', 'ID:'.sprintf("ER-%04d", $id));   
+    drupal_goto(get_admin_link().'eventsandnews/event_registrations');  
+}
+
+function events_news_mail($from = 'default_from', $to, $subject, $message) {
+    $my_module = 'events_news';
+    $my_mail_token = microtime();
+//    if ($from == 'default_from') {
+//        // Change this to your own default 'from' email address.
+//        $from = variable_get('system_mail', 'admin@yoursite.com');
+//    }
+    $message = array(
+        'id' => $my_module . '_' . $my_mail_token,
+        'to' => $to,
+        'subject' => $subject,
+        'body' => array($message),
+        'headers' => array(
+            'From' => $from,
+            'Sender' => $from,
+            'Return-Path' => $from,
+        ),
+    );
+    $system = drupal_mail_system($my_module, $my_mail_token);
+    $message = $system->format($message);
+    if ($system->mail($message)) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
+}
+
+
+
+/**
+ * Implements hook_block_info().
+ */
+function events_news_block_info() {
+    return array(
+        'latest_events_news' => array(
+            'info' => t('Latest News and Events')
+        ),
+    );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function events_news_block_view($delta = '') {
+    $block = array();
+    // Only show the block for a logged-in user.
+    if ($delta == 'latest_events_news') {
+        $block['subject'] = t('Latest News and Events');
+        $block['content'] = drupal_get_form('events_news_block');
+    }   
+    return $block;
+}
+
+// Employers profile list home page block
+function events_news_block(){
+    global $base_url;
+    $key = variable_get('IIUM_Encryption_Key', NULL); 
+    $customtext = '<span class="text-content"><span>LATEST NEWS AND EVENTS</span></span>';
+    $message  = '<section class="sidebar clearfix" id="sidebar-second"><div class="listing latest-news">';
+    $message .= '<ul>';  
+    $eventsQuery = db_select('events')
+        ->fields('events') 
+        ->condition('status',1,'=');
+     $table_sort = $eventsQuery->extend('TableSort'); // Add table sort extender.
+       // ->orderByHeader($header); // Add order by headers.
+
+    $pager = $table_sort->extend('PagerDefault')
+        ->orderBy('id', 'DESC')
+        ->limit(2);
+    $eventsResult = $pager->execute();
+    $decrypting_key=variable_get('IIUM_Encryption_Key', NULL);
+    foreach($eventsResult as $row){
+        $id = encrypt($row->id,$decrypting_key);
+        $message .= '<li><span><a href="'.$base_url.'/event/'.$id.'">'.$row->title.'</a></span>'.'</li>';
+    }
+    
+    $newsQuery = db_select('news')
+        ->fields('news') 
+        ->condition('status',1,'=');
+     $table_sort = $newsQuery->extend('TableSort'); // Add table sort extender.
+      //  ->orderByHeader($header); // Add order by headers.
+
+    $pager = $table_sort->extend('PagerDefault')
+        ->orderBy('id', 'DESC')
+        ->limit(2);
+    $newsResult = $pager->execute();
+    foreach($newsResult as $row){
+        $id = encrypt($row->id,$decrypting_key);
+        $message .= '<li><span><a href="'.$base_url.'/news/'.$id.'">'.$row->title.'</a></span>'.'</li>';
+    } 
+    $message .= '</ul><div class="view-more">'.l('View More', "newsandevents").'</div></div></section>';
+    $output = array(
+        'title' => array(
+            '#type' => 'markup',
+            '#markup' => $message,
+        ),
+    );
+    return $output;
+}
+
+function get_user_role($userid){
+    $query = db_select('users_roles','ur');
+    $query->innerjoin('role','r','r.rid=ur.rid');
+    $query->fields('r',array());
+    $query->condition('ur.uid', $userid, '=');
+    $result = $query->execute()->fetchAll();
+    return $result[0]->name;
+}
+
+function events_news_preprocess_html(&$variables) {
+    
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery.validate.js');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jqueryformvalidation.js');
+    drupal_add_js(drupal_get_path('module', 'events_news') . '/js/custom_validations.js');
+    drupal_add_css(drupal_get_path('theme', 'bootstrap_business') . '/css/jquery-ui.css');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery-ui.js');
+    drupal_add_js('jQuery(document).ready(function($) {         
+
+        $("#from_date, #date").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showOn: "both",
+        yearRange: "2015:2020",
+        buttonImage: "'.file_create_url('public://calendar.gif').'",
+        buttonImageOnly: true,
+        onSelect: function(selected) {
+        }
+        });
+        
+        $("#to_date").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showOn: "both",
+        yearRange: "2015:2020",
+        buttonImage: "'.file_create_url('public://calendar.gif').'",
+        buttonImageOnly: true,
+        onSelect: function(selected) {
+        }
+        });
+        
+        });', 'inline'); 
+}

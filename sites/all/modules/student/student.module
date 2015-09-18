@@ -1,0 +1,1387 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+/* Post a job screen */
+function student_menu() {
+    $items = array();
+    $items['student/account'] = array(
+        'title' => 'My Account',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_myaccount_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_myaccount.inc'
+    );
+
+    $items['student/updatedetails'] = array(
+        'title' => 'Update Personal Details',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_details_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_details_form.inc'
+    );
+
+    $items['student/createresume'] = array(
+        'title' => 'Create Resume',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_create_resume_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_create_resume_form.inc'
+    );
+
+    $items['student/uploadresume'] = array(
+        'title' => 'Create Resume',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_upload_resume_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_upload_resume_form.inc'
+    );
+
+    $items['student/resumepreview'] = array(
+        'title' => 'Resume Preview',
+        'page callback' => 'student_preview_resume_form',
+        // 'page arguments' => array('student_preview_resume_form',''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_preview_resume_form.inc'
+    ); 
+    
+    $items['student/downloadresume/%/%'] = array(
+        'title' => 'Download Resume',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_download_resume_form', 2,3),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_download_resume_form.inc'
+    );
+    
+    $items['student/editexperience'] = array(
+        'title' => 'Experience Level',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_edit_experience_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_edit_experience_form.inc'
+    );
+
+    $items['student/editexperience/%/edit'] = array(
+        'title' => 'Experience Level',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_edit_experience_form', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_edit_experience_form.inc'
+    );
+
+    $items['student/deleteexperience/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_delete_experience', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+    );
+
+    $items['student/deleteeducation/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_delete_education', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+    );
+
+    $items['student/deleteskills/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_delete_skills', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+    );
+
+    $items['student/deletelanguages/%/delete'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_delete_languages', 2),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+    );
+
+    $items['student/editeducation'] = array(
+        'title' => 'Education',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_edit_education_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_edit_education_form.inc'
+    );
+    $items['student/addeducation'] = array(
+        'title' => 'Add Education',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_add_education_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_add_education_form.inc'
+    );
+    $items['student/editskills'] = array(
+        'title' => 'Skills',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_edit_skills_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_edit_skills_form.inc'
+    );
+
+    $items['student/editlanguages'] = array(
+        'title' => 'Languages',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_edit_languages_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_edit_languages_form.inc'
+    );
+
+    $items['student/editadditionalinfo'] = array(
+        'title' => 'Additional Info',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_edit_additional_info_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_edit_additional_info_form.inc'
+    );
+
+    $items['student/aboutme'] = array(
+        'title' => 'About Me',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_aboutme_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_aboutme_form.inc'
+    );
+
+    $items['student/settings'] = array(
+        'title' => 'Resume Privacy Settings',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_privacy_settings_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_privacy_settings_form.inc'
+    );
+
+    $items['student/applynow/jid/%/uid/%'] = array(
+        'title' => 'Apply Now',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_apply_now', 3, 5),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_apply_now.inc'
+    );
+
+    $items['student/application'] = array(
+        'title' => 'Online Applications',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_online_application'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_online_application.inc'
+    );
+
+    $items['student/viewresume/sjid/%'] = array(
+        'title' => 'Job Resume',
+        'page callback' => array('student_preview_resume'),
+        'page arguments' => array(3),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_preview_resume.inc'
+    );
+
+    $items['student/interview_request'] = array(
+        'title' => 'Interview Requests',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_interview_request'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_interview_request.inc'
+    );
+
+    $items['student/resume_request'] = array(
+        'title' => 'Resume Requests',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_resume_request'),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_resume_request.inc'
+    );
+
+    $items['student/viewrequest/%/%'] = array(
+        'title' => 'View Request',
+        'page callback' => array('student_view_request'),
+        'page arguments' => array(2, 3),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_view_request.inc'
+    );
+
+    $items['student/updateresume'] = array(
+        'title' => 'Update Resume',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('student_update_resume_form', ''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+        'file' => 'student_update_resume_form.inc'
+    );
+
+    $items['student/deleteresume'] = array(
+        'title' => 'Delete Resume',
+        'page callback' => 'student_delete_resume',
+        // 'page arguments' => array('student_update_resume_form',''),
+        'access callback' => 'user_has_role',
+        'access arguments' => array('student'),
+            //'file' => 'student_update_resume_form.inc'
+    );
+
+    return $items;
+}
+
+function student_delete_resume() {
+    global $user;
+    db_update('student_details')
+            ->fields(array(
+                'resume' => ''
+            ))
+            ->condition('uid', $user->uid, '=')
+            ->execute();
+    audit_log('delete', 'Resume deleted in manage resume.');
+    drupal_goto('student/updateresume');
+}
+
+/* student job details table result */
+
+function student_job_details($jid, $uid, $order) {
+    $std_job_dtls = db_select('student_job_details')
+            ->fields('student_job_details')
+            ->condition('sjid', $jid, '=')
+            ->condition('uid', $uid, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_job_dtls;
+}
+
+/* student_job_experience_info schema result */
+
+function student_job_experience_info($jid, $uid, $order) {
+    $std_job_exp_info = db_select('student_job_experience_info')
+            ->fields('student_job_experience_info')
+            ->condition('sjid', $jid, '=')
+            ->condition('uid', $uid, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_job_exp_info;
+}
+
+/* student_job_languages schema result */
+
+function student_job_languages($jid, $uid, $order) {
+    $std_job_lan = db_select('student_job_languages')
+            ->fields('student_job_languages')
+            ->condition('sjid', $jid, '=')
+            ->condition('uid', $uid, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_job_lan;
+}
+
+/* student_job_qualification schema result */
+
+function student_job_qualification($jid, $uid, $order) {
+    $std_job_qual = db_select('student_job_qualification')
+            ->fields('student_job_qualification')
+            ->condition('sjid', $jid, '=')
+            ->condition('uid', $uid, '=')  
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_job_qual;
+}
+
+/* student_job_skills schema result */
+
+function student_job_skills($jid, $uid, $order) {
+    $std_job_skills = db_select('student_job_skills')
+            ->fields('student_job_skills')
+            ->condition('sjid', $jid, '=')
+            ->condition('uid', $uid, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_job_skills;
+}
+
+/* student experience table result */
+
+function student_experience_result($id, $order) {
+    $std_exp_info = db_select('student_experience')
+            ->fields('student_experience')
+            ->condition('uid', $id, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_exp_info;
+}
+
+/* student details table result */
+
+function student_details($id, $order) {
+    $std_dtls = db_select('student_details')
+            ->fields('student_details')
+            ->condition('uid', $id, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAssoc();
+    return $std_dtls;
+}
+
+/* student languages table result */
+
+function student_languages($id, $order) {
+    $std_lang = db_select('student_languages')
+            ->fields('student_languages')
+            ->condition('uid', $id, '=')
+             ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_lang;
+}
+
+/* student qualification table result */
+
+function student_qualification($id, $order) {
+    $std_qual = db_select('student_qualification')
+            ->fields('student_qualification')
+            ->condition('uid', $id, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_qual;
+}
+
+/* student jobskills table result */
+
+function student_skills($id, $order) {
+    $std_skills = db_select('student_skills')
+            ->fields('student_skills')
+            ->condition('uid', $id, '=')
+            ->orderBy('id', $order)
+            ->execute()
+            ->fetchAll();
+    return $std_skills;
+}
+
+/* fetch results from student interview/resume request */
+
+function student_request_result($id, $table) {
+    $stud_int_res = db_select($table)
+            ->fields($table)
+            ->condition('id', $id, '=')
+            ->orderBy('id', 'DESC')
+            ->execute()
+            ->fetchAssoc();
+    return $stud_int_res;
+}
+
+/**
+ * proficiency array
+ */
+function proficiency() {
+    return array(
+        '1' => 'beginner',
+        '2' => 'Intermediate',
+        '3' => 'Advanced'
+    );
+}
+
+/* maintain user status history */
+
+function user_status_history($emp_id, $std_id, $jobid, $status, $status_type) {
+    $ush = db_insert('user_status_history')
+            ->fields(array(
+                'emp_id' => $emp_id,
+                'std_id' => $std_id,
+                'job_id' => $jobid,
+                'status' => $status,
+                'status_type ' => $status_type,
+            ))
+            ->execute();
+    if ($ush)
+        return true;
+    else
+        return false;
+}
+
+/* Interview status */
+
+function interview_status($status) {
+    if ($status == "0") {
+        $status = 'Interview Request Accepted';
+    } else if ($status == "1") {
+        $status = 'Interview Request Expired';
+    } else if ($status == "2") {
+        $status = 'Interview Request Pending';
+    } else if ($status == "3") {
+        $status = 'Interview Request Rejected';
+    }
+    return $status;
+}
+
+/* Resume status */
+
+function resume_status($status) {
+    if ($status == "0") {
+        $status = 'Resume Request Accepted';
+    } else if ($status == "1") {
+        $status = 'Resume Request Expired';
+    } else if ($status == "2") {
+        $status = 'Resume Request Pending';
+    } else if ($status == "3") {
+        $status = 'Resume Request Rejected';
+    }
+    return $status;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function student_cron() {
+    if (variable_get('student_expiry_request_during_cron', TRUE)) {
+        module_load_include('inc', 'student', 'student_expiry_request');
+        student_expiry_request();
+    }
+}
+
+function qualification_list() {
+    $qualifications = array();
+    $qualification_list = db_select('qualifcation')
+                    ->fields('qualifcation')
+                    ->execute()->fetchAll();
+    foreach ($qualification_list as $key => $value) {
+        $qualifications[$value->id] = $value->name;
+    }
+    return $qualifications;
+}
+
+function highest_qualification_list($qid) {
+    $qualifications = array();
+    $qualification_list = db_select('levelof_qualifcation')
+                    ->fields('levelof_qualifcation')
+                    ->condition('qid', $qid, '=')
+                    ->execute()->fetchAll();
+    foreach ($qualification_list as $key => $value) {
+        $qualifications[$value->id] = $value->name;
+    }
+    return $qualifications;
+}
+
+function ajax_highest_qualification_level_callback($form, $form_state) {
+    return $form['student']['highest_qualification_level'];
+}
+
+function ajax_qualification_level_callback($form, $form_state) {
+    return $form['highest']['qualification_level'];
+}
+
+function ajax_2ndqualification_level_callback($form, $form_state) {
+    return $form['second_highest']['qualification_level1'];
+}
+
+/* get states_name */
+
+function get_position_name($id) {
+    $positions = positionoffered();
+    return $positions[$id];
+}
+
+function nature_bussiness_name($id) {
+    $nature = nature_bussiness_arr();
+    return $nature[$id];
+}
+
+function fields_of_study_name($id) {
+    $fields = fields_of_study();
+    return $fields[$id];
+}
+
+/**
+ * retriev qualiafication name from db
+ * @param type $id
+ * @return type $name
+ */
+function get_qualiafication_name($id) {
+    $name = "";
+    $student_qualification = db_select('qualifcation')
+            ->fields('qualifcation')
+            ->condition('id', $id, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+        $name = $row['name'];
+    }
+    return $name;
+}
+
+/**
+ * retriev qualiafication level name from db
+ * @param type $id
+ * @return type
+ */
+function get_qualiafication_level_name($id) {
+    $name = "";
+    $student_qualification = db_select('levelof_qualifcation')
+            ->fields('levelof_qualifcation')
+            ->condition('id', $id, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+        $name = $row['name'];
+    }
+    return $name;
+}
+
+function specialization_parrent() {
+    $specilizations = db_select('specializations_p', 'p');
+    $specilizations->fields('p', array('name', 'sid'));
+    $specilizations_records = $specilizations->execute()
+            ->fetchAll();
+
+    foreach ($specilizations_records as $specilizations_record):
+        $specilization_select[$specilizations_record->sid] = $specilizations_record->name;
+    endforeach;
+
+    return $specilization_select;
+}
+
+function specialization_subparrent($sid) {
+    $name = array();
+    $student_qualification = db_select('specializations_sp')
+            ->fields('specializations_sp')
+            ->condition('spid', $sid, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+
+        $name[$row['sid']] = $row['name'];
+    }
+    return $name;
+}
+
+function specialization_child($cid) {
+    $name = array();
+    $student_qualification = db_select('specializations_c')
+            ->fields('specializations_c')
+            ->condition('cid', $cid, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+
+        $name[$row['sid']] = $row['name'];
+    }
+    return $name;
+}
+
+function ajax_specializations_callback($form, $form_state) {
+    return $form['experience']['specializations'];
+}
+
+function ajax_specializationc_callback($form, $form_state) {
+    return $form['experience']['specializationc'];
+}
+
+function ajax_specializations1_callback($form, $form_state) {
+    return $form['employer_details']['specializations'];
+}
+
+function ajax_specializationc1_callback($form, $form_state) {
+    return $form['employer_details']['specializationc'];
+}
+
+// 1/feb/15
+function student_state_list_ajax1($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['student']['wrapper'];
+}
+
+function student_state_list_ajax2($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience']['wrapper1'];
+}
+
+function ajax_specializations_callback1($form, $form_state) {
+    return $form['experience']['specializations1'];
+}
+
+function ajax_specializationc_callback1($form, $form_state) {
+    return $form['experience']['specializationc1'];
+}
+
+function ajax_student_specializations_callback($form, $form_state) {
+    return $form['student']['specializations'];
+}
+
+function ajax_student_specializationc_callback($form, $form_state) {
+    return $form['student']['specializationc'];
+}
+
+function getSpecializationParentName($id) {
+    $student_qualification = db_select('specializations_p')
+            ->fields('specializations_p')
+            ->condition('sid', $id, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+
+        $name = $row['name'];
+    }
+    return $name;
+}
+
+function getSpecializationSubparent($id) {
+    $student_qualification = db_select('specializations_sp')
+            ->fields('specializations_sp')
+            ->condition('sid', $id, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+
+        $name = $row['name'];
+    }
+    return $name;
+}
+
+function getSpecializationChild($id) {
+    $student_qualification = db_select('specializations_c')
+            ->fields('specializations_c')
+            ->condition('sid', $id, '=')
+            ->execute();
+    while ($row = $student_qualification->fetchAssoc($student_qualification)) {
+
+        $name = $row['name'];
+    }
+    return $name;
+}
+
+//edit experience specializations ajax
+
+function student_subparrent_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience']['filter']['wrapper'];
+}
+
+function student_child_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience']['filter']['wrapper_child'];
+}
+
+function studentexp_subparrent_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience1']['filter']['wrapper'];
+}
+
+function studentexp_child_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience1']['filter']['wrapper_child'];
+}
+
+//03/feb/15
+
+function student_aboutme_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['aboutme']['address']['wrapper'];
+}
+
+function student_additional_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    if (isset($form['address']))
+        return $form['address']['wrapper'];
+    else if (isset($form['additional_info']['address']))
+        return $form['additional_info']['address']['wrapper'];
+    else
+        return '';
+}
+
+function getYear() {
+    $year = array();
+    for ($i = date('Y'); $i > date('Y') - 50; $i--) {
+        $year[$i] = $i;
+    }
+    return $year;
+}
+
+function getMonth() {
+    return array(
+        1 => 'Jan',
+        2 => 'Feb',
+        3 => 'Mar',
+        4 => 'Apr',
+        5 => 'May',
+        6 => 'Jun',
+        7 => 'Jul',
+        8 => 'Aug',
+        9 => 'Sep',
+        10 => 'Oct',
+        11 => 'Nov',
+        12 => 'Dec'
+    );
+}
+
+function student_upload_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['second_highest']['wrapper'];
+}
+
+function student_upload_state_list_ajax1($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['highest']['address']['wrapper'];
+}
+
+//05/feb/15
+
+function student_details_subparrent_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['student']['filter']['wrapper'];
+}
+
+function student_details_child_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['student']['filter']['wrapper_child'];
+}
+
+function student_details_subparrent_list_ajax1($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience']['filter']['wrapper'];
+}
+
+function student_details_child_list_ajax1($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience']['filter']['wrapper_child'];
+}
+
+function student_location_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['student']['location']['wrapper'];
+}
+
+function student_location_state_list_ajax1($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience']['location']['wrapper'];
+}
+
+function resume_create_validation() {
+    global $user;
+    $student_details = db_select('student_details')
+            ->fields('student_details')
+            ->condition('uid', $user->uid, '=')
+            ->execute();
+    $detcount = $student_details->rowCount();
+    if ($detcount <= 0) {
+        drupal_set_message('Please update your account details', 'error');
+        drupal_goto('student/updatedetails');
+    }
+}
+
+function resume_preview_validation() {
+    global $user;
+    $student_details = db_select('student_details')
+            ->fields('student_details')
+            ->condition('uid', $user->uid, '=')
+            ->execute();
+    $detcount = $student_details->rowCount();
+    if ($detcount <= 0) {
+        drupal_set_message('Please update your account details', 'error');
+        drupal_goto('student/updatedetails');
+    }
+
+    $student_qualification = db_select('student_qualification')
+            ->fields('student_qualification')
+            ->condition('uid', $user->uid, '=')
+            ->execute();
+    $qcount = $student_qualification->rowCount();
+
+    if ($qcount == 0) {
+        drupal_set_message('Please Create/Upload Resume First', 'error');
+        drupal_goto('student/createresume');
+    }
+}
+
+//9-feb-15
+
+function student_delete_experience($form, &$form_state, $eid) {
+
+    $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+    $id = (int) decrypt($eid, $decrypting_key);
+    db_delete('student_experience')
+            ->condition('id', $id, '=')
+            ->execute();
+    audit_log('delete', 'Experience deleted in manage resume.');
+    drupal_set_message('Experience Deleted');
+    drupal_goto('student/editexperience');
+}
+
+function student_delete_education($form, &$form_state, $eid) {
+
+    $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+    $id = (int) decrypt($eid, $decrypting_key);
+    db_delete('student_qualification')
+            ->condition('id', $id, '=')
+            ->execute();
+    audit_log('delete', 'Education deleted in manage resume.');
+    drupal_set_message('Qualification Deleted');
+    drupal_goto('student/editeducation');
+}
+
+function student_delete_skills($form, &$form_state, $eid) {
+
+    $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+    $id = (int) decrypt($eid, $decrypting_key);
+    db_delete('student_skills')
+            ->condition('id', $id, '=')
+            ->execute();
+    audit_log('delete', 'Skills deleted in manage resume.');
+    drupal_set_message('Skills Deleted');
+    drupal_goto('student/editskills');
+}
+
+function student_delete_languages($form, &$form_state, $eid) {
+
+    $decrypting_key = variable_get('IIUM_Encryption_Key', NULL);
+    $id = (int) decrypt($eid, $decrypting_key);
+    db_delete('student_languages')
+            ->condition('id', $id, '=')
+            ->execute();
+    audit_log('delete', 'Languages deleted in manage resume.');
+    drupal_set_message('Languages Deleted');
+    drupal_goto('student/editlanguages');
+}
+
+function student_location_state_list_ajax2($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['experience1']['location']['wrapper'];
+}
+
+//12/feb/15
+function grade_list() {
+    return array("0" => 'Select',
+        "1" => 'Grade A',
+        "2" => 'Grade B',
+        "3" => 'Grade C',
+        "4" => 'Grade D',
+        "5" => '1st Class',
+        "6" => '2nd Class Upper',
+        "7" => '2nd Class Lower',
+        "8" => '3rd Class',
+        "9" => 'CGPA/Percentage',
+        "10" => 'Pass/Non-gradable',
+        "11" => 'Fail',
+        "12" => 'Incomplete',
+        "13" => 'On-going'
+    );
+}
+
+function manage_resume_validation() {
+    global $user;
+    $student_qualification = db_select('student_qualification')
+            ->fields('student_qualification')
+            ->condition('uid', $user->uid, '=')
+            ->execute();
+    $qcount = $student_qualification->rowCount();
+
+    if ($qcount > 0) {
+        drupal_goto('student/editexperience');
+    }
+}
+
+function student_upload_resume_state_list_ajax($form, $form_state) {
+    // Return the dropdown list including the wrapper
+    return $form['highest']['wrapper'];
+}
+
+function student_form($form, $form_state) {
+    global $user;
+    $account = user_load($user->uid);
+    if (array_search("administrator", $account->roles)) {
+        $q = $_GET['q'];
+        $q_arry = explode('/', $q);
+        $user_uid = $q_arry['1'];
+    } else {
+        $user_uid = $user->uid;
+    }
+
+
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery.validate.js');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jqueryformvalidation.js');
+    drupal_add_js(drupal_get_path('module', 'student') . '/js/custom_validations.js');
+    drupal_add_css(drupal_get_path('theme', 'bootstrap_business') . '/css/jquery-ui.css');
+    drupal_add_js(drupal_get_path('theme', 'bootstrap_business') . '/js/jquery-ui.js');
+    /*drupal_add_js('jQuery(document).ready(function($) { 
+        $("#dob").datepicker({
+        yearRange: "1960:2000",
+        changeMonth: true,
+        changeYear: true,
+        showOn: "both",
+        buttonImage: "' . file_create_url('public://calendar.gif') . '",
+        buttonImageOnly: true,
+        onSelect: function(selected) {
+        }
+        });
+       
+        $(".popup").click(function () {                    
+          window.open($(this).attr("href"), "PopupWindow", "width=600,height=600,scrollbars=yes,resizable=no");
+          return false;
+        });
+        });', 'inline');*/
+
+    $specializationp = 0;
+    $specializationsp = 0;
+    $specializationc = 0;
+    $specializationp1 = 0;
+    $specializationsp1 = 0;
+    $specializationc1 = 0;
+    $country = 0;
+    $location_country = 0;
+
+    $student_details = db_select('student_details')
+            ->fields('student_details')
+            ->condition('uid', $user_uid, '=');
+    $result = $student_details->execute()->fetchAll();
+    
+    $stdinfo = stdinfo($user_uid);
+    
+    foreach ($result as $row) {
+        $firstname = $row->firstname;
+        $lastname = $row->lastname;
+        $email = $row->email;
+        //$date = explode('-', $row->dob);
+        $dob = $stdinfo['birth_date'];
+        $country = $row->country;
+        $state = $row->state;
+        $nationality = $row->nationality;
+        $mobile = $stdinfo['contact_mobile'];
+        $telephone = $stdinfo['contact_phone'];
+        $additional_info = $row->additional_info;
+        $photo = $row->photo;
+        //$searchable = $row['searchable'];
+        $highest_qualification = $row->highest_qualification;
+        $highest_qualification_level = $row->highest_qualification_level;
+        $experience_in_years = $row->experience_in_years;
+        $experience_in_months = $row->experience_in_months;
+        $expected_salary = $row->expected_salary;
+        //$work_locations = $row->work_locations;
+        $location_country = $row->location_country;
+        $location_state = $row->location_state;
+        $field_of_study = $row->field_of_study;
+        //$intrested = $row->intrested;          
+        $specializationp = $row->specialization_p;
+        $specializationsp = $row->specialization_sp;
+        $specializationc = $row->specialization_c;
+    }
+
+    $student_details = db_select('ldap_user_info', 'ui');
+    $student_details->join('users_roles', 'ur', 'ui.uid = ur.uid');
+    $student_details->join('role', 'r', 'r.rid = ur.rid');
+    $student_details->fields('ui', array('givenname', 'type', 'cn'));
+    $student_details->fields('ur', array('rid'));
+    $student_details->fields('r', array('name'));
+    $student_details->condition('ui.uid', $user_uid, '=');
+    $result1 = $student_details->execute()->fetchAll();
+    
+    $row = stdinfo($user_uid);
+    $name = $row['name']; 
+    
+    $user_fields = user_load($user_uid);
+
+    //while($row = $student_details->fetchAssoc($student_details)){
+    foreach ($result1 as $row) {
+
+        //$name = $row->givenname;
+        $usertype = $row->type;
+        $userrole = $user_fields->roles['6'];
+        $username = $name;
+    }
+    $query = db_select('users')
+            ->fields('users')
+            ->condition('uid', $user_uid, '=')
+            ->execute();
+    $result = $query->fetchAssoc();
+    $username = $result['name'];
+    $email = $result['mail'];
+
+    $form['title'] = array(
+        '#type' => 'item',
+        '#markup' => '<h2>Account Details</h2>',
+    );
+    // To make these fields required
+    $form['application_id'] = array(
+        '#type' => 'textfield',
+        '#id' => 'application_id',
+        '#title' => t('Application ID'),
+        '#attributes' => array('readonly' => 'readonly'),
+        '#description' => 'this value is our application ID',
+        '#default_value' => (isset($user_uid) ? $user_uid : ''),
+    );
+    $form['name'] = array(
+        '#type' => 'textfield',
+        '#id' => 'name',
+        '#title' => t('Name'),
+        '#attributes' => array('readonly' => 'readonly'),
+        '#description' => 'this value will be coming from existing database',
+        '#default_value' => (isset($name) ? $name : ''),
+    );
+    $form['username'] = array(
+        '#type' => 'textfield',
+        '#id' => 'username',
+        '#title' => t('Username'),
+        '#attributes' => array('readonly' => 'readonly'),
+        '#description' => 'this value will be coming from existing database',
+        '#default_value' => (isset($username) ? $username : ''),
+    );
+
+    $form['usertype'] = array(
+        '#type' => 'textfield',
+        '#id' => 'usertype',
+        '#title' => t('User Type'),
+        '#attributes' => array('readonly' => 'readonly'),
+        '#description' => 'this value will be coming from existing database',
+        '#default_value' => (isset($usertype) ? $usertype : ''),
+    );
+
+    $form['userrole'] = array(
+        '#type' => 'textfield',
+        '#id' => 'userrole',
+        '#title' => t('User Role'),
+        '#attributes' => array('readonly' => 'readonly'),
+        '#description' => 'this value will be coming from existing database',
+        '#default_value' => (isset($userrole) ? $userrole : ''),
+    );
+
+    $form['email'] = array(
+        '#id' => 'email',
+        '#type' => 'textfield',
+        '#title' => t('Email'),
+        '#attributes' => array('readonly' => 'readonly'),
+        '#description' => 'this value will be coming from existing database',
+        '#default_value' => (isset($email) ? $email : ''),
+    );
+
+
+    $form['dob'] = array(
+        '#id' => 'dob',
+        '#type' => 'textfield',
+        '#id' => 'dob',
+        '#title' => 'Date of Birth',
+        '#default_value' => (isset($dob) ? $dob : ''),
+        '#attributes' => array('readonly' => 'readonly'),
+    );
+
+
+
+
+    $form['mobile'] = array(
+        '#id' => 'mobile',
+        '#title' => 'Mobile Phone number',
+        '#type' => 'textfield',
+        //'#required' => TRUE,
+        '#default_value' => (isset($mobile) ? $mobile : ''),
+        '#maxlength' => 14,
+        '#attributes' => array('readonly' => 'readonly'),
+    );
+
+    $form['telephone'] = array(
+        '#id' => 'telephone',
+        '#title' => 'Phone number',
+        '#type' => 'textfield',
+        //'#required' => TRUE,
+        '#maxlength' => 14,
+        '#default_value' => (isset($telephone) ? $telephone : ''),
+        '#attributes' => array('readonly' => 'readonly'),
+    );
+
+
+
+
+
+    $form['additional_info'] = array(
+        '#id' => 'additional_info',
+        '#title' => 'Additional Info',
+        '#type' => 'textarea',
+        // '#required' => TRUE,
+        '#default_value' => (isset($additional_info) ? $additional_info : ''),
+    );
+
+    $form['uid'] = array(
+        '#id' => 'uid',
+        '#type' => 'hidden',
+        '#default_value' => (isset($user_uid) ? $user_uid : '')
+    );
+
+    $form['photo'] = array(
+        '#id' => 'photo',
+        '#title' => 'Upload Profile Picture ',
+        '#type' => 'file',
+        '#description' => 'Allowed extensions (.png, .jpeg, .gif)',
+        '#prefix' => '<div class="form-item form-type-file form-item-files-company-logo">',
+        '#suffix' => (isset($photo) ? '<img src = "' . file_create_url($photo) . '" >' : '') . '</div>',
+    );
+
+    return $form;
+}
+
+function student_profile_form_submit($form, $form_state) {
+    extract($form_state['input']);
+    $student_details = db_select('student_details')
+            ->fields('student_details')
+            ->condition('uid', $uid, '=')
+            ->execute();
+    $count = $student_details->rowCount();
+
+    if (isset($_FILES["files"]["name"]['photo']) && $_FILES["files"]["name"]['photo'] != '') {
+        $photo_name = $_FILES["files"]["name"]['photo'];
+        // Move files to destination folder
+        $photo_temp = $_FILES["files"]["tmp_name"]['photo'];
+        $photo = time() . '_' . $photo_name;
+        $dest_photo = 'public://uploads/profile_pictures/' . $photo;
+        move_uploaded_file($photo_temp, $dest_photo);
+    } else {
+        $dest_photo = '';
+    }
+    $date = explode('/', $dob);
+    $dateofbirth = $date[2] . '-' . $date[0] . '-' . $date[1];
+    if ($count > 0) {
+        $arr = array(
+            //'dob' => $dateofbirth,
+            //'mobile' => $mobile,
+            //'telephone' => $telephone,
+            'additional_info' => $additional_info,
+        );
+
+        if ($dest_photo != '') {
+            $arr['photo'] = $dest_photo;
+        }
+        $eid = db_update('student_details')
+                ->fields($arr)
+                ->condition('uid', $uid, '=')
+                ->execute();
+    } else {
+        $arr = array(
+            'uid' => $uid,
+            //'dob' => $dateofbirth,
+           // 'mobile' => $mobile,
+           // 'telephone' => $telephone,
+            'additional_info' => $additional_info,
+            'created_date' => date('Y-m-d H:i:s')
+        );
+        if ($dest_photo != '') {
+            $arr['photo'] = $dest_photo;
+        }
+        // inserting values to employer_registration table
+        $eid = db_insert('student_details')
+                ->fields($arr)
+                ->execute();
+    }
+}
+
+function get_stdprogram($userid) {
+    $program = '';
+    $prev_prog = '';
+    $major = '';
+    $intend_prog = '';
+    $resultstdinfo = stdinfo($userid);
+    //foreach ($resultstdinfo as $val) {
+        $stdid = $resultstdinfo['id'];
+        $program = $resultstdinfo['program'];
+        $prev_prog = $resultstdinfo['prev_prog'];
+        $intend_prog = $resultstdinfo['intend_prog'];
+    //}
+
+    $program_code = '';
+    $program_desc = '';
+    $kuly_code = '';
+    $program_level = '';
+    $program_in_bm = '';
+    $stdprogram = db_select('stdprogram')
+            ->fields('stdprogram')
+            ->condition('program_code', $program, '=')
+            ->condition('stdid', $stdid, '=');
+    $resultstdprogram = $stdprogram->execute()->fetchAll();
+    foreach ($resultstdprogram as $val) {
+        $program_code = $val->program_code;
+        $program_desc = $val->program_desc;
+        $kuly_code = $val->kuly_code;
+        $program_level = $val->program_level;
+        $program_in_bm = $val->program_in_bm;
+    }
+
+    $ProgramCode = '<div   class="row" id="stdprogram1" style="margin-top:1em;"> 
+                <div  class="col-md-12 resume_left">
+                   <div class="program_table">
+                   <table class="languages" style="font-size: 11px;border-bottom: 1px solid #dfdfdf;margin-bottom: 20px;padding:3px;"><thead><tr><th>Program Code</th><th>Program description</th><th>Kulliyah for each program</th>
+                   <th>Level Program</th><th>Program Title in Bahasa Melayu</th></tr></thead><tbody>
+                   <tr class="odd"><td> ' . $program_code . '</td> 
+                   <td> ' . $program_desc . '</td> 
+                   <td> ' . $kuly_code . '</td> 
+                   <td> ' . $program_level . '</td> 
+                   <td> ' . $program_in_bm . '</td>  </tr></tbody></table>
+                </div>
+                 </div></div>';
+
+    $program_code1 = '';
+    $program_desc1 = '';
+    $kuly_code1 = '';
+    $program_level1 = '';
+    $program_in_bm1 = '';
+    $stdprogram = db_select('stdprogram')
+            ->fields('stdprogram')
+            ->condition('program_code', $prev_prog, '=')
+            ->condition('stdid', $stdid, '=');
+    $resultstdprogram = $stdprogram->execute()->fetchAll();
+    foreach ($resultstdprogram as $val) {
+        $program_code1 = $val->program_code;
+        $program_desc1 = $val->program_desc;
+        $kuly_code1 = $val->kuly_code;
+        $program_level1 = $val->program_level;
+        $program_in_bm1 = $val->program_in_bm;
+    }
+
+    $PrevProgramCode = '<div   class="row" id="stdprogram2" style="margin-top:1em;"> 
+                <div  class="col-md-12 resume_left">
+                   <div class="program_table">
+                   <table class="languages" style="font-size: 11px;border-bottom: 1px solid #dfdfdf;margin-bottom: 20px;padding:3px;"><thead><tr><th>Previous Program Code</th></tr></thead><tbody>
+                   <tr class="odd"><td> ' . $prev_prog . '</td> 
+                   </tr></tbody></table>
+                </div>
+                 </div></div>';
+
+    return array('program' => $ProgramCode, 'prev_program' => $PrevProgramCode);
+}
+
+function get_stdkulyname() {
+    global $user;
+    $kuly_code = '';
+    $kuly_desc = '';
+    $kuly_prefix = '';
+    $branch_code = '';
+    $kuly_in_malay = '';
+    $resultstdinfo = stdinfo($user->uid);
+    $kulyname = db_select('kulyname')
+            ->fields('kulyname')
+            ->condition('stdid', $resultstdinfo['id'], '=');
+    $resultkulyname = $kulyname->execute()->fetchAll();
+    foreach ($resultkulyname as $val) {
+        $kuly_code = $val->kuly_code;
+        $kuly_desc = $val->kuly_desc;
+        $kuly_prefix = $val->kuly_prefix;
+        $branch_code = $val->branch_code;
+        $kuly_in_malay = $val->kuly_in_malay;
+    }
+    $KulyName = '<div  class="row" id="kulyname"> 
+                <div  class="col-md-12 resume_left">
+                <div class="program_table">
+                   <table><thead><tr><th>Kulliyah for each program</th><th>Prefix name of Kulliyyah </th>
+                   <th>Kuliyyah name </th><th>Campus code</th><th>Title in Bahasa </th></tr></thead><tbody>
+                   <tr class="odd">
+                   <td> ' . $kuly_code . '</td> 
+                   <td> ' . $kuly_prefix . '</td> 
+                   <td> ' . $kuly_desc . '</td>
+                   <td> ' . $branch_code . '</td> 
+                   <td> ' . $kuly_in_malay . '</td>  </tr></tbody></table>
+                </div>
+                 </div></div>';
+    return $KulyName;
+}
+
+function get_stdresult() {
+    global $user;
+    $resultstdinfo = stdinfo($user->uid);
+    $stdresult = db_select('stdresult')
+            ->fields('stdresult')
+            ->condition('stdid', $resultstdinfo['id'], '=');
+    $resultstdresult = $stdresult->execute()->fetchAll();
+    $ProgramResult = '';
+    //if(sizeof($resultstdresult)>0) {
+    $ProgramResult = '<div   class="row" id="stdresult"> 
+                    <div  class="col-md-12 resume_left">
+                    <div class="result_table">
+                    <table><thead><tr><th>Student’s Matric number</th><th>Semester</th><th>Session</th>
+                   <th>Grade Point Accumulative for current semester</th><th>Total Grade Point Accumulative</th></tr></thead><tbody>
+                   ';
+    $i = 0;
+    foreach ($resultstdresult as $val) {
+        $matric_no = $val->matric_no;
+        $semester = $val->semester;
+        $sessi = $val->sessi;
+        $gpa = $val->gpa;
+        $cgpa = $val->cgpa;
+        if ($i % 2 == 0) {
+            $class = "class='odd'";
+        } else {
+            $class = "class='even'";
+        }
+        $ProgramResult.=' 
+                       <tr ' . $class . '>
+                       <td> ' . $matric_no . '</td> 
+                       <td> ' . $semester . '</td> 
+                       <td> ' . $sessi . '</td> 
+                       <td> ' . $gpa . '</td> 
+                       <td> ' . $cgpa . '</td>  </tr>
+                    ';
+        $i++;
+    }
+    $ProgramResult.='</tbody> </table></div>
+                     </div></div>';
+    // }
+
+    return $ProgramResult;
+}
+
+function get_stdinfo($userid) {     
+    $stdinfo = db_select('stdinfo')
+            ->fields('stdinfo')
+            ->condition('uid', $userid, '=');
+    $resultstdinfo = $stdinfo->execute()->fetchAll();
+    
+    $result = array();
+    foreach ($resultstdinfo as $val) {
+        $result['name'] = $val->name ? $val->name : '';
+        $result['matric_no'] = $val->matric_no ? $val->matric_no : '';
+        $result['ic_no'] = $val->ic_no ? $val->ic_no : '';
+        $result['ctzship'] = $val->ctzship ? $val->ctzship : '';
+        $result['birth_date'] = $val->birth_date ? $val->birth_date : '';
+        $result['origin_code'] = $val->origin_code ? $val->origin_code : '';
+        $result['bumi'] = $val->bumi ? $val->bumi : '';
+        $result['st_rsdc'] = $val->st_rsdc ? $val->st_rsdc : '';
+        $result['gender'] = $val->gender ? $val->gender : '';
+        $result['contact_phone'] = $val->contact_phone ? $val->contact_phone : '';
+        $result['contact_mobile'] = $val->contact_mobile ? $val->contact_mobile : '';
+        $result['post_add1'] = $val->post_add1 ? $val->post_add1 : '';
+        $result['post_add2'] = $val->post_add2 ? $val->post_add2 : '';
+        $result['post_add3'] = $val->post_add3 ? $val->post_add3 : '';
+        $result['add1'] = $val->add1 ? $val->add1 : '';
+        $result['add2'] = $val->add2 ? $val->add2 : '';
+        $result['add3'] = $val->add3 ? $val->add3 : '';
+        $result['year'] = $val->year ? $val->year : '';
+        $result['alt_email'] = $val->alt_email ? $val->alt_email : '';
+    }
+    return $result;
+}
+
+function stdinfo($uid){
+    $stdinfo = db_select('stdinfo')
+                ->fields('stdinfo')
+                ->condition('uid', $uid, '=');
+    return $stdinfo->execute()->fetchAssoc();
+}
+
+function alumni_std_states_list(){
+    $states_list_arr = array();
+    $states_list = db_select('alumni_std_states_list')
+                ->fields('alumni_std_states_list');
+    $states_list = $states_list->execute()->fetchAll();
+    foreach ($states_list as $value) { 
+        $states_list_arr[$value->STATE_CODE] = $value->STATE_DESC;
+    }
+    return $states_list_arr;
+    
+}
