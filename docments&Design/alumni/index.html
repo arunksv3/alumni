@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Alumini</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<!-- Optional theme -->
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<link href="css/styles.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<header>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4"> <img src="images/logo.png" class="img-responsive"> </div>
+      <div class="col-md-8 text-right">
+        <ul class="list-inline">
+          <li><a class="btn btn-default">UPDATE PROFILE</a></li>
+          <li><a class="btn btn-primary">UPDATE SIGN</a> </li>
+          <li>
+            <div class="sidebar">
+              <div class="mini-submenu" style="display:block;"><i class="fa fa-search"></i> </div>
+              <div class="list-group" style="display:none;">
+              <form> <input type="text" name="search" class="form-control" ></form></div>
+            </div>
+          </li>
+          <li>
+            <div class="sidebar">
+              <div class="mini-submenu" style="display:block;"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span style="font-size:9px;">MENU</span> </div>
+              <div class="list-group" style="display:none;"> <a href="#" class="list-group-item"> <i class="fa fa-comment-o"></i> Lorem ipsum </a> <a href="#" class="list-group-item"> <i class="fa fa-search"></i> Lorem ipsum </a> <a href="#" class="list-group-item"> <i class="fa fa-user"></i> Lorem ipsum </a> <a href="#" class="list-group-item"> <i class="fa fa-folder-open-o"></i> Lorem ipsum <span class="badge">14</span> </a> <a href="#" class="list-group-item"> <i class="fa fa-bar-chart-o"></i> Lorem ipsumr <span class="badge">14</span> </a> <a href="#" class="list-group-item"> <i class="fa fa-envelope"></i> Lorem ipsum </a> </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+<menu class="text-center">
+<ul class="list-inline">
+  <li class="menu-bor"></li>
+  <li><a href="#">Upcoming events</a></li>
+  <li class="menu-bor"></li>
+  <li class="active"><a href="#">Alumni connections</a></li>
+  <li class="menu-bor"></li>
+  <li><a href="#">get involved</a></li>
+  <li class="menu-bor"></li>
+  <li><a href="#">fund raising </a></li>
+  <li class="menu-bor"></li>
+</ul>
+</menu>
+<div class="slider">
+  <div class="accordion" id="zA7n">
+    <ul class="accordion__ul">
+      <li class="accordion__li"><img class="accordion__img" src="images/s1.jpg" alt="Image Alt" /></li>
+      <li class="accordion__li"><img class="accordion__img" src="images/s2.jpg" alt="Image Alt" /></li>
+      <li class="accordion__li" style="width:600px;"><img class="accordion__img" src="images/s3.jpg" alt="Image Alt" />
+        <div class="silder-caption">
+          <h2>TOGETHER</h2>
+          <h3>Great <br>
+            becomes Greatness</h3>
+        </div>
+      </li>
+      <li class="accordion__li"><img class="accordion__img" src="images/s4.jpg" alt="Image Alt" /></li>
+      <li class="accordion__li"><img class="accordion__img" src="images/s5.jpg" alt="Image Alt" /></li>
+    </ul>
+  </div>
+</div>
+<div class="article text-center">
+  <div class="article-section text-center" style=""> <img src="images/portal.png" class="img-responsive" style="margin:0 auto;"> </div>
+</div>
+<footer>
+  <div class="footer-nav">
+    <div class="container footer-top">
+      <div class="col-md-6">
+        <ul class="list-inline">
+          <li><a href="#">IIUm Website</a></li>
+          <li><a href="#">ACSD Website</a></li>
+          <li><a href="#">MOF Website</a></li>
+          <li><a href="#">NCS Website</a></li>
+        </ul>
+      </div>
+      <div class="col-md-6 text-right">
+        <ul class="list-inline socail">
+          <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+          <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="#"><i class="fa fa-linkedin-square"></i></a></li>
+          <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+          <li><a href="#"><i class="fa fa-google-plus-square"></i></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row footer-btm" style="margin-bottom:0; padding-top:40px;">
+      <div class="container">
+        <div class="col-md-6"> Copyright © International Islamic University Malaysia. All rights reserved. </div>
+        <div class="col-md-6 text-right">
+          <ul class="list-inline">
+            <li><a href="#">About us</a></li>
+            <li><a href="#">faq's</a></li>
+            <li><a href="#">contact us</a></li>
+            <li><a href="#">send feedback</a></li>
+            <li><a href="#">site map</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script>
+$(function(){
+
+	$('#slide-submenu').on('click',function() {			        
+        $(this).closest('.list-group').fadeOut('slide',function(){
+        	$('.mini-submenu').fadeIn();	
+        });
+        
+      });
+
+	$('.mini-submenu').on('click',function(){		
+        $(this).next('.list-group').toggle('slide');
+        
+	})
+})
+
+</script> 
+<script src="js/limit.js"></script> 
+<script src="js/zA7n.js"></script> 
+<script>
+		$(window).load(function () {
+			$('#zA7n').zA7n({});
+		});
+	</script>
+</body>
+</html>
